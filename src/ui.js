@@ -39,7 +39,7 @@ export function renderGrid(state) {
             cellEl.dataset.col = c;
             if (cellData.isFlagged) {
                 cellEl.classList.add('flagged');
-                cellEl.textContent = '⚑';
+                cellEl.textContent = '⚔️';
             } else if (cellData.isQuestion) {
                 cellEl.classList.add('question');
                 cellEl.textContent = '?';
@@ -47,10 +47,10 @@ export function renderGrid(state) {
                 cellEl.classList.add('revealed');
                 if (cellData.isMonster) {
                     cellEl.classList.add('monster');
-                    cellEl.textContent = '👾';
+                    cellEl.textContent = '🐉';
                 } else if (cellData.isExit) {
                     cellEl.classList.add('exit');
-                    cellEl.textContent = '▼';
+                    cellEl.textContent = '🚪';
                 } else if (cellData.adjacentMonsters > 0) {
                     cellEl.textContent = cellData.adjacentMonsters;
                     cellEl.classList.add(`text-c-${cellData.adjacentMonsters}`);
@@ -75,37 +75,37 @@ export function renderInventory(state) {
     container.innerHTML = '';
 
     const title = document.createElement('h3');
-    title.className = 'text-lg font-orbitron text-center text-gray-400 mb-2';
+    title.className = 'text-lg font-cinzel text-center text-red-800 mb-2';
     title.textContent = 'PERMANENT UPGRADES';
     container.appendChild(title);
 
     const itemsWrapper = document.createElement('div');
-    itemsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-gray-900 rounded-lg border border-gray-700 min-h-[40px] items-center';
+    itemsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-amber-200 rounded-lg border border-amber-400 min-h-[40px] items-center';
     let hasUpgrades = false;
     for (const key in permanentUpgrades) {
         const upgrade = permanentUpgrades[key];
         if ((upgrade.level && upgrade.level > 0) || upgrade.unlocked) {
             hasUpgrades = true;
             const itemEl = document.createElement('div');
-            itemEl.className = 'bg-gray-700 border border-green-500 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
-            let text = `<span class="font-bold text-green-300">${upgrade.name}</span>`;
+            itemEl.className = 'bg-amber-100 border border-red-700 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
+            let text = `<span class="font-bold text-red-700">${upgrade.name}</span>`;
             if (upgrade.level) text += `: Lvl ${upgrade.level}`;
             itemEl.innerHTML = text;
             itemsWrapper.appendChild(itemEl);
         }
     }
     if (!hasUpgrades) {
-        itemsWrapper.innerHTML = `<p class="text-gray-500 italic text-sm">No permanent upgrades active.</p>`;
+        itemsWrapper.innerHTML = `<p class="text-amber-700 italic text-sm">No permanent upgrades active.</p>`;
     }
     container.appendChild(itemsWrapper);
 
     const tempTitle = document.createElement('h3');
-    tempTitle.className = 'text-lg font-orbitron text-center text-gray-400 mb-2 mt-4';
+    tempTitle.className = 'text-lg font-cinzel text-center text-red-800 mb-2 mt-4';
     tempTitle.textContent = 'TEMPORARY BUFFS';
     container.appendChild(tempTitle);
 
     const buffsWrapper = document.createElement('div');
-    buffsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-gray-900 rounded-lg border border-gray-700 min-h-[40px] items-center';
+    buffsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-amber-200 rounded-lg border border-amber-400 min-h-[40px] items-center';
     let hasBuffs = false;
 
     const formatBuff = (key, value) => {
@@ -133,14 +133,14 @@ export function renderInventory(state) {
         if (!value) continue;
         hasBuffs = true;
         const buffEl = document.createElement('div');
-        buffEl.className = 'bg-gray-700 border border-cyan-500 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
+        buffEl.className = 'bg-amber-100 border border-amber-600 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
         let label = formatBuff(key, value);
         if (key in state.nextLevelBuffs) label += ' (next)';
-        buffEl.innerHTML = `<span class="font-bold text-cyan-300">${label}</span>`;
+        buffEl.innerHTML = `<span class="font-bold text-amber-700">${label}</span>`;
         buffsWrapper.appendChild(buffEl);
     }
     if (!hasBuffs) {
-        buffsWrapper.innerHTML = `<p class="text-gray-500 italic text-sm">No temporary buffs active.</p>`;
+        buffsWrapper.innerHTML = `<p class="text-amber-700 italic text-sm">No temporary buffs active.</p>`;
     }
     container.appendChild(buffsWrapper);
 }
@@ -148,10 +148,10 @@ export function renderInventory(state) {
 // Display run bests such as highest level and gold earned.
 export function renderHighScores(gameStats) {
     dom.highScoresContainerEl.innerHTML = `
-        <h3 class="text-lg font-orbitron text-center text-gray-400 mb-2">RUN BESTS</h3>
-        <div class="flex justify-center gap-4 p-2 bg-gray-900 rounded-lg border border-gray-700">
-            <p>Highest Level: <span class="font-bold text-white">${gameStats.highestLevelOverall}</span></p>
-            <p>Max Gold: <span class="font-bold text-yellow-400">${gameStats.maxGoldRun}</span></p>
+        <h3 class="text-lg font-cinzel text-center text-red-800 mb-2">RUN BESTS</h3>
+        <div class="flex justify-center gap-4 p-2 bg-amber-200 rounded-lg border border-amber-400">
+            <p>Highest Level: <span class="font-bold text-red-800">${gameStats.highestLevelOverall}</span></p>
+            <p>Max Gold: <span class="font-bold text-yellow-700">${gameStats.maxGoldRun}</span></p>
         </div>
     `;
 }

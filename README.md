@@ -1,6 +1,6 @@
-# Rogue Monster Sweeper
+# Dungeon Delver
 
-A browser-based roguelike twist on the classic Minesweeper game. Explore progressively larger dungeons filled with hidden monsters, collect gold, and buy upgrades to push deeper each run.
+A browser-based, Dungeons & Dragons‑inspired twist on the classic Minesweeper game. Explore progressively larger dungeons filled with hidden monsters, collect gold, and buy upgrades to push deeper each run.
 
 ## Features
 
@@ -17,8 +17,8 @@ A browser-based roguelike twist on the classic Minesweeper game. Explore progres
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/USER/rogue-minesweeper.git
-   cd rogue-minesweeper
+   git clone https://github.com/USER/dungeon-delver.git
+   cd dungeon-delver
    ```
 2. **Start a static web server** (from the project root)
    ```bash
@@ -66,4 +66,4 @@ No license has been specified. If you plan to use this project, please contact t
 ## Acknowledgements
 
 - [Tailwind CSS](https://tailwindcss.com/) for utility-first styling via CDN.
-- [Google Fonts](https://fonts.google.com/) for the Orbitron and Roboto Mono fonts.
+ - [Google Fonts](https://fonts.google.com/) for the Cinzel and Merriweather fonts.
