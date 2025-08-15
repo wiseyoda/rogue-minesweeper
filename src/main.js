@@ -576,5 +576,3 @@ const playerStats = {
             // --- INITIALIZATION ---
             initNewRun();
         });
-    </script>
-</body>
