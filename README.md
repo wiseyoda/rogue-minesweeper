@@ -1,16 +1,17 @@
 # Rogue Minesweeper
 
-A browser-based roguelike twist on the classic Minesweeper game. Navigate progressively larger minefields, collect gold, and purchase upgrades to survive deeper levels.
+A browser-based roguelike twist on the classic Minesweeper game. Navigate progressively larger minefields, collect gold, and buy upgrades to push deeper each run.
 
 ## Features
 
-- **Dynamic levels:** Grid size and mine density increase as you progress, challenging your deduction skills.
-- **Shields as health:** Instead of immediate failure, shields let you survive multiple mistakes.
-- **Gold economy:** Earn gold from safe tiles and use it to purchase upgrades or items.
-- **Permanent upgrade shop:** Spend end-of-run gold on upgrades like extra shields or starting gold to power up future runs.
-- **Inter-level item shop:** Buy temporary items with rarity-based loot to aid in the next level.
-- **Flag cycle:** Right-click tiles to cycle between a flag, a question mark for uncertain tiles, and a blank state.
-- **Responsive design:** Built with Tailwind CSS and custom fonts for a retro sci-fi feel.
+- **Progressive difficulty** – grid size and mine density grow with each level, challenging your deduction skills.
+- **Shields as health** – survive multiple mistakes with regenerating and temporary shields.
+- **Gold economy** – earn gold from safe tiles and level completion to spend on upgrades and items.
+- **Permanent upgrade shop** – invest end-of-run gold on long-term upgrades like extra shields or starting gold.
+- **Inter-level item shop** – purchase temporary buffs between levels from a rarity-based item pool.
+- **Inventory & highscores** – track permanent upgrades, active buffs, highest level reached and max gold earned.
+- **Flag cycle** – right-click tiles to cycle between flag, question mark and blank states.
+- **Responsive design** – Tailwind CSS and custom fonts provide a retro sci-fi feel.
 
 ## Getting Started
 
@@ -19,30 +20,40 @@ A browser-based roguelike twist on the classic Minesweeper game. Navigate progre
    git clone https://github.com/USER/rogue-minesweeper.git
    cd rogue-minesweeper
    ```
-2. **Start a static web server** (recommended)
+2. **Start a static web server** (from the project root)
    ```bash
    npx serve
    # or
    python -m http.server 8000
    ```
 3. **Open the game**
-   Navigate to the served URL (e.g., <http://localhost:3000>) and open `index.html`.
+   Navigate to the served URL and load `public/index.html` (e.g. <http://localhost:3000/public/>).
 
-> You can also open `index.html` directly in a browser, but some browsers restrict local file access; a web server is recommended.
+> Opening the file directly may work, but using a web server avoids browser restrictions on ES module imports.
 
 ## Project Structure
 
 ```
-├── data
-│   ├── permanentUpgrades.js   # definitions for long-term upgrades
-│   └── temporaryItems.js      # item pools by rarity for inter-level shop
-├── index.html                 # main game with embedded logic and UI
+├── public/
+│   └── index.html             # base HTML shell
+├── src/
+│   ├── data/
+│   │   ├── permanentUpgrades.js
+│   │   └── temporaryItems.js
+│   ├── game.js                # core gameplay logic
+│   ├── main.js                # entry point wiring events and starting runs
+│   ├── shop.js                # upgrade & inter-level shops
+│   ├── state.js               # player and game state
+│   └── ui.js                  # DOM helpers and rendering
+├── styles/
+│   └── style.css              # custom styles and grid appearance
 └── README.md
 ```
 
 ## Data Definitions
-- **Permanent Upgrades** – found in [`data/permanentUpgrades.js`](data/permanentUpgrades.js). Each upgrade defines its name, description, cost scaling, and effect.
-- **Temporary Items** – located in [`data/temporaryItems.js`](data/temporaryItems.js). Items are grouped by rarity and applied for the upcoming level or run.
+
+- **Permanent Upgrades** – `src/data/permanentUpgrades.js` defines long-term upgrades with names, descriptions, costs and effects.
+- **Temporary Items** – `src/data/temporaryItems.js` lists shop items by rarity and their in-game effects.
 
 ## Contributing
 
