@@ -1,13 +1,13 @@
 export const permanentUpgrades = {
-    maxShields: {
+    maxLives: {
         name: 'Reinforced Hull',
-        description: 'Increase max shields by 1.',
+        description: 'Increase max lives by 1.',
         baseCost: 50,
         costIncrease: 2,
         level: 0,
         maxLevel: 10,
         apply(playerStats) {
-            playerStats.maxShields++;
+            playerStats.maxLives++;
         },
     },
     startingGold: {

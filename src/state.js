@@ -4,7 +4,7 @@
 // import and mutate a single source of truth.
 
 export const playerStats = {
-    maxShields: 3,
+    maxLives: 3,
     startingGold: 0,
     firstClickSafety: false,
 };
@@ -21,9 +21,9 @@ export const gameStats = {
 export function resetState() {
     Object.assign(state, {
         level: 1,
-        shields: playerStats.maxShields,
+        lives: playerStats.maxLives,
+        shields: 0,
         gold: playerStats.startingGold,
-        temporaryShields: 0,
         gameOver: false,
         grid: [],
         rows: 0,
