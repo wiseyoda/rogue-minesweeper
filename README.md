@@ -5,9 +5,9 @@ A browser-based roguelike twist on the classic Minesweeper game. Navigate progre
 ## Features
 
 - **Progressive difficulty** – grid size and mine density grow with each level, challenging your deduction skills.
-- **Shields as health** – survive multiple mistakes with regenerating and temporary shields.
+- **Lives and shields** – start with three hearts and burn through shields before losing lives.
 - **Gold economy** – earn gold from safe tiles and level completion to spend on upgrades and items.
-- **Permanent upgrade shop** – invest end-of-run gold on long-term upgrades like extra shields or starting gold.
+- **Permanent upgrade shop** – invest end-of-run gold on long-term upgrades like extra lives or starting gold.
 - **Inter-level item shop** – purchase temporary buffs between levels from a rarity-based item pool.
 - **Inventory & highscores** – track permanent upgrades, active buffs, highest level reached and max gold earned.
 - **Flag cycle** – right-click tiles to cycle between flag, question mark and blank states.

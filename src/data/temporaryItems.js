@@ -2,11 +2,11 @@ export const temporaryItems = {
     common: [
         {
             id: 'c1',
-            name: 'Minor Shield Patch',
-            description: 'Instantly regain 1 shield.',
+            name: 'Minor Heart Patch',
+            description: 'Instantly regain 1 life.',
             cost: 30,
             apply(state, playerStats) {
-                if (state.shields < playerStats.maxShields) state.shields++;
+                if (state.lives < playerStats.maxLives) state.lives++;
             },
         },
         {
@@ -21,7 +21,7 @@ export const temporaryItems = {
         {
             id: 'c3',
             name: 'Steady Hand',
-            description: 'The next mine you hit will not consume a shield.',
+            description: 'The next mine you hit will not consume a life.',
             cost: 40,
             apply(state) {
                 state.nextLevelBuffs.steadyHand = true;
@@ -50,10 +50,10 @@ export const temporaryItems = {
         {
             id: 'u1',
             name: 'Shield Plating',
-            description: 'Gain +1 temporary shield for the next level.',
+            description: 'Gain +1 shield for the next level.',
             cost: 60,
             apply(state) {
-                state.nextLevelBuffs.temporaryShields = (state.nextLevelBuffs.temporaryShields || 0) + 1;
+                state.nextLevelBuffs.shields = (state.nextLevelBuffs.shields || 0) + 1;
             },
         },
         {
@@ -86,7 +86,7 @@ export const temporaryItems = {
         {
             id: 'u5',
             name: 'Shield Battery',
-            description: 'If you complete the next level without taking damage, gain 1 shield.',
+            description: 'If you complete the next level without taking damage, gain 1 life.',
             cost: 80,
             apply(state) {
                 state.nextLevelBuffs.shieldBattery = true;
@@ -96,11 +96,11 @@ export const temporaryItems = {
     rare: [
         {
             id: 'r1',
-            name: 'Full Shield Repair',
-            description: 'Restore all missing shields.',
+            name: 'Full Heart Repair',
+            description: 'Restore all missing lives.',
             cost: 150,
             apply(state, playerStats) {
-                state.shields = playerStats.maxShields;
+                state.lives = playerStats.maxLives;
             },
         },
         {
@@ -135,7 +135,7 @@ export const temporaryItems = {
         {
             id: 'l1',
             name: 'Extra Life',
-            description: 'The next time you would lose your last shield, it is restored to full instead.',
+            description: 'The next time you would lose your last life, it is restored to full instead.',
             cost: 400,
             apply(state) {
                 state.activeBuffs.extraLife = true;

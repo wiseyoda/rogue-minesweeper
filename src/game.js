@@ -26,7 +26,7 @@ export function startLevel() {
     state.gameOver = false;
     state.damageTakenThisLevel = false;
     state.isFirstClick = true;
-    state.temporaryShields = 0;
+    state.shields = 0;
 
     const runLongBuffs = {
         extraLife: state.activeBuffs.extraLife,
@@ -35,9 +35,9 @@ export function startLevel() {
     state.activeBuffs = { ...state.nextLevelBuffs, ...runLongBuffs };
     state.nextLevelBuffs = {};
 
-    if (state.activeBuffs.temporaryShields) {
-        state.temporaryShields = state.activeBuffs.temporaryShields;
-        delete state.activeBuffs.temporaryShields;
+    if (state.activeBuffs.shields) {
+        state.shields = state.activeBuffs.shields;
+        delete state.activeBuffs.shields;
     }
 
     state.rows = Math.min(8 + state.level, 20);
@@ -271,23 +271,24 @@ function handleMineHit() {
     }
 
     state.damageTakenThisLevel = true;
-    if (state.temporaryShields > 0) {
-        state.temporaryShields--;
-    } else {
+    if (state.shields > 0) {
         state.shields--;
+    } else {
+        state.lives--;
     }
 
-    if (state.shields < 0) {
+    if (state.lives <= 0) {
         if (state.activeBuffs.extraLife) {
             delete state.activeBuffs.extraLife;
-            state.shields = playerStats.maxShields;
+            state.lives = playerStats.maxLives;
             dom.messageAreaEl.textContent = 'Extra Life activated!';
         } else {
-            state.shields = 0;
             endRun();
         }
-    } else if (state.shields + state.temporaryShields > 0) {
-        dom.messageAreaEl.textContent = `Shields hit! ${state.shields + state.temporaryShields} remaining.`;
+    } else if (state.shields > 0) {
+        dom.messageAreaEl.textContent = `Shields hit! ${state.shields} remaining.`;
+    } else {
+        dom.messageAreaEl.textContent = `Lives remaining: ${state.lives}.`;
     }
     updateUI(state);
     renderInventory(state);
@@ -298,7 +299,7 @@ function checkWinCondition() {
     if (state.revealedCount >= safeCells) {
         dom.messageAreaEl.textContent = 'All clear! The exit is revealed.';
         if (state.activeBuffs.shieldBattery && !state.damageTakenThisLevel) {
-            if (state.shields < playerStats.maxShields) state.shields++;
+            if (state.lives < playerStats.maxLives) state.lives++;
             delete state.activeBuffs.shieldBattery;
         }
         placeExit();
@@ -344,7 +345,7 @@ function endRun() {
     if (state.gold > gameStats.maxGoldRun) gameStats.maxGoldRun = state.gold;
     renderHighScores(gameStats);
 
-    dom.messageAreaEl.textContent = 'Run over! Shields depleted.';
+    dom.messageAreaEl.textContent = 'Run over! Lives depleted.';
     for (let r = 0; r < state.rows; r++) {
         for (let c = 0; c < state.cols; c++) {
             if (state.grid[r][c].isMine) state.grid[r][c].isRevealed = true;

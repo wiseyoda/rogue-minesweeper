@@ -8,7 +8,7 @@ import { permanentUpgrades } from './data/permanentUpgrades.js';
 export const dom = {
     gridElement: document.getElementById('game-grid'),
     levelEl: document.getElementById('level'),
-    shieldsEl: document.getElementById('shields'),
+    healthEl: document.getElementById('health'),
     minesLeftEl: document.getElementById('mines-left'),
     goldEl: document.getElementById('gold'),
     messageAreaEl: document.getElementById('message-area'),
@@ -64,7 +64,7 @@ export function renderGrid(state) {
 // Update simple numeric indicators like level and gold.
 export function updateUI(state) {
     dom.levelEl.textContent = state.level;
-    dom.shieldsEl.innerHTML = '❤️'.repeat(state.shields) + '💙'.repeat(state.temporaryShields);
+    dom.healthEl.innerHTML = '🛡️'.repeat(state.shields) + '❤️'.repeat(state.lives);
     dom.minesLeftEl.textContent = state.mineCount - state.flagsPlaced;
     dom.goldEl.textContent = state.gold;
 }
@@ -113,7 +113,7 @@ export function renderInventory(state) {
             case 'steadyHand': return 'Steady Hand';
             case 'revealTiles': return `Reveal Tiles x${value}`;
             case 'scrapMetal': return 'Scrap Metal';
-            case 'temporaryShields': return `+${value} Temp Shield${value > 1 ? 's' : ''}`;
+            case 'shields': return `+${value} Shield${value > 1 ? 's' : ''}`;
             case 'goldMagnet': return 'Gold Magnet';
             case 'bombSquad': return `Bomb Squad x${value}`;
             case 'shieldBattery': return 'Shield Battery';
