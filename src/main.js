@@ -54,8 +54,6 @@ function initNewRun() {
     };
     if (state.goldInterval) clearInterval(state.goldInterval);
     startLevel();
-    updateUI();
-    renderInventory();
     renderHighScores();
     upgradeShopEl.classList.add('modal-inactive');
 }
@@ -97,6 +95,7 @@ function startLevel() {
     applyStartOfLevelBuffs();
     renderGrid();
     updateUI();
+    renderInventory();
 }
 
 function applyStartOfLevelBuffs() {
@@ -221,6 +220,46 @@ function renderInventory() {
     }
     if (!hasUpgrades) { itemsWrapper.innerHTML = `<p class="text-gray-500 italic text-sm">No permanent upgrades active.</p>`; }
     inventoryContainerEl.appendChild(itemsWrapper);
+
+    const tempTitle = document.createElement('h3');
+    tempTitle.className = 'text-lg font-orbitron text-center text-gray-400 mb-2 mt-4';
+    tempTitle.textContent = 'TEMPORARY BUFFS';
+    inventoryContainerEl.appendChild(tempTitle);
+    const buffsWrapper = document.createElement('div');
+    buffsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-gray-900 rounded-lg border border-gray-700 min-h-[40px] items-center';
+    let hasBuffs = false;
+    const formatBuff = (key, value) => {
+        switch (key) {
+            case 'steadyHand': return 'Steady Hand';
+            case 'revealTiles': return `Reveal Tiles x${value}`;
+            case 'scrapMetal': return 'Scrap Metal';
+            case 'temporaryShields': return `+${value} Temp Shield${value > 1 ? 's' : ''}`;
+            case 'goldMagnet': return 'Gold Magnet';
+            case 'bombSquad': return `Bomb Squad x${value}`;
+            case 'shieldBattery': return 'Shield Battery';
+            case 'forcefield': return `Forcefield (${value})`;
+            case 'masterGoggles': return 'Master Goggles';
+            case 'eliteBombSquad': return 'Elite Bomb Squad';
+            case 'mineNeutralizer': return 'Mine Neutralizer';
+            case 'extraLife': return 'Extra Life';
+            case 'goldenGoose': return 'Golden Goose';
+            default: return key;
+        }
+    };
+    const combinedBuffs = { ...state.activeBuffs, ...state.nextLevelBuffs };
+    for (const key in combinedBuffs) {
+        const value = combinedBuffs[key];
+        if (!value) continue;
+        hasBuffs = true;
+        const buffEl = document.createElement('div');
+        buffEl.className = 'bg-gray-700 border border-cyan-500 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
+        let label = formatBuff(key, value);
+        if (key in state.nextLevelBuffs) label += ' (next)';
+        buffEl.innerHTML = `<span class="font-bold text-cyan-300">${label}</span>`;
+        buffsWrapper.appendChild(buffEl);
+    }
+    if (!hasBuffs) { buffsWrapper.innerHTML = `<p class="text-gray-500 italic text-sm">No temporary buffs active.</p>`; }
+    inventoryContainerEl.appendChild(buffsWrapper);
 }
 
 function renderHighScores() {
@@ -271,6 +310,7 @@ function handleLeftClick(e) {
     revealCell(row, col);
     renderGrid();
     checkWinCondition();
+    renderInventory();
 }
 
 function handleRightClick(e) {
@@ -340,6 +380,7 @@ function handleMineHit() {
         messageAreaEl.textContent = `Shields hit! ${state.shields + state.temporaryShields} remaining.`;
     }
     updateUI();
+    renderInventory();
 }
 
 function checkWinCondition() {
@@ -375,7 +416,12 @@ function placeExit() {
 function goToNextLevel() {
     state.level++;
     state.gold += state.level * 10;
+    state.activeBuffs = {
+        extraLife: state.activeBuffs.extraLife,
+        goldenGoose: state.activeBuffs.goldenGoose
+    };
     updateUI();
+    renderInventory();
     showInterLevelShop();
 }
 
@@ -529,6 +575,7 @@ function handleBuyItem() {
             state.goldInterval = setInterval(() => { state.gold++; updateUI(); }, 5000);
         }
         updateUI();
+        renderInventory();
         itemShopGoldEl.textContent = state.gold;
 
         document.querySelectorAll('.shop-item').forEach(el => {
