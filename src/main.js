@@ -1,164 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rogue Minesweeper</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto Mono', monospace;
-            background-color: #111827;
-            color: #E5E7EB;
-            overflow-y: auto; /* Allow scrolling for inventory on small screens */
-        }
-        .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
-        .game-grid {
-            display: grid;
-            border: 2px solid #4B5563;
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
-        }
-        .cell {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #374151;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.1s ease-in-out;
-            background-color: #4B5563;
-        }
-        .cell:hover {
-            background-color: #6B7280;
-        }
-        .cell.revealed {
-            background-color: #1F2937;
-            border-color: #4B5563;
-            cursor: default;
-        }
-        .cell.flagged {
-            background-color: #4B5563;
-            color: #FBBF24;
-        }
-        .cell.mine {
-            background-color: #EF4444;
-            color: #111827;
-        }
-        .cell.exit {
-            background-color: #4ade80;
-            color: #111827;
-            animation: pulse-exit 2s infinite;
-        }
-        @keyframes pulse-exit {
-            0%, 100% { box-shadow: 0 0 10px #4ade80; }
-            50% { box-shadow: 0 0 20px #86efac; }
-        }
-        .text-c-1 { color: #3B82F6; }
-        .text-c-2 { color: #22C55E; }
-        .text-c-3 { color: #EF4444; }
-        .text-c-4 { color: #A855F7; }
-        .text-c-5 { color: #EC4899; }
-        .text-c-6 { color: #14B8A6; }
-        .text-c-7 { color: #F59E0B; }
-        .text-c-8 { color: #64748B; }
+import { permanentUpgrades } from './data/permanentUpgrades.js';
+import { temporaryItems } from './data/temporaryItems.js';
 
-        /* Modal and Shop styles */
-        .modal { transition: opacity 0.25s ease; }
-        .modal-active { opacity: 1; pointer-events: auto; }
-        .modal-inactive { opacity: 0; pointer-events: none; }
-        .rarity-common { border-color: #6B7280; }
-        .rarity-uncommon { border-color: #22C55E; }
-        .rarity-rare { border-color: #3B82F6; }
-        .rarity-legendary { border-color: #FBBF24; }
+let state = {};
+const playerStats = {
+    maxShields: 3,
+    startingGold: 0,
+    firstClickSafety: false,
+};
 
-        .shop-item {
-            cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-        .shop-item.selected {
-            transform: scale(1.05);
-            border-color: #67e8f9 !important; /* Bright cyan to show selection */
-            box-shadow: 0 0 15px rgba(103, 232, 249, 0.5);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 640px) { .cell { width: 28px; height: 28px; font-size: 0.8rem; } }
-        @media (max-width: 480px) {
-            .cell { width: 24px; height: 24px; }
-            .status-bar > div { font-size: 0.8rem; padding: 0.25rem 0.5rem; }
-        }
-    </style>
-</head>
-<body class="flex items-center justify-center min-h-screen py-4">
-
-    <div id="game-container" class="flex flex-col items-center p-4 space-y-4 w-full max-w-7xl">
-        <h1 class="text-4xl md:text-5xl font-orbitron text-green-400 tracking-widest">ROGUE MINESWEEPER</h1>
-
-        <div id="status-bar" class="status-bar w-full max-w-4xl grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-lg">
-            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">LVL: <span id="level">1</span></div>
-            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">SHIELDS: <span id="shields">3</span></div>
-            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">MINES: <span id="mines-left">10</span></div>
-            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">GOLD: <span id="gold">0</span></div>
-        </div>
-
-        <div id="game-grid" class="game-grid bg-gray-900 p-2 rounded-lg"></div>
-
-        <div id="message-area" class="text-xl h-8 text-yellow-400"></div>
-
-        <div id="inventory-container" class="w-full max-w-4xl mt-2"></div>
-
-        <div id="high-scores-container" class="w-full max-w-4xl mt-4"></div>
-    </div>
-
-    <!-- Permanent Upgrade Shop Modal -->
-    <div id="upgrade-shop" class="modal modal-inactive fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-800 border-2 border-green-400 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl shadow-green-500/20 transform transition-all">
-            <h2 class="text-3xl md:text-4xl font-orbitron text-center mb-2 text-green-400">RUN OVER</h2>
-            <p class="text-center text-gray-400 mb-6">Spend your gold on permanent upgrades.</p>
-            <div class="text-center mb-6">
-                <p class="text-2xl text-yellow-400">Total Gold: <span id="shop-gold">0</span></p>
-                <p class="text-lg text-gray-300">Highest Level Reached: <span id="highest-level">1</span></p>
-            </div>
-            <div id="upgrades-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-white"></div>
-            <div class="text-center mt-8">
-                <button id="start-new-run" class="bg-green-500 hover:bg-green-600 text-gray-900 font-bold py-3 px-8 rounded-lg text-xl transition-transform transform hover:scale-105">START NEW RUN</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Inter-level Item Shop Modal -->
-    <div id="inter-level-shop" class="modal modal-inactive fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
-        <div class="bg-gray-800 border-2 border-cyan-400 rounded-2xl p-6 md:p-8 max-w-4xl w-full shadow-2xl shadow-cyan-500/20 transform transition-all">
-            <h2 class="text-3xl md:text-4xl font-orbitron text-center mb-2 text-cyan-400">LEVEL CLEARED</h2>
-            <p class="text-center text-gray-400 mb-6">Purchase an item for the next level. Your gold: <span id="item-shop-gold" class="text-yellow-400"></span></p>
-            <div id="item-shop-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white"></div>
-            <div class="text-center mt-8">
-                <button id="continue-to-next-level" class="bg-cyan-500 hover:bg-cyan-600 text-gray-900 font-bold py-3 px-8 rounded-lg text-xl transition-transform transform hover:scale-105">CONTINUE</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let state = {};
-        const playerStats = {
-            maxShields: 3,
-            startingGold: 0,
-            firstClickSafety: false,
-        };
-    </script>
-    <script src="data/permanentUpgrades.js"></script>
-    <script src="data/temporaryItems.js"></script>
-
-    <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- DOM ELEMENTS ---
             const gridElement = document.getElementById('game-grid');
@@ -600,9 +449,9 @@
 
                 if (state.gold >= cost) {
                     if (upgrade.level !== undefined && upgrade.level < upgrade.maxLevel) {
-                        state.gold -= cost; upgrade.level++; upgrade.apply();
+                        state.gold -= cost; upgrade.level++; upgrade.apply(playerStats);
                     } else if (upgrade.unlocked !== undefined && !upgrade.unlocked) {
-                        state.gold -= cost; upgrade.unlocked = true; upgrade.apply();
+                        state.gold -= cost; upgrade.unlocked = true; upgrade.apply(playerStats);
                     }
                     shopGoldEl.textContent = state.gold;
                     populatePermanentUpgrades();
@@ -676,7 +525,7 @@
                 const item = selectedShopItem;
                 if (state.gold >= item.cost) {
                     state.gold -= item.cost;
-                    item.apply();
+                    item.apply(state, playerStats);
                     if (item.id === 'l3' && !state.goldInterval) { // Golden Goose
                         state.goldInterval = setInterval(() => { state.gold++; updateUI(); }, 5000);
                     }
@@ -729,4 +578,3 @@
         });
     </script>
 </body>
-</html>
