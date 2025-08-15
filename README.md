@@ -9,6 +9,7 @@ A browser-based roguelike twist on the classic Minesweeper game. Navigate progre
 - **Gold economy:** Earn gold from safe tiles and use it to purchase upgrades or items.
 - **Permanent upgrade shop:** Spend end-of-run gold on upgrades like extra shields or starting gold to power up future runs.
 - **Inter-level item shop:** Buy temporary items with rarity-based loot to aid in the next level.
+- **Flag cycle:** Right-click tiles to cycle between a flag, a question mark for uncertain tiles, and a blank state.
 - **Responsive design:** Built with Tailwind CSS and custom fonts for a retro sci-fi feel.
 
 ## Getting Started

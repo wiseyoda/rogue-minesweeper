@@ -38,6 +38,10 @@ body {
     background-color: #4B5563;
     color: #FBBF24;
 }
+.cell.question {
+    background-color: #4B5563;
+    color: #93C5FD;
+}
 .cell.mine {
     background-color: #EF4444;
     color: #111827;
