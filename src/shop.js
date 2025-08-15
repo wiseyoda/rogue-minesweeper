@@ -93,6 +93,10 @@ function populateItemShop() {
         itemEl.className = `shop-item bg-gray-700 p-4 rounded-lg flex flex-col justify-between border-2 ${item.rarityClass}`;
         itemEl.dataset.itemId = item.id;
         itemEl.dataset.itemRarity = item.rarity;
+        // Store cost so it can be referenced later when resetting buttons
+        // after a purchase. Without this, non-selected items lose their cost
+        // information and display "BUY (undefined G)".
+        itemEl.dataset.itemCost = item.cost;
 
         itemEl.innerHTML = `
             <div>
