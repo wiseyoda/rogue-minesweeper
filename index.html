@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rogue Minesweeper</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #111827;
+            color: #E5E7EB;
+            overflow-y: auto; /* Allow scrolling for inventory on small screens */
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .game-grid {
+            display: grid;
+            border: 2px solid #4B5563;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+        }
+        .cell {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s ease-in-out;
+            background-color: #4B5563;
+        }
+        .cell:hover {
+            background-color: #6B7280;
+        }
+        .cell.revealed {
+            background-color: #1F2937;
+            border-color: #4B5563;
+            cursor: default;
+        }
+        .cell.flagged {
+            background-color: #4B5563;
+            color: #FBBF24;
+        }
+        .cell.mine {
+            background-color: #EF4444;
+            color: #111827;
+        }
+        .cell.exit {
+            background-color: #4ade80;
+            color: #111827;
+            animation: pulse-exit 2s infinite;
+        }
+        @keyframes pulse-exit {
+            0%, 100% { box-shadow: 0 0 10px #4ade80; }
+            50% { box-shadow: 0 0 20px #86efac; }
+        }
+        .text-c-1 { color: #3B82F6; }
+        .text-c-2 { color: #22C55E; }
+        .text-c-3 { color: #EF4444; }
+        .text-c-4 { color: #A855F7; }
+        .text-c-5 { color: #EC4899; }
+        .text-c-6 { color: #14B8A6; }
+        .text-c-7 { color: #F59E0B; }
+        .text-c-8 { color: #64748B; }
+
+        /* Modal and Shop styles */
+        .modal { transition: opacity 0.25s ease; }
+        .modal-active { opacity: 1; pointer-events: auto; }
+        .modal-inactive { opacity: 0; pointer-events: none; }
+        .rarity-common { border-color: #6B7280; }
+        .rarity-uncommon { border-color: #22C55E; }
+        .rarity-rare { border-color: #3B82F6; }
+        .rarity-legendary { border-color: #FBBF24; }
+
+        .shop-item {
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .shop-item.selected {
+            transform: scale(1.05);
+            border-color: #67e8f9 !important; /* Bright cyan to show selection */
+            box-shadow: 0 0 15px rgba(103, 232, 249, 0.5);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) { .cell { width: 28px; height: 28px; font-size: 0.8rem; } }
+        @media (max-width: 480px) {
+            .cell { width: 24px; height: 24px; }
+            .status-bar > div { font-size: 0.8rem; padding: 0.25rem 0.5rem; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen py-4">
+
+    <div id="game-container" class="flex flex-col items-center p-4 space-y-4 w-full max-w-7xl">
+        <h1 class="text-4xl md:text-5xl font-orbitron text-green-400 tracking-widest">ROGUE MINESWEEPER</h1>
+
+        <div id="status-bar" class="status-bar w-full max-w-4xl grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-lg">
+            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">LVL: <span id="level">1</span></div>
+            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">SHIELDS: <span id="shields">3</span></div>
+            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">MINES: <span id="mines-left">10</span></div>
+            <div class="bg-gray-800 p-2 rounded-lg border border-gray-700">GOLD: <span id="gold">0</span></div>
+        </div>
+
+        <div id="game-grid" class="game-grid bg-gray-900 p-2 rounded-lg"></div>
+
+        <div id="message-area" class="text-xl h-8 text-yellow-400"></div>
+
+        <div id="inventory-container" class="w-full max-w-4xl mt-2"></div>
+
+        <div id="high-scores-container" class="w-full max-w-4xl mt-4"></div>
+    </div>
+
+    <!-- Permanent Upgrade Shop Modal -->
+    <div id="upgrade-shop" class="modal modal-inactive fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 border-2 border-green-400 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl shadow-green-500/20 transform transition-all">
+            <h2 class="text-3xl md:text-4xl font-orbitron text-center mb-2 text-green-400">RUN OVER</h2>
+            <p class="text-center text-gray-400 mb-6">Spend your gold on permanent upgrades.</p>
+            <div class="text-center mb-6">
+                <p class="text-2xl text-yellow-400">Total Gold: <span id="shop-gold">0</span></p>
+                <p class="text-lg text-gray-300">Highest Level Reached: <span id="highest-level">1</span></p>
+            </div>
+            <div id="upgrades-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-white"></div>
+            <div class="text-center mt-8">
+                <button id="start-new-run" class="bg-green-500 hover:bg-green-600 text-gray-900 font-bold py-3 px-8 rounded-lg text-xl transition-transform transform hover:scale-105">START NEW RUN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inter-level Item Shop Modal -->
+    <div id="inter-level-shop" class="modal modal-inactive fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
+        <div class="bg-gray-800 border-2 border-cyan-400 rounded-2xl p-6 md:p-8 max-w-4xl w-full shadow-2xl shadow-cyan-500/20 transform transition-all">
+            <h2 class="text-3xl md:text-4xl font-orbitron text-center mb-2 text-cyan-400">LEVEL CLEARED</h2>
+            <p class="text-center text-gray-400 mb-6">Purchase an item for the next level. Your gold: <span id="item-shop-gold" class="text-yellow-400"></span></p>
+            <div id="item-shop-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white"></div>
+            <div class="text-center mt-8">
+                <button id="continue-to-next-level" class="bg-cyan-500 hover:bg-cyan-600 text-gray-900 font-bold py-3 px-8 rounded-lg text-xl transition-transform transform hover:scale-105">CONTINUE</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM ELEMENTS ---
+            const gridElement = document.getElementById('game-grid');
+            const levelEl = document.getElementById('level');
+            const shieldsEl = document.getElementById('shields');
+            const minesLeftEl = document.getElementById('mines-left');
+            const goldEl = document.getElementById('gold');
+            const messageAreaEl = document.getElementById('message-area');
+            const inventoryContainerEl = document.getElementById('inventory-container');
+            const highScoresContainerEl = document.getElementById('high-scores-container');
+
+            const upgradeShopEl = document.getElementById('upgrade-shop');
+            const upgradesContainerEl = document.getElementById('upgrades-container');
+            const shopGoldEl = document.getElementById('shop-gold');
+            const highestLevelEl = document.getElementById('highest-level');
+            const startNewRunBtn = document.getElementById('start-new-run');
+
+            const interLevelShopEl = document.getElementById('inter-level-shop');
+            const itemShopContainerEl = document.getElementById('item-shop-container');
+            const itemShopGoldEl = document.getElementById('item-shop-gold');
+            const continueBtn = document.getElementById('continue-to-next-level');
+
+            // --- GAME STATE ---
+            let state = {};
+            let selectedShopItem = null;
+
+            // --- PERSISTENT GAME STATS ---
+             const gameStats = {
+                highestLevelOverall: 1,
+                maxGoldRun: 0,
+            };
+
+            // --- PERMANENT PLAYER STATS ---
+            const playerStats = {
+                maxShields: 3,
+                startingGold: 0,
+                firstClickSafety: false,
+            };
+
+            // --- PERMANENT UPGRADE DEFINITIONS ---
+            const permanentUpgrades = {
+                maxShields: { name: 'Reinforced Hull', description: 'Increase max shields by 1.', baseCost: 50, costIncrease: 2, level: 0, maxLevel: 10, apply: () => playerStats.maxShields++ },
+                startingGold: { name: 'Gold Scanner', description: 'Start each run with extra gold.', baseCost: 100, costIncrease: 1.8, level: 0, maxLevel: 5, apply: () => playerStats.startingGold += 25 },
+                firstClickSafety: { name: 'Mine Deflector', description: 'Your first click on a mine each level will flag it instead.', baseCost: 750, unlocked: false, apply: () => playerStats.firstClickSafety = true }
+            };
+
+            // --- TEMPORARY ITEM DEFINITIONS ---
+            const temporaryItems = {
+                common: [
+                    { id: 'c1', name: 'Minor Shield Patch', description: 'Instantly regain 1 shield.', cost: 30, apply: () => { if(state.shields < playerStats.maxShields) state.shields++; } },
+                    { id: 'c2', name: 'Small Gold Cache', description: 'Instantly gain 25 gold.', cost: 0, apply: () => state.gold += 25 },
+                    { id: 'c3', name: 'Steady Hand', description: 'The next mine you hit will not consume a shield.', cost: 40, apply: () => state.nextLevelBuffs.steadyHand = true },
+                    { id: 'c4', name: 'Basic Goggles', description: 'Reveals 1 random safe tile at the start of the next level.', cost: 20, apply: () => state.nextLevelBuffs.revealTiles = (state.nextLevelBuffs.revealTiles || 0) + 1 },
+                    { id: 'c5', name: 'Scrap Metal', description: 'Gain 1 gold for every 10 tiles revealed on the next level.', cost: 15, apply: () => state.nextLevelBuffs.scrapMetal = true },
+                ],
+                uncommon: [
+                    { id: 'u1', name: 'Shield Plating', description: 'Gain +1 temporary shield for the next level.', cost: 60, apply: () => state.nextLevelBuffs.temporaryShields = (state.nextLevelBuffs.temporaryShields || 0) + 1 },
+                    { id: 'u2', name: 'Gold Magnet', description: 'Double all gold earned from tiles on the next level.', cost: 50, apply: () => state.nextLevelBuffs.goldMagnet = true },
+                    { id: 'u3', name: 'Bomb Squad', description: 'Automatically flags 2 random mines at the start of the next level.', cost: 75, apply: () => state.nextLevelBuffs.bombSquad = (state.nextLevelBuffs.bombSquad || 0) + 2 },
+                    { id: 'u4', name: 'Advanced Goggles', description: 'Reveals 3 random safe tiles at the start of the next level.', cost: 50, apply: () => state.nextLevelBuffs.revealTiles = (state.nextLevelBuffs.revealTiles || 0) + 3 },
+                    { id: 'u5', name: 'Shield Battery', description: 'If you complete the next level without taking damage, gain 1 shield.', cost: 80, apply: () => state.nextLevelBuffs.shieldBattery = true },
+                ],
+                rare: [
+                    { id: 'r1', name: 'Full Shield Repair', description: 'Restore all missing shields.', cost: 150, apply: () => state.shields = playerStats.maxShields },
+                    { id: 'r2', name: 'Forcefield', description: 'Become immune to mine damage for the next 10 clicks.', cost: 120, apply: () => state.nextLevelBuffs.forcefield = (state.nextLevelBuffs.forcefield || 0) + 10 },
+                    { id: 'r3', name: 'Master Goggles', description: "Reveals all '0' tiles at the start of the next level.", cost: 100, apply: () => state.nextLevelBuffs.masterGoggles = true },
+                    { id: 'r4', name: 'Elite Bomb Squad', description: 'Automatically flags 25% of all mines at the next level.', cost: 200, apply: () => state.nextLevelBuffs.eliteBombSquad = true },
+                ],
+                legendary: [
+                    { id: 'l1', name: 'Extra Life', description: 'The next time you would lose your last shield, it is restored to full instead.', cost: 400, apply: () => state.activeBuffs.extraLife = true }, // This is a run-long buff, applied instantly
+                    { id: 'l2', name: 'Mine Neutralizer', description: 'Removes 10% of the mines from the next level.', cost: 300, apply: () => state.nextLevelBuffs.mineNeutralizer = true },
+                    { id: 'l3', name: 'Golden Goose', description: 'Permanently gain 1 gold every 5 seconds for the rest of the run.', cost: 350, apply: () => state.activeBuffs.goldenGoose = true }, // Run-long buff
+                ]
+            };
+
+
+            // --- CORE GAME LOGIC ---
+
+            function initNewRun() {
+                state = {
+                    level: 1, shields: playerStats.maxShields, gold: playerStats.startingGold,
+                    temporaryShields: 0, gameOver: false, grid: [], rows: 0, cols: 0, mineCount: 0,
+                    revealedCount: 0, flagsPlaced: 0, activeBuffs: {}, nextLevelBuffs: {},
+                    damageTakenThisLevel: false, isFirstClick: true,
+                };
+                if (state.goldInterval) clearInterval(state.goldInterval);
+                startLevel();
+                updateUI();
+                renderInventory();
+                renderHighScores();
+                upgradeShopEl.classList.add('modal-inactive');
+            }
+
+            function startLevel() {
+                interLevelShopEl.classList.remove('modal-active');
+                interLevelShopEl.classList.add('modal-inactive');
+
+                state.revealedCount = 0; state.flagsPlaced = 0; state.gameOver = false;
+                state.damageTakenThisLevel = false; state.isFirstClick = true;
+                state.temporaryShields = 0; // Reset temp shields
+
+                // Carry over run-long buffs and apply next-level buffs
+                const runLongBuffs = {
+                    extraLife: state.activeBuffs.extraLife,
+                    goldenGoose: state.activeBuffs.goldenGoose
+                };
+                state.activeBuffs = { ...state.nextLevelBuffs, ...runLongBuffs };
+                state.nextLevelBuffs = {};
+
+                // Apply temporary shields from buffs
+                if (state.activeBuffs.temporaryShields) {
+                    state.temporaryShields = state.activeBuffs.temporaryShields;
+                    delete state.activeBuffs.temporaryShields;
+                }
+
+                state.rows = Math.min(8 + state.level, 20);
+                state.cols = Math.min(8 + state.level, 30);
+                state.mineCount = Math.min(5 + Math.floor(state.level * 2.5), Math.floor(state.rows * state.cols * 0.3));
+
+                if (state.activeBuffs.mineNeutralizer) {
+                    state.mineCount = Math.floor(state.mineCount * 0.9);
+                    delete state.activeBuffs.mineNeutralizer;
+                }
+
+                messageAreaEl.textContent = `Level ${state.level}: Find the exit!`;
+
+                createGrid();
+                applyStartOfLevelBuffs();
+                renderGrid();
+                updateUI();
+            }
+
+            function applyStartOfLevelBuffs() {
+                if (state.activeBuffs.revealTiles) {
+                    let toReveal = state.activeBuffs.revealTiles;
+                    for (let i = 0; i < 1000 && toReveal > 0; i++) {
+                        const r = Math.floor(Math.random() * state.rows);
+                        const c = Math.floor(Math.random() * state.cols);
+                        if (!state.grid[r][c].isMine && !state.grid[r][c].isRevealed) {
+                            revealCell(r, c, true); toReveal--;
+                        }
+                    }
+                    delete state.activeBuffs.revealTiles;
+                }
+                if (state.activeBuffs.masterGoggles) {
+                    for (let r = 0; r < state.rows; r++) {
+                        for (let c = 0; c < state.cols; c++) {
+                            if (state.grid[r][c].adjacentMines === 0 && !state.grid[r][c].isMine) revealCell(r, c);
+                        }
+                    }
+                    delete state.activeBuffs.masterGoggles;
+                }
+                if (state.activeBuffs.bombSquad) {
+                    let toFlag = state.activeBuffs.bombSquad;
+                    for (let i = 0; i < 1000 && toFlag > 0; i++) {
+                        const r = Math.floor(Math.random() * state.rows);
+                        const c = Math.floor(Math.random() * state.cols);
+                        if (state.grid[r][c].isMine && !state.grid[r][c].isFlagged) {
+                            state.grid[r][c].isFlagged = true; state.flagsPlaced++; toFlag--;
+                        }
+                    }
+                    delete state.activeBuffs.bombSquad;
+                }
+                 if (state.activeBuffs.eliteBombSquad) {
+                    let minesToFlag = Math.floor(state.mineCount * 0.25);
+                    for (let r = 0; r < state.rows && minesToFlag > 0; r++) {
+                        for (let c = 0; c < state.cols && minesToFlag > 0; c++) {
+                            if (state.grid[r][c].isMine && !state.grid[r][c].isFlagged) {
+                                state.grid[r][c].isFlagged = true; state.flagsPlaced++; minesToFlag--;
+                            }
+                        }
+                    }
+                    delete state.activeBuffs.eliteBombSquad;
+                }
+            }
+
+            function createGrid() {
+                state.grid = Array(state.rows).fill(null).map(() => Array(state.cols).fill(null).map(() => ({ isMine: false, isRevealed: false, isFlagged: false, isExit: false, adjacentMines: 0 })));
+                let minesToPlace = state.mineCount;
+                while (minesToPlace > 0) {
+                    const r = Math.floor(Math.random() * state.rows);
+                    const c = Math.floor(Math.random() * state.cols);
+                    if (!state.grid[r][c].isMine) { state.grid[r][c].isMine = true; minesToPlace--; }
+                }
+                for (let r = 0; r < state.rows; r++) {
+                    for (let c = 0; c < state.cols; c++) {
+                        if (state.grid[r][c].isMine) continue;
+                        let count = 0;
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (dr === 0 && dc === 0) continue;
+                                const nr = r + dr; const nc = c + dc;
+                                if (nr >= 0 && nr < state.rows && nc >= 0 && nc < state.cols && state.grid[nr][nc].isMine) count++;
+                            }
+                        }
+                        state.grid[r][c].adjacentMines = count;
+                    }
+                }
+            }
+
+            function renderGrid() {
+                gridElement.innerHTML = '';
+                gridElement.style.gridTemplateColumns = `repeat(${state.cols}, auto)`;
+                for (let r = 0; r < state.rows; r++) {
+                    for (let c = 0; c < state.cols; c++) {
+                        const cellData = state.grid[r][c];
+                        const cellEl = document.createElement('div');
+                        cellEl.className = 'cell';
+                        cellEl.dataset.row = r; cellEl.dataset.col = c;
+                        if (cellData.isFlagged) { cellEl.classList.add('flagged'); cellEl.textContent = '⚑'; }
+                        else if (cellData.isRevealed) {
+                            cellEl.classList.add('revealed');
+                            if (cellData.isMine) { cellEl.classList.add('mine'); cellEl.textContent = '✸'; }
+                            else if (cellData.isExit) { cellEl.classList.add('exit'); cellEl.textContent = '▼'; }
+                            else if (cellData.adjacentMines > 0) {
+                                cellEl.textContent = cellData.adjacentMines;
+                                cellEl.classList.add(`text-c-${cellData.adjacentMines}`);
+                            }
+                        }
+                        gridElement.appendChild(cellEl);
+                    }
+                }
+            }
+
+            function updateUI() {
+                levelEl.textContent = state.level;
+                shieldsEl.innerHTML = '❤️'.repeat(state.shields) + '💙'.repeat(state.temporaryShields);
+                minesLeftEl.textContent = state.mineCount - state.flagsPlaced;
+                goldEl.textContent = state.gold;
+            }
+
+            function renderInventory() {
+                inventoryContainerEl.innerHTML = '';
+                const title = document.createElement('h3');
+                title.className = 'text-lg font-orbitron text-center text-gray-400 mb-2';
+                title.textContent = 'PERMANENT UPGRADES';
+                inventoryContainerEl.appendChild(title);
+                const itemsWrapper = document.createElement('div');
+                itemsWrapper.className = 'flex flex-wrap justify-center gap-2 p-2 bg-gray-900 rounded-lg border border-gray-700 min-h-[40px] items-center';
+                let hasUpgrades = false;
+                for (const key in permanentUpgrades) {
+                    const upgrade = permanentUpgrades[key];
+                    if ((upgrade.level && upgrade.level > 0) || (upgrade.unlocked)) {
+                        hasUpgrades = true;
+                        const itemEl = document.createElement('div');
+                        itemEl.className = 'bg-gray-700 border border-green-500 rounded-md py-1 px-3 text-xs md:text-sm shadow-md';
+                        let text = `<span class="font-bold text-green-300">${upgrade.name}</span>`;
+                        if(upgrade.level) text += `: Lvl ${upgrade.level}`;
+                        itemEl.innerHTML = text;
+                        itemsWrapper.appendChild(itemEl);
+                    }
+                }
+                if (!hasUpgrades) { itemsWrapper.innerHTML = `<p class="text-gray-500 italic text-sm">No permanent upgrades active.</p>`; }
+                inventoryContainerEl.appendChild(itemsWrapper);
+            }
+
+            function renderHighScores() {
+                highScoresContainerEl.innerHTML = `
+                    <h3 class="text-lg font-orbitron text-center text-gray-400 mb-2">RUN BESTS</h3>
+                    <div class="flex justify-center gap-4 p-2 bg-gray-900 rounded-lg border border-gray-700">
+                        <p>Highest Level: <span class="font-bold text-white">${gameStats.highestLevelOverall}</span></p>
+                        <p>Max Gold: <span class="font-bold text-yellow-400">${gameStats.maxGoldRun}</span></p>
+                    </div>
+                `;
+            }
+
+            // --- EVENT HANDLERS ---
+            gridElement.addEventListener('click', handleLeftClick);
+            gridElement.addEventListener('contextmenu', handleRightClick);
+            startNewRunBtn.addEventListener('click', initNewRun);
+            continueBtn.addEventListener('click', startLevel);
+
+            function handleLeftClick(e) {
+                e.preventDefault();
+                if (state.gameOver || interLevelShopEl.classList.contains('modal-active')) return;
+                const cellEl = e.target.closest('.cell');
+                if (!cellEl) return;
+                const row = parseInt(cellEl.dataset.row);
+                const col = parseInt(cellEl.dataset.col);
+                const cellData = state.grid[row][col];
+
+                if (state.isFirstClick) {
+                    state.isFirstClick = false;
+                    if (playerStats.firstClickSafety && cellData.isMine) {
+                        messageAreaEl.textContent = "Mine Deflector activated!";
+                        cellData.isFlagged = true; state.flagsPlaced++;
+                        updateUI(); renderGrid(); return;
+                    }
+                }
+
+                if (cellData.isExit) { goToNextLevel(); return; }
+                if (cellData.isRevealed || cellData.isFlagged) return;
+
+                if (state.activeBuffs.forcefield > 0) {
+                    state.activeBuffs.forcefield--;
+                    if (cellData.isMine) {
+                        messageAreaEl.textContent = "Forcefield absorbed the blast!";
+                        cellData.isFlagged = true; state.flagsPlaced++;
+                        updateUI(); renderGrid(); checkWinCondition(); return;
+                    }
+                }
+                revealCell(row, col);
+                renderGrid();
+                checkWinCondition();
+            }
+
+            function handleRightClick(e) {
+                e.preventDefault();
+                if (state.gameOver || interLevelShopEl.classList.contains('modal-active')) return;
+                const cellEl = e.target.closest('.cell');
+                if (!cellEl) return;
+                const row = parseInt(cellEl.dataset.row);
+                const col = parseInt(cellEl.dataset.col);
+                if (state.grid[row][col].isRevealed) return;
+                state.grid[row][col].isFlagged = !state.grid[row][col].isFlagged;
+                state.flagsPlaced += state.grid[row][col].isFlagged ? 1 : -1;
+                renderGrid(); updateUI();
+            }
+
+            function revealCell(row, col, silent = false) {
+                const cellData = state.grid[row][col];
+                if (cellData.isRevealed || cellData.isFlagged) return;
+                cellData.isRevealed = true;
+                state.revealedCount++;
+
+                if (cellData.isMine) { handleMineHit(); }
+                else {
+                    let goldGained = 1;
+                    if (state.activeBuffs.goldMagnet) goldGained *= 2;
+                    if (state.activeBuffs.scrapMetal && state.revealedCount % 10 === 0) goldGained++;
+                    state.gold += goldGained;
+                    if (cellData.adjacentMines === 0 && !silent) floodFill(row, col);
+                }
+                updateUI();
+            }
+
+            function floodFill(row, col) {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue;
+                        const nr = row + dr; const nc = col + dc;
+                        if (nr >= 0 && nr < state.rows && nc >= 0 && nc < state.cols) {
+                            if (!state.grid[nr][nc].isRevealed && !state.grid[nr][nc].isFlagged) revealCell(nr, nc);
+                        }
+                    }
+                }
+            }
+
+            function handleMineHit() {
+                if (state.activeBuffs.steadyHand) {
+                    delete state.activeBuffs.steadyHand;
+                    messageAreaEl.textContent = "Steady Hand saved you!"; return;
+                }
+
+                state.damageTakenThisLevel = true;
+                if (state.temporaryShields > 0) {
+                    state.temporaryShields--;
+                } else {
+                    state.shields--;
+                }
+
+                if (state.shields < 0) {
+                    if (state.activeBuffs.extraLife) {
+                        delete state.activeBuffs.extraLife;
+                        state.shields = playerStats.maxShields;
+                        messageAreaEl.textContent = "Extra Life activated!";
+                    } else {
+                        state.shields = 0; endRun();
+                    }
+                } else if (state.shields + state.temporaryShields > 0) {
+                    messageAreaEl.textContent = `Shields hit! ${state.shields + state.temporaryShields} remaining.`;
+                }
+                updateUI();
+            }
+
+            function checkWinCondition() {
+                const safeCells = state.rows * state.cols - state.mineCount;
+                if (state.revealedCount >= safeCells) {
+                    messageAreaEl.textContent = "All clear! The exit is revealed.";
+                    if (state.activeBuffs.shieldBattery && !state.damageTakenThisLevel) {
+                        if(state.shields < playerStats.maxShields) state.shields++;
+                        delete state.activeBuffs.shieldBattery;
+                    }
+                    placeExit();
+                    renderGrid();
+                }
+            }
+
+            function placeExit() {
+                for(let r = state.rows - 1; r >= 0; r--) {
+                    for(let c = state.cols - 1; c >= 0; c--) {
+                        if(state.grid[r][c].isRevealed && !state.grid[r][c].isMine && state.grid[r][c].adjacentMines === 0) {
+                            state.grid[r][c].isExit = true; return;
+                        }
+                    }
+                }
+                for(let r = 0; r < state.rows; r++) {
+                    for(let c = 0; c < state.cols; c++) {
+                        if(state.grid[r][c].isRevealed && !state.grid[r][c].isMine) {
+                            state.grid[r][c].isExit = true; return;
+                        }
+                    }
+                }
+            }
+
+            function goToNextLevel() {
+                state.level++;
+                state.gold += state.level * 10;
+                updateUI();
+                showInterLevelShop();
+            }
+
+            function endRun() {
+                state.gameOver = true;
+                if (state.goldInterval) clearInterval(state.goldInterval);
+
+                // Update high scores
+                if (state.level > gameStats.highestLevelOverall) gameStats.highestLevelOverall = state.level;
+                if (state.gold > gameStats.maxGoldRun) gameStats.maxGoldRun = state.gold;
+                renderHighScores();
+
+                messageAreaEl.textContent = "Run over! Shields depleted.";
+                for (let r = 0; r < state.rows; r++) {
+                    for (let c = 0; c < state.cols; c++) {
+                        if (state.grid[r][c].isMine) state.grid[r][c].isRevealed = true;
+                    }
+                }
+                renderGrid();
+
+                setTimeout(showPermanentUpgradeShop, 2000);
+            }
+
+            // --- SHOP LOGIC ---
+
+            function showPermanentUpgradeShop() {
+                shopGoldEl.textContent = state.gold;
+                highestLevelEl.textContent = state.level;
+                populatePermanentUpgrades();
+                upgradeShopEl.classList.remove('modal-inactive');
+                upgradeShopEl.classList.add('modal-active');
+            }
+
+            function populatePermanentUpgrades() {
+                upgradesContainerEl.innerHTML = '';
+                for (const key in permanentUpgrades) {
+                    const upgrade = permanentUpgrades[key];
+                    const upgradeEl = document.createElement('div');
+                    upgradeEl.className = 'bg-gray-700 p-4 rounded-lg flex flex-col justify-between border border-gray-600';
+                    let buttonHTML = '';
+
+                    if (upgrade.level !== undefined) { // Leveled upgrade
+                        const cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.costIncrease, upgrade.level));
+                        const canAfford = state.gold >= cost;
+                        const isMaxLevel = upgrade.level >= upgrade.maxLevel;
+                        if (isMaxLevel) {
+                            buttonHTML = `<button disabled class="mt-2 w-full bg-gray-500 text-gray-300 font-bold py-2 px-4 rounded cursor-not-allowed">MAX LEVEL</button>`;
+                        } else {
+                            buttonHTML = `<button data-upgrade-key="${key}" ${!canAfford ? 'disabled' : ''} class="buy-upgrade-btn mt-2 w-full ${canAfford ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-500 cursor-not-allowed'} text-gray-900 font-bold py-2 px-4 rounded transition-colors">BUY (${cost} G)</button>`;
+                        }
+                        upgradeEl.innerHTML = `<div><h3 class="text-xl font-bold text-green-300">${upgrade.name}</h3><p class="text-gray-400 text-sm">${upgrade.description}</p><p class="text-md mt-2">Level: <span class="font-bold text-white">${upgrade.level} / ${upgrade.maxLevel}</span></p></div>${buttonHTML}`;
+                    } else { // One-time purchase upgrade
+                        const canAfford = state.gold >= upgrade.baseCost;
+                        if (upgrade.unlocked) {
+                             buttonHTML = `<button disabled class="mt-2 w-full bg-green-700 text-gray-300 font-bold py-2 px-4 rounded cursor-not-allowed">PURCHASED</button>`;
+                        } else {
+                            buttonHTML = `<button data-upgrade-key="${key}" ${!canAfford ? 'disabled' : ''} class="buy-upgrade-btn mt-2 w-full ${canAfford ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-gray-500 cursor-not-allowed'} text-gray-900 font-bold py-2 px-4 rounded transition-colors">BUY (${upgrade.baseCost} G)</button>`;
+                        }
+                        upgradeEl.innerHTML = `<div><h3 class="text-xl font-bold text-green-300">${upgrade.name}</h3><p class="text-gray-400 text-sm">${upgrade.description}</p></div>${buttonHTML}`;
+                    }
+                    upgradesContainerEl.appendChild(upgradeEl);
+                }
+                document.querySelectorAll('.buy-upgrade-btn').forEach(btn => btn.addEventListener('click', handleBuyPermanentUpgrade));
+            }
+
+            function handleBuyPermanentUpgrade(e) {
+                const key = e.target.dataset.upgradeKey;
+                const upgrade = permanentUpgrades[key];
+                const cost = upgrade.level !== undefined ? Math.floor(upgrade.baseCost * Math.pow(upgrade.costIncrease, upgrade.level)) : upgrade.baseCost;
+
+                if (state.gold >= cost) {
+                    if (upgrade.level !== undefined && upgrade.level < upgrade.maxLevel) {
+                        state.gold -= cost; upgrade.level++; upgrade.apply();
+                    } else if (upgrade.unlocked !== undefined && !upgrade.unlocked) {
+                        state.gold -= cost; upgrade.unlocked = true; upgrade.apply();
+                    }
+                    shopGoldEl.textContent = state.gold;
+                    populatePermanentUpgrades();
+                    renderInventory();
+                }
+            }
+
+            function showInterLevelShop() {
+                selectedShopItem = null;
+                itemShopGoldEl.textContent = state.gold;
+                populateItemShop();
+                interLevelShopEl.classList.remove('modal-inactive');
+                interLevelShopEl.classList.add('modal-active');
+            }
+
+            function populateItemShop() {
+                itemShopContainerEl.innerHTML = '';
+                const items = getShopItems(3);
+                items.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = `shop-item bg-gray-700 p-4 rounded-lg flex flex-col justify-between border-2 ${item.rarityClass}`;
+                    itemEl.dataset.itemId = item.id;
+                    itemEl.dataset.itemRarity = item.rarity;
+
+                    itemEl.innerHTML = `
+                        <div>
+                            <h3 class="text-xl font-bold text-cyan-300">${item.name}</h3>
+                            <p class="text-gray-400 text-sm">${item.description}</p>
+                        </div>
+                        <button class="buy-item-btn mt-4 w-full bg-cyan-500 text-gray-900 font-bold py-2 px-4 rounded transition-colors">
+                            BUY (${item.cost} G)
+                        </button>`;
+                    itemShopContainerEl.appendChild(itemEl);
+                    itemEl.addEventListener('click', () => handleItemSelect(item, itemEl));
+                });
+            }
+
+            function handleItemSelect(item, itemEl) {
+                const currentlySelected = document.querySelector('.shop-item.selected');
+                if (currentlySelected) {
+                    currentlySelected.classList.remove('selected');
+                    currentlySelected.querySelector('.buy-item-btn').textContent = `BUY (${currentlySelected.dataset.itemCost} G)`;
+                }
+
+                if (selectedShopItem && selectedShopItem.id === item.id) {
+                    selectedShopItem = null; return;
+                }
+
+                selectedShopItem = item;
+                itemEl.classList.add('selected');
+                const button = itemEl.querySelector('.buy-item-btn');
+                itemEl.dataset.itemCost = item.cost;
+
+                const canAfford = state.gold >= item.cost;
+                if(canAfford) {
+                    button.textContent = 'PURCHASE';
+                    button.onclick = handleBuyItem;
+                    button.disabled = false;
+                    button.classList.remove('bg-gray-500', 'cursor-not-allowed', 'bg-cyan-500', 'hover:bg-cyan-600');
+                    button.classList.add('bg-green-500', 'hover:bg-green-600');
+                } else {
+                    button.textContent = `BUY (${item.cost} G)`;
+                    button.disabled = true;
+                    button.classList.add('bg-gray-500', 'cursor-not-allowed');
+                    button.classList.remove('bg-cyan-500', 'hover:bg-cyan-600', 'bg-green-500', 'hover:bg-green-600');
+                }
+            }
+
+            function handleBuyItem() {
+                if (!selectedShopItem) return;
+                const item = selectedShopItem;
+                if (state.gold >= item.cost) {
+                    state.gold -= item.cost;
+                    item.apply();
+                    if (item.id === 'l3' && !state.goldInterval) { // Golden Goose
+                        state.goldInterval = setInterval(() => { state.gold++; updateUI(); }, 5000);
+                    }
+                    updateUI();
+                    itemShopGoldEl.textContent = state.gold;
+
+                    document.querySelectorAll('.shop-item').forEach(el => {
+                        el.classList.remove('selected');
+                        el.style.cursor = 'default';
+                        el.onclick = null;
+                        const btn = el.querySelector('.buy-item-btn');
+                        btn.disabled = true;
+                        btn.classList.add('bg-gray-500', 'cursor-not-allowed');
+                        if(el.dataset.itemId === item.id){
+                           btn.textContent = 'PURCHASED';
+                           btn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                        } else {
+                           btn.textContent = `BUY (${el.dataset.itemCost} G)`;
+                           btn.classList.remove('bg-cyan-500', 'hover:bg-cyan-600');
+                        }
+                    });
+                }
+            }
+
+            function getShopItems(count) {
+                const weightedRarities = [
+                    ...Array(60).fill('common'), ...Array(25).fill('uncommon'),
+                    ...Array(10).fill('rare'), ...Array(5).fill('legendary')
+                ];
+                const selectedItems = new Set();
+                let attempts = 0;
+                while (selectedItems.size < count && attempts < 100) {
+                    const rarity = weightedRarities[Math.floor(Math.random() * weightedRarities.length)];
+                    const pool = temporaryItems[rarity];
+                    if (pool.length > 0) {
+                        const item = { ...pool[Math.floor(Math.random() * pool.length)] };
+                        item.rarity = rarity;
+                        item.rarityClass = `rarity-${rarity}`;
+                        if(![...selectedItems].some(s => s.id === item.id)) {
+                             selectedItems.add(item);
+                        }
+                    }
+                    attempts++;
+                }
+                return Array.from(selectedItems);
+            }
+
+            // --- INITIALIZATION ---
+            initNewRun();
+        });
+    </script>
+</body>
+</html>
