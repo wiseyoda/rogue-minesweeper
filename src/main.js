@@ -143,7 +143,20 @@ function applyStartOfLevelBuffs() {
 }
 
 function createGrid() {
-    state.grid = Array(state.rows).fill(null).map(() => Array(state.cols).fill(null).map(() => ({ isMine: false, isRevealed: false, isFlagged: false, isExit: false, adjacentMines: 0 })));
+    state.grid = Array(state.rows)
+        .fill(null)
+        .map(() =>
+            Array(state.cols)
+                .fill(null)
+                .map(() => ({
+                    isMine: false,
+                    isRevealed: false,
+                    isFlagged: false,
+                    isQuestion: false,
+                    isExit: false,
+                    adjacentMines: 0,
+                }))
+        );
     let minesToPlace = state.mineCount;
     while (minesToPlace > 0) {
         const r = Math.floor(Math.random() * state.rows);
@@ -176,6 +189,7 @@ function renderGrid() {
             cellEl.className = 'cell';
             cellEl.dataset.row = r; cellEl.dataset.col = c;
             if (cellData.isFlagged) { cellEl.classList.add('flagged'); cellEl.textContent = '⚑'; }
+            else if (cellData.isQuestion) { cellEl.classList.add('question'); cellEl.textContent = '?'; }
             else if (cellData.isRevealed) {
                 cellEl.classList.add('revealed');
                 if (cellData.isMine) { cellEl.classList.add('mine'); cellEl.textContent = '✸'; }
@@ -320,15 +334,26 @@ function handleRightClick(e) {
     if (!cellEl) return;
     const row = parseInt(cellEl.dataset.row);
     const col = parseInt(cellEl.dataset.col);
-    if (state.grid[row][col].isRevealed) return;
-    state.grid[row][col].isFlagged = !state.grid[row][col].isFlagged;
-    state.flagsPlaced += state.grid[row][col].isFlagged ? 1 : -1;
-    renderGrid(); updateUI();
+    const cell = state.grid[row][col];
+    if (cell.isRevealed) return;
+    if (!cell.isFlagged && !cell.isQuestion) {
+        cell.isFlagged = true;
+        state.flagsPlaced++;
+    } else if (cell.isFlagged) {
+        cell.isFlagged = false;
+        cell.isQuestion = true;
+        state.flagsPlaced--;
+    } else if (cell.isQuestion) {
+        cell.isQuestion = false;
+    }
+    renderGrid();
+    updateUI();
 }
 
 function revealCell(row, col, silent = false) {
     const cellData = state.grid[row][col];
     if (cellData.isRevealed || cellData.isFlagged) return;
+    if (cellData.isQuestion) cellData.isQuestion = false;
     cellData.isRevealed = true;
     state.revealedCount++;
 
