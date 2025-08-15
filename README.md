@@ -1,17 +1,17 @@
-# Rogue Minesweeper
+# Rogue Monster Sweeper
 
-A browser-based roguelike twist on the classic Minesweeper game. Navigate progressively larger minefields, collect gold, and buy upgrades to push deeper each run.
+A browser-based roguelike twist on the classic Minesweeper game. Explore progressively larger dungeons filled with hidden monsters, collect gold, and buy upgrades to push deeper each run.
 
 ## Features
 
-- **Progressive difficulty** – grid size and mine density grow with each level, challenging your deduction skills.
+- **Progressive difficulty** – grid size and monster density grow with each level, challenging your deduction skills.
 - **Lives and shields** – start with three hearts and burn through shields before losing lives.
 - **Gold economy** – earn gold from safe tiles and level completion to spend on upgrades and items.
 - **Permanent upgrade shop** – invest end-of-run gold on long-term upgrades like extra lives or starting gold.
 - **Inter-level item shop** – purchase temporary buffs between levels from a rarity-based item pool.
 - **Inventory & highscores** – track permanent upgrades, active buffs, highest level reached and max gold earned.
 - **Flag cycle** – right-click tiles to cycle between flag, question mark and blank states.
-- **Responsive design** – Tailwind CSS and custom fonts provide a retro sci-fi feel.
+- **Responsive design** – Tailwind CSS and custom fonts provide a retro fantasy feel.
 
 ## Getting Started
 

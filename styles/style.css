@@ -42,8 +42,8 @@ body {
     background-color: #4B5563;
     color: #93C5FD;
 }
-.cell.mine {
-    background-color: #EF4444;
+.cell.monster {
+    background-color: #9333EA;
     color: #111827;
 }
 .cell.exit {
