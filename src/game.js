@@ -42,14 +42,14 @@ export function startLevel() {
 
     state.rows = Math.min(8 + state.level, 20);
     state.cols = Math.min(8 + state.level, 30);
-    state.mineCount = Math.min(
+    state.monsterCount = Math.min(
         5 + Math.floor(state.level * 2.5),
         Math.floor(state.rows * state.cols * 0.3)
     );
 
-    if (state.activeBuffs.mineNeutralizer) {
-        state.mineCount = Math.floor(state.mineCount * 0.9);
-        delete state.activeBuffs.mineNeutralizer;
+    if (state.activeBuffs.monsterRepellent) {
+        state.monsterCount = Math.floor(state.monsterCount * 0.9);
+        delete state.activeBuffs.monsterRepellent;
     }
 
     dom.messageAreaEl.textContent = `Level ${state.level}: Find the exit!`;
@@ -69,7 +69,7 @@ function applyStartOfLevelBuffs() {
         for (let i = 0; i < 1000 && toReveal > 0; i++) {
             const r = Math.floor(Math.random() * state.rows);
             const c = Math.floor(Math.random() * state.cols);
-            if (!state.grid[r][c].isMine && !state.grid[r][c].isRevealed) {
+            if (!state.grid[r][c].isMonster && !state.grid[r][c].isRevealed) {
                 revealCell(r, c, true);
                 toReveal--;
             }
@@ -79,38 +79,38 @@ function applyStartOfLevelBuffs() {
     if (state.activeBuffs.masterGoggles) {
         for (let r = 0; r < state.rows; r++) {
             for (let c = 0; c < state.cols; c++) {
-                if (state.grid[r][c].adjacentMines === 0 && !state.grid[r][c].isMine) {
+                if (state.grid[r][c].adjacentMonsters === 0 && !state.grid[r][c].isMonster) {
                     revealCell(r, c);
                 }
             }
         }
         delete state.activeBuffs.masterGoggles;
     }
-    if (state.activeBuffs.bombSquad) {
-        let toFlag = state.activeBuffs.bombSquad;
+    if (state.activeBuffs.monsterTracker) {
+        let toFlag = state.activeBuffs.monsterTracker;
         for (let i = 0; i < 1000 && toFlag > 0; i++) {
             const r = Math.floor(Math.random() * state.rows);
             const c = Math.floor(Math.random() * state.cols);
-            if (state.grid[r][c].isMine && !state.grid[r][c].isFlagged) {
+            if (state.grid[r][c].isMonster && !state.grid[r][c].isFlagged) {
                 state.grid[r][c].isFlagged = true;
                 state.flagsPlaced++;
                 toFlag--;
             }
         }
-        delete state.activeBuffs.bombSquad;
+        delete state.activeBuffs.monsterTracker;
     }
-    if (state.activeBuffs.eliteBombSquad) {
-        let minesToFlag = Math.floor(state.mineCount * 0.25);
-        for (let r = 0; r < state.rows && minesToFlag > 0; r++) {
-            for (let c = 0; c < state.cols && minesToFlag > 0; c++) {
-                if (state.grid[r][c].isMine && !state.grid[r][c].isFlagged) {
+    if (state.activeBuffs.eliteMonsterTracker) {
+        let monstersToFlag = Math.floor(state.monsterCount * 0.25);
+        for (let r = 0; r < state.rows && monstersToFlag > 0; r++) {
+            for (let c = 0; c < state.cols && monstersToFlag > 0; c++) {
+                if (state.grid[r][c].isMonster && !state.grid[r][c].isFlagged) {
                     state.grid[r][c].isFlagged = true;
                     state.flagsPlaced++;
-                    minesToFlag--;
+                    monstersToFlag--;
                 }
             }
         }
-        delete state.activeBuffs.eliteBombSquad;
+        delete state.activeBuffs.eliteMonsterTracker;
     }
 }
 
@@ -121,38 +121,38 @@ function createGrid() {
             Array(state.cols)
                 .fill(null)
                 .map(() => ({
-                    isMine: false,
+                    isMonster: false,
                     isRevealed: false,
                     isFlagged: false,
                     isQuestion: false,
                     isExit: false,
-                    adjacentMines: 0,
+                    adjacentMonsters: 0,
                 }))
         );
-    let minesToPlace = state.mineCount;
-    while (minesToPlace > 0) {
+    let monstersToPlace = state.monsterCount;
+    while (monstersToPlace > 0) {
         const r = Math.floor(Math.random() * state.rows);
         const c = Math.floor(Math.random() * state.cols);
-        if (!state.grid[r][c].isMine) {
-            state.grid[r][c].isMine = true;
-            minesToPlace--;
+        if (!state.grid[r][c].isMonster) {
+            state.grid[r][c].isMonster = true;
+            monstersToPlace--;
         }
     }
     for (let r = 0; r < state.rows; r++) {
         for (let c = 0; c < state.cols; c++) {
-            if (state.grid[r][c].isMine) continue;
+            if (state.grid[r][c].isMonster) continue;
             let count = 0;
             for (let dr = -1; dr <= 1; dr++) {
                 for (let dc = -1; dc <= 1; dc++) {
                     if (dr === 0 && dc === 0) continue;
                     const nr = r + dr;
                     const nc = c + dc;
-                    if (nr >= 0 && nr < state.rows && nc >= 0 && nc < state.cols && state.grid[nr][nc].isMine) {
+                    if (nr >= 0 && nr < state.rows && nc >= 0 && nc < state.cols && state.grid[nr][nc].isMonster) {
                         count++;
                     }
                 }
             }
-            state.grid[r][c].adjacentMines = count;
+            state.grid[r][c].adjacentMonsters = count;
         }
     }
 }
@@ -170,8 +170,8 @@ export function handleLeftClick(e) {
 
     if (state.isFirstClick) {
         state.isFirstClick = false;
-        if (playerStats.firstClickSafety && cellData.isMine) {
-            dom.messageAreaEl.textContent = 'Mine Deflector activated!';
+        if (playerStats.firstClickSafety && cellData.isMonster) {
+            dom.messageAreaEl.textContent = 'Monster Ward activated!';
             cellData.isFlagged = true;
             state.flagsPlaced++;
             updateUI(state);
@@ -188,8 +188,8 @@ export function handleLeftClick(e) {
 
     if (state.activeBuffs.forcefield > 0) {
         state.activeBuffs.forcefield--;
-        if (cellData.isMine) {
-            dom.messageAreaEl.textContent = 'Forcefield absorbed the blast!';
+        if (cellData.isMonster) {
+            dom.messageAreaEl.textContent = 'Forcefield absorbed the attack!';
             cellData.isFlagged = true;
             state.flagsPlaced++;
             updateUI(state);
@@ -236,14 +236,14 @@ function revealCell(row, col, silent = false) {
     cellData.isRevealed = true;
     state.revealedCount++;
 
-    if (cellData.isMine) {
-        handleMineHit();
+    if (cellData.isMonster) {
+        handleMonsterHit();
     } else {
         let goldGained = 1;
         if (state.activeBuffs.goldMagnet) goldGained *= 2;
         if (state.activeBuffs.scrapMetal && state.revealedCount % 10 === 0) goldGained++;
         state.gold += goldGained;
-        if (cellData.adjacentMines === 0 && !silent) floodFill(row, col);
+        if (cellData.adjacentMonsters === 0 && !silent) floodFill(row, col);
     }
     updateUI(state);
 }
@@ -263,7 +263,7 @@ function floodFill(row, col) {
     }
 }
 
-function handleMineHit() {
+function handleMonsterHit() {
     if (state.activeBuffs.steadyHand) {
         delete state.activeBuffs.steadyHand;
         dom.messageAreaEl.textContent = 'Steady Hand saved you!';
@@ -295,7 +295,7 @@ function handleMineHit() {
 }
 
 function checkWinCondition() {
-    const safeCells = state.rows * state.cols - state.mineCount;
+    const safeCells = state.rows * state.cols - state.monsterCount;
     if (state.revealedCount >= safeCells) {
         dom.messageAreaEl.textContent = 'All clear! The exit is revealed.';
         if (state.activeBuffs.shieldBattery && !state.damageTakenThisLevel) {
@@ -310,7 +310,7 @@ function checkWinCondition() {
 function placeExit() {
     for (let r = state.rows - 1; r >= 0; r--) {
         for (let c = state.cols - 1; c >= 0; c--) {
-            if (state.grid[r][c].isRevealed && !state.grid[r][c].isMine && state.grid[r][c].adjacentMines === 0) {
+            if (state.grid[r][c].isRevealed && !state.grid[r][c].isMonster && state.grid[r][c].adjacentMonsters === 0) {
                 state.grid[r][c].isExit = true;
                 return;
             }
@@ -318,7 +318,7 @@ function placeExit() {
     }
     for (let r = 0; r < state.rows; r++) {
         for (let c = 0; c < state.cols; c++) {
-            if (state.grid[r][c].isRevealed && !state.grid[r][c].isMine) {
+            if (state.grid[r][c].isRevealed && !state.grid[r][c].isMonster) {
                 state.grid[r][c].isExit = true;
                 return;
             }
@@ -348,7 +348,7 @@ function endRun() {
     dom.messageAreaEl.textContent = 'Run over! Lives depleted.';
     for (let r = 0; r < state.rows; r++) {
         for (let c = 0; c < state.cols; c++) {
-            if (state.grid[r][c].isMine) state.grid[r][c].isRevealed = true;
+            if (state.grid[r][c].isMonster) state.grid[r][c].isRevealed = true;
         }
     }
     renderGrid(state);

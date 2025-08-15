@@ -28,7 +28,7 @@ export function resetState() {
         grid: [],
         rows: 0,
         cols: 0,
-        mineCount: 0,
+        monsterCount: 0,
         revealedCount: 0,
         flagsPlaced: 0,
         activeBuffs: {},

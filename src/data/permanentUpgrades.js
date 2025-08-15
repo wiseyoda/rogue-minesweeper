@@ -1,6 +1,6 @@
 export const permanentUpgrades = {
     maxLives: {
-        name: 'Reinforced Hull',
+        name: 'Blessed Armor',
         description: 'Increase max lives by 1.',
         baseCost: 50,
         costIncrease: 2,
@@ -11,7 +11,7 @@ export const permanentUpgrades = {
         },
     },
     startingGold: {
-        name: 'Gold Scanner',
+        name: 'Treasure Map',
         description: 'Start each run with extra gold.',
         baseCost: 100,
         costIncrease: 1.8,
@@ -22,8 +22,8 @@ export const permanentUpgrades = {
         },
     },
     firstClickSafety: {
-        name: 'Mine Deflector',
-        description: 'Your first click on a mine each level will flag it instead.',
+        name: 'Monster Ward',
+        description: 'Your first click on a monster each level will flag it instead.',
         baseCost: 750,
         unlocked: false,
         apply(playerStats) {

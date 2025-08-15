@@ -21,7 +21,7 @@ export const temporaryItems = {
         {
             id: 'c3',
             name: 'Steady Hand',
-            description: 'The next mine you hit will not consume a life.',
+            description: 'The next monster you hit will not consume a life.',
             cost: 40,
             apply(state) {
                 state.nextLevelBuffs.steadyHand = true;
@@ -67,11 +67,11 @@ export const temporaryItems = {
         },
         {
             id: 'u3',
-            name: 'Bomb Squad',
-            description: 'Automatically flags 2 random mines at the start of the next level.',
+            name: 'Monster Tracker',
+            description: 'Automatically flags 2 random monsters at the start of the next level.',
             cost: 75,
             apply(state) {
-                state.nextLevelBuffs.bombSquad = (state.nextLevelBuffs.bombSquad || 0) + 2;
+                state.nextLevelBuffs.monsterTracker = (state.nextLevelBuffs.monsterTracker || 0) + 2;
             },
         },
         {
@@ -106,7 +106,7 @@ export const temporaryItems = {
         {
             id: 'r2',
             name: 'Forcefield',
-            description: 'Become immune to mine damage for the next 10 clicks.',
+            description: 'Become immune to monster attacks for the next 10 clicks.',
             cost: 120,
             apply(state) {
                 state.nextLevelBuffs.forcefield = (state.nextLevelBuffs.forcefield || 0) + 10;
@@ -123,11 +123,11 @@ export const temporaryItems = {
         },
         {
             id: 'r4',
-            name: 'Elite Bomb Squad',
-            description: 'Automatically flags 25% of all mines at the next level.',
+            name: 'Elite Monster Tracker',
+            description: 'Automatically flags 25% of all monsters at the next level.',
             cost: 200,
             apply(state) {
-                state.nextLevelBuffs.eliteBombSquad = true;
+                state.nextLevelBuffs.eliteMonsterTracker = true;
             },
         },
     ],
@@ -143,11 +143,11 @@ export const temporaryItems = {
         },
         {
             id: 'l2',
-            name: 'Mine Neutralizer',
-            description: 'Removes 10% of the mines from the next level.',
+            name: 'Monster Repellent',
+            description: 'Removes 10% of the monsters from the next level.',
             cost: 300,
             apply(state) {
-                state.nextLevelBuffs.mineNeutralizer = true;
+                state.nextLevelBuffs.monsterRepellent = true;
             },
         },
         {

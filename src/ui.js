@@ -9,7 +9,7 @@ export const dom = {
     gridElement: document.getElementById('game-grid'),
     levelEl: document.getElementById('level'),
     healthEl: document.getElementById('health'),
-    minesLeftEl: document.getElementById('mines-left'),
+    monstersLeftEl: document.getElementById('monsters-left'),
     goldEl: document.getElementById('gold'),
     messageAreaEl: document.getElementById('message-area'),
     inventoryContainerEl: document.getElementById('inventory-container'),
@@ -45,15 +45,15 @@ export function renderGrid(state) {
                 cellEl.textContent = '?';
             } else if (cellData.isRevealed) {
                 cellEl.classList.add('revealed');
-                if (cellData.isMine) {
-                    cellEl.classList.add('mine');
-                    cellEl.textContent = '✸';
+                if (cellData.isMonster) {
+                    cellEl.classList.add('monster');
+                    cellEl.textContent = '👾';
                 } else if (cellData.isExit) {
                     cellEl.classList.add('exit');
                     cellEl.textContent = '▼';
-                } else if (cellData.adjacentMines > 0) {
-                    cellEl.textContent = cellData.adjacentMines;
-                    cellEl.classList.add(`text-c-${cellData.adjacentMines}`);
+                } else if (cellData.adjacentMonsters > 0) {
+                    cellEl.textContent = cellData.adjacentMonsters;
+                    cellEl.classList.add(`text-c-${cellData.adjacentMonsters}`);
                 }
             }
             gridElement.appendChild(cellEl);
@@ -65,7 +65,7 @@ export function renderGrid(state) {
 export function updateUI(state) {
     dom.levelEl.textContent = state.level;
     dom.healthEl.innerHTML = '🛡️'.repeat(state.shields) + '❤️'.repeat(state.lives);
-    dom.minesLeftEl.textContent = state.mineCount - state.flagsPlaced;
+    dom.monstersLeftEl.textContent = state.monsterCount - state.flagsPlaced;
     dom.goldEl.textContent = state.gold;
 }
 
@@ -115,12 +115,12 @@ export function renderInventory(state) {
             case 'scrapMetal': return 'Scrap Metal';
             case 'shields': return `+${value} Shield${value > 1 ? 's' : ''}`;
             case 'goldMagnet': return 'Gold Magnet';
-            case 'bombSquad': return `Bomb Squad x${value}`;
+            case 'monsterTracker': return `Monster Tracker x${value}`;
             case 'shieldBattery': return 'Shield Battery';
             case 'forcefield': return `Forcefield (${value})`;
             case 'masterGoggles': return 'Master Goggles';
-            case 'eliteBombSquad': return 'Elite Bomb Squad';
-            case 'mineNeutralizer': return 'Mine Neutralizer';
+            case 'eliteMonsterTracker': return 'Elite Monster Tracker';
+            case 'monsterRepellent': return 'Monster Repellent';
             case 'extraLife': return 'Extra Life';
             case 'goldenGoose': return 'Golden Goose';
             default: return key;
