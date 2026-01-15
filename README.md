@@ -66,4 +66,4 @@ No license has been specified. If you plan to use this project, please contact t
 ## Acknowledgements
 
 - [Tailwind CSS](https://tailwindcss.com/) for utility-first styling via CDN.
- - [Google Fonts](https://fonts.google.com/) for the Cinzel and Merriweather fonts.
+- [Google Fonts](https://fonts.google.com/) for the Cinzel and Merriweather fonts.

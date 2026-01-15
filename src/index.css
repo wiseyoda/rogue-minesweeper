@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+/* Dungeon Delver Theme */
+@theme {
+  /* Fantasy color palette */
+  --color-dungeon-stone: #78716c;
+  --color-dungeon-amber: #f59e0b;
+  --color-dungeon-blood: #b91c1c;
+  --color-dungeon-gold: #eab308;
+  --color-dungeon-shadow: #1c1917;
+  --color-dungeon-parchment: #fef3c7;
+
+  /* Font families */
+  --font-cinzel: 'Cinzel', serif;
+  --font-merriweather: 'Merriweather', serif;
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: var(--font-merriweather), system-ui, sans-serif;
+  min-height: 100vh;
+}
