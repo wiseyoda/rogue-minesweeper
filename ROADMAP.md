@@ -30,7 +30,7 @@ Phases use **ABBC** format:
 | 0030                                 | grid-engine              | ✅ Complete | Minesweeper logic works in isolation             |
 | 0040                                 | core-logic-poc           | ✅ Complete | **USER GATE**: Playable grid in test page        |
 | **Milestone 1: Game State & UI**     |                          |                |                                                  |
-| 1010                                 | zustand-stores           | ⬜ Not Started | State management with persistence                |
+| 1010                                 | **zustand-stores**       | ✅ Complete | State management with persistence                |
 | 1020                                 | game-board-ui            | ⬜ Not Started | Interactive tile grid renders                    |
 | 1030                                 | hud-components           | ⬜ Not Started | HP, gold, level display working                  |
 | 1040                                 | **ui-integration-poc**   | ⬜ Not Started | **USER GATE**: Full game loop works              |
