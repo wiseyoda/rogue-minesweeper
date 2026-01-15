@@ -1,0 +1,181 @@
+/**
+ * TILE STYLES
+ * Source: ui-mockup-definitive.html
+ *
+ * Game board tiles with 3D bevel effect.
+ * NO rounded corners - this is pixel art.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TILE GRID - The board container
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tile-grid {
+  display: grid;
+  gap: var(--gap);
+  padding: 6px;
+  background: var(--void);
+  border: 2px solid var(--stone-700);
+  box-shadow:
+    inset 0 0 30px rgba(0, 0, 0, 0.8),
+    0 0 0 1px var(--stone-600),
+    0 8px 0 var(--void),
+    0 12px 30px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE TILE - Each one a choice, each choice a consequence
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tile {
+  width: var(--tile);
+  height: var(--tile);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform var(--tick), box-shadow var(--beat);
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UNREVEALED (HIDDEN) - The unknown beckons
+   ═══════════════════════════════════════════════════════════════════════════ */
+.t-hidden {
+  background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 40%, var(--stone-700) 100%);
+  border: 2px solid;
+  /* 3D bevel: light top-left, dark bottom-right */
+  border-color: var(--stone-400) var(--stone-800) var(--stone-800) var(--stone-400);
+  box-shadow:
+    inset 2px 2px 0 var(--stone-300),
+    inset -2px -2px 0 var(--abyss),
+    0 4px 0 var(--void);
+}
+
+.t-hidden:hover {
+  background: linear-gradient(135deg, var(--stone-400) 0%, var(--stone-500) 40%, var(--stone-600) 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 2px 2px 0 var(--stone-300),
+    inset -2px -2px 0 var(--abyss),
+    0 6px 0 var(--void),
+    0 0 20px var(--mystic-shadow);
+  z-index: 10;
+}
+
+.t-hidden:active {
+  transform: translateY(3px);
+  /* Invert bevel for pressed effect */
+  border-color: var(--stone-800) var(--stone-400) var(--stone-400) var(--stone-800);
+  box-shadow:
+    inset 2px 2px 0 var(--abyss),
+    inset -2px -2px 0 var(--stone-300),
+    0 1px 0 var(--void);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REVEALED - Light in the darkness
+   ═══════════════════════════════════════════════════════════════════════════ */
+.t-revealed {
+  background: var(--stone-800);
+  border: 1px solid var(--stone-900);
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLAGGED - Your claim staked
+   ═══════════════════════════════════════════════════════════════════════════ */
+.t-flagged {
+  background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 100%);
+  border: 2px solid;
+  border-color: var(--gold) var(--gold-dark) var(--gold-dark) var(--gold);
+  box-shadow:
+    inset 2px 2px 0 var(--gold-bright),
+    inset -2px -2px 0 var(--gold-shadow),
+    0 4px 0 var(--void),
+    0 0 12px var(--gold-shadow);
+  animation: flag-planted 0.3s ease-out;
+}
+
+@keyframes flag-planted {
+  0% { transform: scale(1.2); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.t-flagged:hover {
+  box-shadow:
+    inset 2px 2px 0 var(--gold-bright),
+    inset -2px -2px 0 var(--gold-shadow),
+    0 4px 0 var(--void),
+    0 0 20px var(--gold-dark);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   QUESTION MARK - Uncertainty made visible
+   ═══════════════════════════════════════════════════════════════════════════ */
+.t-question {
+  background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 100%);
+  border: 2px solid;
+  border-color: var(--mystic) var(--mystic-dark) var(--mystic-dark) var(--mystic);
+  box-shadow:
+    inset 2px 2px 0 var(--mystic-bright),
+    inset -2px -2px 0 var(--mystic-shadow),
+    0 4px 0 var(--void);
+}
+
+.t-question .qmark {
+  color: var(--mystic-bright);
+  text-shadow: 0 0 8px var(--mystic);
+  animation: question-wobble 1s ease-in-out infinite;
+}
+
+@keyframes question-wobble {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MONSTER HIT - Pain made manifest
+   ═══════════════════════════════════════════════════════════════════════════ */
+.t-hit {
+  background: linear-gradient(135deg, var(--blood-bright) 0%, var(--blood) 50%, var(--blood-dark) 100%);
+  border: 2px solid;
+  border-color: var(--blood-glow) var(--blood-shadow) var(--blood-shadow) var(--blood-glow);
+  box-shadow:
+    inset 0 0 8px var(--blood-void),
+    0 0 15px var(--blood),
+    0 0 30px var(--blood-dark);
+  animation: hit-shake 0.4s ease-out, hit-glow 0.8s ease-in-out infinite;
+}
+
+@keyframes hit-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes hit-glow {
+  0%, 100% {
+    box-shadow: inset 0 0 8px var(--blood-void), 0 0 15px var(--blood), 0 0 30px var(--blood-dark);
+  }
+  50% {
+    box-shadow: inset 0 0 8px var(--blood-void), 0 0 25px var(--blood-bright), 0 0 50px var(--blood);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NUMBER COLORS - The sacred count
+   ═══════════════════════════════════════════════════════════════════════════ */
+.n1 { color: var(--num-1); text-shadow: 0 0 8px rgba(64, 144, 224, 0.4); }
+.n2 { color: var(--num-2); text-shadow: 0 0 8px rgba(64, 176, 64, 0.4); }
+.n3 { color: var(--num-3); text-shadow: 0 0 8px rgba(224, 64, 64, 0.4); }
+.n4 { color: var(--num-4); text-shadow: 0 0 8px rgba(160, 64, 208, 0.4); }
+.n5 { color: var(--num-5); text-shadow: 0 0 8px rgba(192, 32, 32, 0.4); }
+.n6 { color: var(--num-6); text-shadow: 0 0 8px rgba(64, 176, 176, 0.4); }
+.n7 { color: var(--stone-400); text-shadow: none; }
+.n8 { color: var(--stone-500); text-shadow: none; }

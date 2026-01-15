@@ -1,9 +1,11 @@
 /**
  * Tile component - individual cell in the game grid.
  * @module components/game/Tile
+ *
+ * Design System: .specify/reference/design-system/04-tiles.css
  */
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import type { Cell } from '@/types';
 import { NumberDisplay } from './NumberDisplay';
 import { FlagIcon } from './FlagIcon';
@@ -50,26 +52,117 @@ function getTileContent(cell: Cell, gameOver: boolean): React.ReactNode {
 }
 
 /**
- * Get the background color class based on cell state.
+ * Get inline styles for tile based on state.
  */
-function getTileBackground(cell: Cell, gameOver: boolean): string {
-  // Show monsters with red background when game is lost
-  if (gameOver && cell.isMonster) {
-    return 'bg-dungeon-blood';
+function getTileStyles(
+  cell: Cell,
+  gameOver: boolean,
+  isHovered: boolean,
+  isPressed: boolean
+): React.CSSProperties {
+  const baseStyles: React.CSSProperties = {
+    width: 'var(--tile)',
+    height: 'var(--tile)',
+    border: 'none',
+    transition: 'transform var(--beat), box-shadow var(--beat)',
+  };
+
+  // Monster hit state
+  if (cell.isRevealed && cell.isMonster) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--blood-bright) 0%, var(--blood) 50%, var(--blood-dark) 100%)',
+      boxShadow: 'inset 0 0 8px var(--blood-void), 0 0 15px var(--blood), 0 0 30px var(--blood-dark)',
+      animation: 'hit-shake 0.4s ease-out, hit-glow 0.8s ease-in-out',
+    };
   }
 
-  // Unrevealed
-  if (!cell.isRevealed) {
-    return 'bg-dungeon-stone hover:bg-dungeon-stone/80';
+  // Game over monster reveal (unflagged)
+  if (gameOver && cell.isMonster && !cell.isRevealed) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--blood) 0%, var(--blood-dark) 100%)',
+      boxShadow: 'inset 0 0 4px var(--blood-void)',
+    };
   }
 
-  // Revealed monster
-  if (cell.isMonster) {
-    return 'bg-dungeon-blood';
+  // Flagged state
+  if (cell.isFlagged) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--stone-700) 0%, var(--stone-800) 50%, var(--stone-850) 100%)',
+      borderStyle: 'solid',
+      borderWidth: '3px',
+      borderColor: 'var(--gold)',
+      boxShadow: '0 0 8px var(--gold-dark), inset 0 1px 0 var(--stone-600)',
+      animation: 'flag-planted 0.3s ease-out',
+    };
   }
 
-  // Revealed safe cell
-  return 'bg-dungeon-parchment';
+  // Question state
+  if (cell.isQuestion) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--stone-700) 0%, var(--stone-800) 50%, var(--stone-850) 100%)',
+      borderStyle: 'solid',
+      borderWidth: '3px',
+      borderColor: 'var(--mystic)',
+      boxShadow: '0 0 6px var(--mystic-dark), inset 0 1px 0 var(--stone-600)',
+    };
+  }
+
+  // Revealed safe state
+  if (cell.isRevealed) {
+    return {
+      ...baseStyles,
+      background: 'var(--stone-900)',
+      boxShadow: 'inset 0 2px 4px var(--void), inset 0 0 8px var(--stone-950)',
+    };
+  }
+
+  // Hidden state with hover/press effects
+  if (isPressed) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--stone-800) 0%, var(--stone-700) 50%, var(--stone-600) 100%)',
+      borderStyle: 'solid',
+      borderWidth: '3px',
+      borderTopColor: 'var(--stone-900)',
+      borderLeftColor: 'var(--stone-900)',
+      borderBottomColor: 'var(--stone-500)',
+      borderRightColor: 'var(--stone-500)',
+      transform: 'translateY(3px)',
+      boxShadow: 'inset 0 1px 0 var(--stone-950)',
+    };
+  }
+
+  if (isHovered) {
+    return {
+      ...baseStyles,
+      background: 'linear-gradient(180deg, var(--stone-600) 0%, var(--stone-700) 50%, var(--stone-800) 100%)',
+      borderStyle: 'solid',
+      borderWidth: '3px',
+      borderTopColor: 'var(--stone-400)',
+      borderLeftColor: 'var(--stone-400)',
+      borderBottomColor: 'var(--stone-900)',
+      borderRightColor: 'var(--stone-900)',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4), 0 0 12px var(--mystic-dark)',
+    };
+  }
+
+  // Default hidden state with 3D bevel
+  return {
+    ...baseStyles,
+    background: 'linear-gradient(180deg, var(--stone-600) 0%, var(--stone-700) 50%, var(--stone-800) 100%)',
+    borderStyle: 'solid',
+    borderWidth: '3px',
+    borderTopColor: 'var(--stone-400)',
+    borderLeftColor: 'var(--stone-400)',
+    borderBottomColor: 'var(--stone-900)',
+    borderRightColor: 'var(--stone-900)',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+  };
 }
 
 /**
@@ -86,6 +179,9 @@ export const Tile = memo(function Tile({
   gameOver,
 }: TileProps) {
   void _onLongPress; // Suppress unused warning - parent handles long press
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+
   const handleContextMenu = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
@@ -108,27 +204,24 @@ export const Tile = memo(function Tile({
     // Long press timer is handled by parent via useLongPress hook
   }, [disabled]);
 
-  const backgroundClass = getTileBackground(cell, gameOver);
   const content = getTileContent(cell, gameOver);
-
-  // Remove hover effect for revealed tiles
-  const hoverClass =
-    !cell.isRevealed && !disabled ? 'cursor-pointer' : 'cursor-default';
+  const canInteract = !cell.isRevealed && !disabled;
 
   return (
     <button
       type="button"
-      className={`
-        w-full aspect-square flex items-center justify-center
-        rounded border border-dungeon-shadow/30
-        transition-colors select-none
-        min-w-[32px] min-h-[32px]
-        ${backgroundClass}
-        ${hoverClass}
-      `}
+      className="flex items-center justify-center select-none"
+      style={getTileStyles(cell, gameOver, isHovered, isPressed)}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
       onTouchStart={handleTouchStart}
+      onMouseEnter={() => canInteract && setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsPressed(false);
+      }}
+      onMouseDown={() => canInteract && setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
       disabled={disabled && cell.isRevealed}
       aria-label={getAriaLabel(cell, gameOver)}
     >

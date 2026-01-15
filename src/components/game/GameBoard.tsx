@@ -77,12 +77,14 @@ export function GameBoard({ className = '' }: GameBoardProps) {
 
   return (
     <div
-      className={`
-        grid gap-1 p-2 bg-dungeon-shadow rounded
-        ${className}
-      `}
+      className={`grid ${className}`}
       style={{
-        gridTemplateColumns: `repeat(${gridConfig.cols}, minmax(32px, 48px))`,
+        gap: 'var(--gap)',
+        padding: 'var(--unit)',
+        background: 'var(--void)',
+        border: '3px solid var(--stone-700)',
+        boxShadow: 'inset 0 0 20px var(--stone-950), 0 4px 12px rgba(0, 0, 0, 0.5)',
+        gridTemplateColumns: `repeat(${gridConfig.cols}, var(--tile))`,
       }}
       onContextMenu={(e) => e.preventDefault()}
     >

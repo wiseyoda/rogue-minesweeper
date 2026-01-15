@@ -1,0 +1,188 @@
+/**
+ * DUNGEON MASTER PANEL
+ * Source: ui-mockup-definitive.html
+ *
+ * The DM panel with animated watching eye.
+ * This is the game's personality - it watches and comments.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DM PANEL CONTAINER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dm-panel {
+  background: linear-gradient(180deg, var(--mystic-void) 0%, var(--stone-850) 50%);
+  border: 3px solid var(--mystic-dark);
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0 var(--mystic),
+    inset -1px -1px 0 var(--abyss),
+    0 8px 0 var(--void),
+    0 0 20px var(--mystic-void);
+}
+
+/* Mystic glow in corner */
+.dm-panel::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(112, 48, 176, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+  animation: dm-glow 3s ease-in-out infinite;
+}
+
+@keyframes dm-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DM HEADER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--mystic-dark);
+}
+
+.dm-title {
+  font-size: 6px;
+  color: var(--stone-300);
+  letter-spacing: 3px;
+}
+
+.dm-status {
+  font-size: 5px;
+  color: var(--mystic-bright);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dm-status-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--mystic-bright);
+  animation: status-blink 1.5s ease-in-out infinite;
+}
+
+@keyframes status-blink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--mystic-bright); }
+  50% { opacity: 0.3; box-shadow: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DM CONTENT AREA
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dm-content {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE EYE - It sees all
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dm-eye-container {
+  width: 48px;
+  height: 48px;
+  background: var(--void);
+  border: 2px solid var(--mystic-dark);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 20px var(--mystic-void),
+    0 0 10px var(--mystic-shadow);
+}
+
+.dm-eye {
+  width: 28px;
+  height: 28px;
+  background: radial-gradient(
+    circle,
+    var(--mystic-glow) 0%,
+    var(--mystic-bright) 20%,
+    var(--mystic) 50%,
+    var(--mystic-dark) 80%,
+    var(--mystic-shadow) 100%
+  );
+  border-radius: 50%;  /* Exception: eye is literally round */
+  position: relative;
+  animation: eye-look 6s ease-in-out infinite;
+  box-shadow: 0 0 20px var(--mystic);
+}
+
+/* Pupil */
+.dm-eye::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: var(--void);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px var(--mystic-glow);
+}
+
+/* Highlight */
+.dm-eye::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  width: 4px;
+  height: 4px;
+  background: var(--mystic-glow);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+@keyframes eye-look {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-2px) translateX(-2px); }
+  50% { transform: translateY(0) translateX(2px); }
+  75% { transform: translateY(2px) translateX(-1px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DM MESSAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dm-message {
+  flex: 1;
+}
+
+.dm-text {
+  font-size: 7px;
+  color: var(--bone-light);
+  line-height: 2;
+  font-style: italic;
+}
+
+/* Highlighted words (interactive hints) */
+.dm-text .hl {
+  color: var(--gold);
+  font-style: normal;
+  cursor: help;
+  border-bottom: 1px dotted var(--gold-dark);
+  transition: all var(--beat);
+}
+
+.dm-text .hl:hover {
+  color: var(--gold-bright);
+  text-shadow: 0 0 6px var(--gold);
+  border-color: var(--gold);
+}

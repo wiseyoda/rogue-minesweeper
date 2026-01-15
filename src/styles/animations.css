@@ -1,0 +1,278 @@
+/**
+ * Animations - Dungeon Delver
+ *
+ * All keyframe animations for the design system.
+ * Source: .specify/reference/design-system/ (various files)
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ATMOSPHERE ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Mystic aura breathing effect */
+@keyframes aura-breathe {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.15);
+  }
+}
+
+/* Floating dust particles */
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateY(-20px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DM PANEL ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Eye looking around */
+@keyframes eye-look {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-2px) translateX(-2px); }
+  50% { transform: translateY(0) translateX(2px); }
+  75% { transform: translateY(2px) translateX(-1px); }
+}
+
+/* Status indicator blink */
+@keyframes status-blink {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 4px var(--mystic-bright);
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: none;
+  }
+}
+
+/* DM corner glow */
+@keyframes dm-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TILE ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Flag placement bounce */
+@keyframes flag-planted {
+  0% { transform: scale(1.2); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* Question mark wobble */
+@keyframes question-wobble {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Monster hit shake */
+@keyframes hit-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+/* Monster hit glow pulse */
+@keyframes hit-glow {
+  0%, 100% {
+    box-shadow: inset 0 0 8px var(--blood-void), 0 0 15px var(--blood), 0 0 30px var(--blood-dark);
+  }
+  50% {
+    box-shadow: inset 0 0 8px var(--blood-void), 0 0 25px var(--blood-bright), 0 0 50px var(--blood);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VITALS ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Critical health pulse */
+@keyframes health-critical {
+  0%, 100% { box-shadow: 0 0 4px var(--blood); }
+  50% { box-shadow: 0 0 10px var(--blood-bright); }
+}
+
+/* Environment indicator pulse */
+@keyframes env-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 4px var(--mystic);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--mystic-bright);
+  }
+}
+
+/* Threat meter pulse */
+@keyframes threat-pulse {
+  0%, 100% {
+    background: var(--blood);
+    box-shadow: 0 0 6px var(--blood-dark);
+  }
+  50% {
+    background: var(--blood-bright);
+    box-shadow: 0 0 12px var(--blood);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TITLE ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Title brightness pulse */
+@keyframes title-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.1); }
+}
+
+/* Gem sparkle on title */
+@keyframes gem-sparkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFECTS ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Floating text (damage numbers, gold) */
+@keyframes float-away {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+}
+
+/* Generic glow pulse */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+  }
+}
+
+/* Screen shake for impacts */
+@keyframes screen-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-4px); }
+  20% { transform: translateX(4px); }
+  30% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Pop in */
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Pop out */
+@keyframes pop-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.shake {
+  animation: screen-shake 0.5s ease-out;
+}
+
+.glow-pulse {
+  animation: glow-pulse 1s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fade-in var(--breath) ease-out;
+}
+
+.fade-out {
+  animation: fade-out var(--breath) ease-out;
+}
+
+.pop-in {
+  animation: pop-in var(--breath) ease-out;
+}
+
+.pop-out {
+  animation: pop-out var(--breath) ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

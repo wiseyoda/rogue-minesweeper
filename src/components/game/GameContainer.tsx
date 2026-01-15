@@ -1,20 +1,21 @@
 /**
- * GameContainer component - wraps game board with HUD and modals.
+ * GameContainer component - wraps game board with panel and modals.
  * @module components/game/GameContainer
+ *
+ * Design System: .specify/reference/design-system/10-layout.css
  */
 
 import { memo, useCallback } from 'react';
 import { useGameStore } from '../../stores/gameStore';
 import { GameBoard } from './GameBoard';
-import { HUD } from '../hud';
-import { WinModal, GameOverModal } from '../ui';
+import { Panel, WinModal, GameOverModal } from '../ui';
 import type { GameMessage } from '../hud';
 
 /**
  * Props for GameContainer component.
  */
 export interface GameContainerProps {
-  /** Current game message to display in HUD */
+  /** Current game message to display (unused in new design, kept for compatibility) */
   message: GameMessage | null;
 }
 
@@ -32,12 +33,14 @@ const selectStartLevel = (state: ReturnType<typeof useGameStore.getState>) =>
   state.startLevel;
 
 /**
- * Container that composes HUD, GameBoard, and modal overlays.
+ * Container that composes Panel, GameBoard, and modal overlays.
  * Handles game state transitions via modals.
  */
 export const GameContainer = memo(function GameContainer({
-  message,
+  message: _message,
 }: GameContainerProps) {
+  void _message; // Message now displayed in DM Panel instead of HUD
+
   // Read state from store
   const run = useGameStore(selectRun);
   const gameOver = useGameStore(selectGameOver);
@@ -69,13 +72,10 @@ export const GameContainer = memo(function GameContainer({
 
   return (
     <>
-      {/* HUD - Heads Up Display */}
-      <div className="mb-4 w-full max-w-md">
-        <HUD message={message} />
-      </div>
-
-      {/* Game Board */}
-      <GameBoard />
+      {/* Game Board wrapped in Panel */}
+      <Panel>
+        <GameBoard />
+      </Panel>
 
       {/* Win Modal - Level Complete */}
       {showWinModal && (

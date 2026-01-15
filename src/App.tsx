@@ -1,6 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { useGameStore } from '@/stores';
 import { GameContainer } from '@/components/game';
+import { Sidebar } from '@/components/sidebar';
+import { GameTitle, Button } from '@/components/ui';
+import {
+  BrickPattern,
+  Vignette,
+  MysticAura,
+  ParticleField,
+  Scanlines,
+} from '@/components/atmosphere';
 import type { GameMessage } from '@/components/hud';
 
 /**
@@ -55,39 +64,58 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-dungeon-parchment flex flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-cinzel text-dungeon-blood tracking-widest mb-2">
-        DUNGEON DELVER
-      </h1>
-      <p className="text-dungeon-stone text-sm mb-6">Core Logic POC</p>
+    <>
+      {/* Atmosphere layers */}
+      <BrickPattern />
+      <Vignette />
+      <MysticAura />
+      <ParticleField />
+      <Scanlines />
 
-      {/* Game Container - HUD, Board, and Modals */}
-      <GameContainer message={message} />
-
-      {/* Reset Button */}
-      <button
-        onClick={handleReset}
-        className="mt-6 px-6 py-2 bg-dungeon-stone text-dungeon-parchment font-cinzel rounded hover:bg-dungeon-stone/80 transition-colors"
+      {/* Main content */}
+      <div
+        className="relative min-h-screen flex flex-col items-center p-8"
+        style={{ zIndex: 10 }}
       >
-        New Game
-      </button>
+        {/* Title */}
+        <div className="mb-8">
+          <GameTitle title="DUNGEON DELVER" subtitle="Roguelike Minesweeper" />
+        </div>
 
-      {/* Instructions */}
-      <div className="mt-6 text-dungeon-stone text-sm text-center max-w-md">
-        <p>
-          <strong>Left-click</strong>: Reveal cell
-        </p>
-        <p>
-          <strong>Right-click</strong>: Flag cell (F → ? → none)
-        </p>
-        <p>
-          <strong>Long press</strong> (touch): Flag cell
-        </p>
-        <p className="mt-2 text-xs">
-          Reveal all safe cells without hitting a monster to win!
-        </p>
+        {/* Two-column layout */}
+        <div
+          className="flex gap-8 items-start"
+          style={{
+            flexDirection: 'row',
+          }}
+        >
+          {/* Game Container - Board and Modals */}
+          <main>
+            <GameContainer message={message} />
+          </main>
+
+          {/* Sidebar - DM Panel, Vitals, Runes */}
+          <Sidebar />
+        </div>
+
+        {/* Footer controls */}
+        <div className="mt-8 flex gap-4">
+          <Button variant="secondary" onClick={handleReset}>
+            New Game
+          </Button>
+        </div>
       </div>
-    </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 860px) {
+          .flex.gap-8 {
+            flex-direction: column !important;
+            align-items: center;
+          }
+        }
+      `}</style>
+    </>
   );
 }
 

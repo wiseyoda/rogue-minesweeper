@@ -1,15 +1,16 @@
 /**
  * FlagIcon component - displays a flag marker for flagged tiles.
  * @module components/game/FlagIcon
+ *
+ * Design System: .specify/reference/design-system/11-icons.md
  */
 
 import { memo } from 'react';
+import { Flag } from '../icons/Flag';
 
 /**
- * Displays a flag icon in dungeon-gold color.
+ * Displays a gold SVG flag icon.
  */
 export const FlagIcon = memo(function FlagIcon() {
-  return (
-    <span className="text-dungeon-gold font-bold text-lg select-none">F</span>
-  );
+  return <Flag size={14} />;
 });

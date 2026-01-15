@@ -1,8 +1,10 @@
-@import 'tailwindcss';
-
-/* Design System Imports */
-@import './styles/tokens.css';
-@import './styles/animations.css';
+/**
+ * FOUNDATION STYLES
+ * Source: ui-mockup-definitive.html
+ *
+ * Base reset, font loading, and body styles.
+ * Apply these first, before any component styles.
+ */
 
 /* Google Font - Press Start 2P (pixel art) */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -68,3 +70,21 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold-dark);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY SCALE
+   ═══════════════════════════════════════════════════════════════════════════
+
+   All text uses Press Start 2P. Hierarchy via size and color:
+
+   22px - Title (game name)
+   14px - Section headers
+   12px - Tile numbers, important values
+   11px - Large values (floor number)
+   10px - Body text, resource values
+    9px - Float text
+    8px - Button text
+    7px - Panel text, descriptions
+    6px - Labels, headers
+    5px - Small labels, footer
+*/

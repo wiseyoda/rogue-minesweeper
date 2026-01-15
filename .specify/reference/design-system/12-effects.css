@@ -1,0 +1,141 @@
+/**
+ * EFFECTS & ANIMATIONS
+ * Source: ui-mockup-definitive.html
+ *
+ * Floating text, transitions, and feedback animations.
+ * Consequences made visible.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLOATING TEXT - Damage numbers, gold gained, etc.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.float-text {
+  position: absolute;
+  font-size: 9px;
+  pointer-events: none;
+  animation: float-away 1.5s ease-out forwards;
+  z-index: 50;
+}
+
+.float-gold {
+  color: var(--gold-bright);
+  text-shadow: 0 0 8px var(--gold), 2px 2px 0 var(--gold-shadow);
+}
+
+.float-damage {
+  color: var(--blood-bright);
+  text-shadow: 0 0 8px var(--blood), 2px 2px 0 var(--blood-shadow);
+}
+
+.float-heal {
+  color: var(--venom-bright);
+  text-shadow: 0 0 8px var(--venom), 2px 2px 0 var(--venom-dark);
+}
+
+.float-shield {
+  color: var(--ice-bright);
+  text-shadow: 0 0 8px var(--ice), 2px 2px 0 var(--ice-dark);
+}
+
+@keyframes float-away {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.8);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCREEN SHAKE - For big impacts
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes screen-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-4px); }
+  20% { transform: translateX(4px); }
+  30% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+
+.shake {
+  animation: screen-shake 0.5s ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PULSE EFFECTS - Attention-getting
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+  }
+}
+
+.glow-pulse {
+  animation: glow-pulse 1s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FADE TRANSITIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fade-in {
+  animation: fade-in var(--breath) ease-out;
+}
+
+.fade-out {
+  animation: fade-out var(--breath) ease-out;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCALE TRANSITIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+.pop-in {
+  animation: pop-in var(--breath) ease-out;
+}
+
+.pop-out {
+  animation: pop-out var(--breath) ease-out;
+}
