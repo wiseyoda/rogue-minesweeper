@@ -87,6 +87,8 @@ export interface MetaStoreState {
   playerStats: PlayerStats;
   /** Purchased permanent upgrades */
   upgrades: PermanentUpgradeRegistry;
+  /** Gold available for purchasing permanent upgrades */
+  metaGold: number;
 }
 
 /**
@@ -101,6 +103,10 @@ export interface MetaStoreActions {
   applyAllUpgrades: () => void;
   /** Reset store to initial state (for testing) */
   reset: () => void;
+  /** Add gold to meta gold balance */
+  addMetaGold: (amount: number) => void;
+  /** Initialize upgrades registry with default values */
+  initializeUpgrades: () => void;
 }
 
 /**

@@ -38,7 +38,7 @@ Phases use **ABBC** format:
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
 | 2010                                 | floor-progression        | ✅ Complete | Level advancement and scaling                    |
 | 2020                                 | floor-shop               | ✅ Complete | Between-floor shop UI and logic                  |
-| 2030                                 | meta-progression         | ⬜ Not Started | Permanent upgrades persist                       |
+| 2030                                 | meta-progression         | ✅ Complete | Permanent upgrades persist                       |
 | 2040                                 | meta-shop                | ⬜ Not Started | End-of-run upgrade shop                          |
 | 2050                                 | **progression-poc**      | ⬜ Not Started | **USER GATE**: Complete run loop works           |
 | **Milestone 3: Rune System**         |                          |                |                                                  |

@@ -19,8 +19,8 @@ export interface GameOverModalProps {
   monstersFlagged: number;
   /** Total damage taken in run */
   damageTaken: number;
-  /** Called when Try Again button clicked */
-  onRetry: () => void;
+  /** Called when Continue button clicked (transitions to upgrade shop) */
+  onContinue: () => void;
 }
 
 /**
@@ -33,7 +33,7 @@ export const GameOverModal = memo(function GameOverModal({
   tilesRevealed,
   monstersFlagged,
   damageTaken,
-  onRetry,
+  onContinue,
 }: GameOverModalProps) {
   return (
     <div
@@ -101,7 +101,7 @@ export const GameOverModal = memo(function GameOverModal({
         </div>
 
         <button
-          onClick={onRetry}
+          onClick={onContinue}
           className="w-full py-3 transition-all"
           style={{
             background: 'linear-gradient(180deg, var(--blood) 0%, var(--blood-dark) 100%)',
@@ -112,7 +112,7 @@ export const GameOverModal = memo(function GameOverModal({
             cursor: 'pointer',
           }}
         >
-          Try Again
+          Continue
         </button>
       </div>
     </div>

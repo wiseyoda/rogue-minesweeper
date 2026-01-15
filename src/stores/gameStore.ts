@@ -7,7 +7,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { GameStore } from './types';
-import type { GamePhase } from '@/types';
+import type { GamePhase, NextLevelBuffs } from '@/types';
 import {
   createInitialPlayerState,
   createInitialRunState,
@@ -24,6 +24,49 @@ import {
   getShopItem,
   REROLL_COST,
 } from '@/data/shopItems';
+import { useMetaStore } from './metaStore';
+
+/**
+ * Available buffs for Preparation upgrade random selection.
+ */
+const PREPARATION_BUFF_POOL: (keyof NextLevelBuffs)[] = [
+  'goldMagnet',
+  'shields',
+  'revealTiles',
+];
+
+/**
+ * Apply random preparation buffs to player state.
+ * @param count Number of random buffs to apply
+ * @param player Player state to modify (mutable)
+ */
+function applyPreparationBuffs(count: number, player: { nextLevelBuffs: NextLevelBuffs }): void {
+  for (let i = 0; i < count; i++) {
+    const buffKey = PREPARATION_BUFF_POOL[Math.floor(Math.random() * PREPARATION_BUFF_POOL.length)];
+
+    switch (buffKey) {
+      case 'goldMagnet':
+        player.nextLevelBuffs.goldMagnet = true;
+        break;
+      case 'shields':
+        player.nextLevelBuffs.shields = (player.nextLevelBuffs.shields ?? 0) + 1;
+        break;
+      case 'revealTiles':
+        player.nextLevelBuffs.revealTiles = (player.nextLevelBuffs.revealTiles ?? 0) + 3;
+        break;
+    }
+  }
+}
+
+/**
+ * Apply gold find bonus multiplier.
+ * @param baseGold Base gold amount
+ * @param bonus Gold find bonus (0.1 = +10%)
+ * @returns Final gold amount (floored)
+ */
+function applyGoldFind(baseGold: number, bonus: number): number {
+  return Math.floor(baseGold * (1 + bonus));
+}
 
 /**
  * Initial state for the game store.
@@ -48,14 +91,27 @@ export const useGameStore = create<GameStore>()(
 
       // Actions
       startNewRun: () => {
-        // In future, get playerStats from metaStore
-        const playerStats = createDefaultPlayerStats();
+        // Get playerStats from metaStore (applies all purchased upgrades)
+        const metaStore = useMetaStore.getState();
+        metaStore.applyAllUpgrades();
+        const playerStats = metaStore.playerStats;
+
         set((state) => {
           state.grid = null;
           state.gridConfig = getFloorConfig(1);
           state.player = createInitialPlayerState(playerStats);
           state.run = createInitialRunState(1);
           state.gameOver = false;
+
+          // Apply startingShields from Resilience upgrade
+          if (playerStats.startingShields > 0) {
+            state.player.shields = playerStats.startingShields;
+          }
+
+          // Apply Preparation upgrade (random buffs)
+          if (playerStats.preparationLevel > 0) {
+            applyPreparationBuffs(playerStats.preparationLevel, state.player);
+          }
         });
       },
 
@@ -141,14 +197,18 @@ export const useGameStore = create<GameStore>()(
             }
           }
 
+          // Get gold find bonus from metaStore
+          const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+
           set((state) => {
             state.grid = currentGrid;
             state.run.isFirstClick = false;
             state.run.revealedCount += totalRevealed;
             state.run.pendingRevealTiles = undefined; // Clear the buff
-            // Award 1 gold per revealed safe tile (2x if goldMagnet active)
+            // Award 1 gold per revealed safe tile (2x if goldMagnet active, +goldFindBonus%)
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            state.player.gold += totalRevealed * goldMultiplier;
+            const baseGold = totalRevealed * goldMultiplier;
+            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
           });
 
           // Check win condition after all reveals
@@ -173,17 +233,21 @@ export const useGameStore = create<GameStore>()(
 
         const result = engineRevealCell(grid, position);
 
+        // Get gold find bonus from metaStore
+        const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+
         set((state) => {
           state.grid = result.grid;
           state.run.revealedCount += result.revealedPositions.length;
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
-          // 2x gold if goldMagnet active
+          // 2x gold if goldMagnet active, +goldFindBonus%
           const goldToAdd = result.hitMonster
             ? result.revealedPositions.length - 1
             : result.revealedPositions.length;
           if (goldToAdd > 0) {
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            state.player.gold += goldToAdd * goldMultiplier;
+            const baseGold = goldToAdd * goldMultiplier;
+            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
           }
         });
 
