@@ -31,7 +31,7 @@ Phases use **ABBC** format:
 | 0040                                 | core-logic-poc           | ✅ Complete | **USER GATE**: Playable grid in test page        |
 | **Milestone 1: Game State & UI**     |                          |                |                                                  |
 | 1010                                 | **zustand-stores**       | ✅ Complete | State management with persistence                |
-| 1020                                 | game-board-ui            | ⬜ Not Started | Interactive tile grid renders                    |
+| 1020                                 | game-board-ui            | ✅ Complete | Interactive tile grid renders                    |
 | 1030                                 | hud-components           | ⬜ Not Started | HP, gold, level display working                  |
 | 1040                                 | **ui-integration-poc**   | ⬜ Not Started | **USER GATE**: Full game loop works              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
