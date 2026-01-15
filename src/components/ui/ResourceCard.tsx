@@ -5,7 +5,7 @@
  * Source: .specify/reference/design-system/07-vitals-panel.css
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface ResourceCardProps {
   icon: ReactNode;

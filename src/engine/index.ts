@@ -28,3 +28,12 @@ export {
   getRevealedCount,
   getRevealedSafeCellCount,
 } from './win-condition';
+
+// Difficulty scaling
+export {
+  DIFFICULTY_CONSTANTS,
+  getFloorConfig,
+  getMonsterDamage,
+  type FloorConfig,
+  type MonsterDamageConfig,
+} from './difficulty';

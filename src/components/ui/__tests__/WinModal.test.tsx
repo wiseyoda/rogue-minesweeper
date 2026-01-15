@@ -12,6 +12,7 @@ describe('WinModal', () => {
     tilesRevealed: 25,
     goldCollected: 25,
     monstersAvoided: 5,
+    floorBonus: 10,
     onContinue: vi.fn(),
   };
 
@@ -36,6 +37,12 @@ describe('WinModal', () => {
     render(<WinModal {...defaultProps} monstersAvoided={8} />);
     expect(screen.getByText('Monsters Avoided')).toBeInTheDocument();
     expect(screen.getByText('8')).toBeInTheDocument();
+  });
+
+  it('displays floor bonus stat', () => {
+    render(<WinModal {...defaultProps} floorBonus={50} />);
+    expect(screen.getByText('Floor Bonus')).toBeInTheDocument();
+    expect(screen.getByText('+50')).toBeInTheDocument();
   });
 
   it('calls onContinue when Continue button is clicked', () => {

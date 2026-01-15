@@ -97,16 +97,7 @@ export function createDefaultGameStats(): GameStats {
 }
 
 /**
- * Calculates grid config based on current level.
- * Grid grows with difficulty as player progresses.
+ * @deprecated Use getFloorConfig from @/engine/difficulty instead.
+ * Kept temporarily for backwards compatibility during migration.
  */
-export function calculateLevelGridConfig(level: number): GridConfig {
-  const rows = Math.min(8 + level, 20);
-  const cols = Math.min(8 + level, 30);
-  const monsterCount = Math.min(
-    5 + Math.floor(level * 2.5),
-    Math.floor(rows * cols * 0.3)
-  );
-
-  return { rows, cols, monsterCount };
-}
+export { getFloorConfig as calculateLevelGridConfig } from '@/engine/difficulty';

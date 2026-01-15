@@ -207,6 +207,50 @@ describe('gameStore', () => {
 
       expect(useGameStore.getState().run.phase).toBe('shopping');
     });
+
+    it('should award floor bonus when transitioning to shopping', () => {
+      // Start at level 3 (30 gold bonus)
+      useGameStore.getState().startLevel(3);
+      const goldBefore = useGameStore.getState().player.gold;
+
+      // Transition to shopping (floor complete)
+      useGameStore.getState().setPhase('shopping');
+
+      // Should have floor bonus added (level * 10 = 30)
+      expect(useGameStore.getState().player.gold).toBe(goldBefore + 30);
+    });
+  });
+
+  describe('floor progression', () => {
+    it('should preserve shields across level transitions', () => {
+      // Start level 1 with some shields
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().addShield(3);
+
+      // Verify shields are set
+      expect(useGameStore.getState().player.shields).toBe(3);
+
+      // Start level 2 (simulating floor completion)
+      useGameStore.getState().startLevel(2);
+
+      // Shields should still be there
+      expect(useGameStore.getState().player.shields).toBe(3);
+    });
+
+    it('should preserve gold across level transitions', () => {
+      // Start level 1 with some gold
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().addGold(50);
+
+      // Verify gold is set
+      expect(useGameStore.getState().player.gold).toBe(50);
+
+      // Start level 2 (simulating floor completion)
+      useGameStore.getState().startLevel(2);
+
+      // Gold should still be there
+      expect(useGameStore.getState().player.gold).toBe(50);
+    });
   });
 
   describe('reset', () => {

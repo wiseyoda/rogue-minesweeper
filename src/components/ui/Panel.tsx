@@ -5,7 +5,7 @@
  * Source: .specify/reference/design-system/05-panels.css
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface PanelProps {
   children: ReactNode;
