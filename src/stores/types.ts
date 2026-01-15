@@ -57,6 +57,14 @@ export interface GameStoreActions {
   setPhase: (phase: GamePhase) => void;
   /** Reset store to initial state */
   reset: () => void;
+  /** Generate shop items for between-floor shop */
+  generateShop: () => void;
+  /** Purchase a shop item by ID (returns true if successful) */
+  purchaseItem: (itemId: string) => boolean;
+  /** Reroll shop items (costs gold, returns true if successful) */
+  rerollShop: () => boolean;
+  /** Toggle shop modal visibility */
+  setShowShop: (show: boolean) => void;
 }
 
 /**

@@ -13,7 +13,7 @@ describe('WinModal', () => {
     goldCollected: 25,
     monstersAvoided: 5,
     floorBonus: 10,
-    onContinue: vi.fn(),
+    onEnterShop: vi.fn(),
   };
 
   it('renders with correct title', () => {
@@ -45,13 +45,13 @@ describe('WinModal', () => {
     expect(screen.getByText('+50')).toBeInTheDocument();
   });
 
-  it('calls onContinue when Continue button is clicked', () => {
-    const onContinue = vi.fn();
-    render(<WinModal {...defaultProps} onContinue={onContinue} />);
+  it('calls onEnterShop when Enter Shop button is clicked', () => {
+    const onEnterShop = vi.fn();
+    render(<WinModal {...defaultProps} onEnterShop={onEnterShop} />);
 
-    fireEvent.click(screen.getByText('Continue'));
+    fireEvent.click(screen.getByText('Enter Shop'));
 
-    expect(onContinue).toHaveBeenCalledTimes(1);
+    expect(onEnterShop).toHaveBeenCalledTimes(1);
   });
 
   it('has correct accessibility attributes', () => {
