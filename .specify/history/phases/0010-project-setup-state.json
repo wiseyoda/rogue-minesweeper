@@ -27,36 +27,42 @@
     "completed_at": null
   },
   "orchestration": {
-    "phase": null,
-    "step": null,
+    "phase": {
+      "number": "0010",
+      "name": "project-setup",
+      "branch": "0010-project-setup",
+      "status": "complete"
+    },
+    "step": {
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
+    },
     "progress": {
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
     },
-    "steps": {}
+    "steps": {
+      "implement": {
+        "tasks_completed": 51,
+        "tasks_total": 51
+      }
+    }
   },
   "health": {
-    "status": "healthy",
-    "last_check": "2026-01-15T05:00:00Z",
+    "status": "initializing",
+    "last_check": "2026-01-15T02:46:49Z",
     "issues": []
   },
   "actions": {
     "available": [],
     "pending": [],
-    "history": [
-      {
-        "phase": "0010",
-        "name": "project-setup",
-        "status": "complete",
-        "merged_at": "2026-01-15T05:00:00Z",
-        "pr_number": 14
-      }
-    ]
+    "history": []
   },
   "ui": {
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T05:00:00Z"
+  "last_updated": "2026-01-15T04:28:51Z"
 }
