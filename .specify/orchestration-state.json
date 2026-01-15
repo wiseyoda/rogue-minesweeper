@@ -31,11 +31,11 @@
       "number": "0020",
       "name": "core-types",
       "branch": "0020-core-types",
-      "status": "in_progress"
+      "status": "complete"
     },
     "step": {
-      "current": "implement",
-      "index": "7",
+      "current": "verify",
+      "index": "8",
       "status": "in_progress"
     },
     "progress": {
@@ -72,5 +72,5 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T04:43:10Z"
+  "last_updated": "2026-01-15T04:44:19Z"
 }
