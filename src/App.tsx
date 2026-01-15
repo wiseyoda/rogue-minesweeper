@@ -1,35 +1,33 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useGameStore } from '@/stores';
 import { GameBoard } from '@/components/game';
+import { HUD } from '@/components/hud';
+import type { GameMessage } from '@/components/hud';
 
 /**
- * Get game status display text.
+ * Get game message based on current state.
  */
-function getStatusText(
+function getGameMessage(
   phase: string,
   gameOver: boolean,
   isFirstClick: boolean
-): string {
-  if (gameOver) return 'Game Over - Hit Monster!';
-  if (phase === 'shopping') return 'Level Complete!';
-  if (isFirstClick) return 'Click any cell to start';
-  return 'Playing';
-}
-
-/**
- * Get status text color.
- */
-function getStatusColor(phase: string, gameOver: boolean): string {
-  if (gameOver) return 'text-dungeon-blood';
-  if (phase === 'shopping') return 'text-green-600';
-  return 'text-dungeon-amber';
+): GameMessage | null {
+  if (gameOver) {
+    return { text: 'Game Over - Hit Monster!', type: 'danger' };
+  }
+  if (phase === 'shopping') {
+    return { text: 'Level Complete!', type: 'success' };
+  }
+  if (isFirstClick) {
+    return { text: 'Click any cell to start', type: 'info' };
+  }
+  return null;
 }
 
 function App() {
   // Read state from store
   const run = useGameStore((state) => state.run);
   const gameOver = useGameStore((state) => state.gameOver);
-  const gridConfig = useGameStore((state) => state.gridConfig);
 
   // Get actions
   const startNewRun = useGameStore((state) => state.startNewRun);
@@ -51,9 +49,11 @@ function App() {
     startLevel(1);
   }
 
-  // Calculate progress
-  const totalSafeCells =
-    gridConfig.rows * gridConfig.cols - gridConfig.monsterCount;
+  // Memoize message to prevent unnecessary re-renders
+  const message = useMemo(
+    () => getGameMessage(run.phase, gameOver, run.isFirstClick),
+    [run.phase, gameOver, run.isFirstClick]
+  );
 
   return (
     <div className="min-h-screen bg-dungeon-parchment flex flex-col items-center justify-center p-8">
@@ -62,16 +62,9 @@ function App() {
       </h1>
       <p className="text-dungeon-stone text-sm mb-6">Core Logic POC</p>
 
-      {/* Game Status */}
-      <div className="mb-4 text-center">
-        <p
-          className={`text-xl font-bold ${getStatusColor(run.phase, gameOver)}`}
-        >
-          {getStatusText(run.phase, gameOver, run.isFirstClick)}
-        </p>
-        <p className="text-dungeon-stone text-sm mt-1">
-          Progress: {run.revealedCount} / {totalSafeCells} cells revealed
-        </p>
+      {/* HUD - Heads Up Display */}
+      <div className="mb-4 w-full max-w-md">
+        <HUD message={message} />
       </div>
 
       {/* Game Board */}
