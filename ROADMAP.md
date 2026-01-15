@@ -32,7 +32,7 @@ Phases use **ABBC** format:
 | **Milestone 1: Game State & UI**     |                          |                |                                                  |
 | 1010                                 | **zustand-stores**       | ✅ Complete | State management with persistence                |
 | 1020                                 | game-board-ui            | ✅ Complete | Interactive tile grid renders                    |
-| 1030                                 | hud-components           | ⬜ Not Started | HP, gold, level display working                  |
+| 1030                                 | hud-components           | ✅ Complete | HP, gold, level display working                  |
 | 1040                                 | **ui-integration-poc**   | ⬜ Not Started | **USER GATE**: Full game loop works              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
 | 2010                                 | floor-progression        | ⬜ Not Started | Level advancement and scaling                    |
