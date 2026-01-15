@@ -44,10 +44,12 @@ export interface RunState {
   revealedCount: number;
   /** Number of flags placed this floor */
   flagsPlaced: number;
-  /** True if player took damage this floor (for shieldBattery) */
-  damageTakenThisLevel: boolean;
+  /** Damage taken this floor (for shieldBattery and stats) */
+  damageTakenThisLevel: number;
   /** True if player hasn't clicked yet (for firstClickSafety) */
   isFirstClick: boolean;
+  /** Total damage taken this run (for game over stats) */
+  totalDamageTaken: number;
 }
 
 /**
@@ -76,8 +78,9 @@ export function createInitialRunState(level: number = 1): RunState {
     phase: 'playing',
     revealedCount: 0,
     flagsPlaced: 0,
-    damageTakenThisLevel: false,
+    damageTakenThisLevel: 0,
     isFirstClick: true,
+    totalDamageTaken: 0,
   };
 }
 

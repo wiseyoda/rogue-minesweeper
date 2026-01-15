@@ -47,18 +47,16 @@ created: 2026-01-14
 
 ## Layout
 
-```
-┌────────────────────────────────────┐
-│  ♥ ♥ ♥  |  🛡  |  💰 150  |  L5   │
-├────────────────────────────────────┤
-│  [buff] [buff]                     │
-├────────────────────────────────────┤
-│  "Monster hit! 2 lives remaining"  │
-└────────────────────────────────────┘
-```
+**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
+
+The mockup shows a sidebar layout with:
+- **Vitals Panel**: Segmented HP bar (not hearts), shield count, gold counter
+- **Runes Panel**: Active rune slots with mystic glow
+- **DM Panel**: Animated eye, mood indicator
 
 ## Notes
 
-- Keep styling simple for now (polish in Milestone 6)
-- Use Tailwind utilities
-- Consider animation for value changes (later)
+- **NO EMOJI** - Use SVG icons from mockup (see Icon Library section)
+- **HP bar is segmented** - Not heart icons
+- Reference mockup CSS custom properties for colors
+- Use timing tokens (`--tick`, `--beat`, etc.) for animations

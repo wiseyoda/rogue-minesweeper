@@ -2,8 +2,18 @@
 
 > User experience guidelines and interaction patterns.
 
-**Last Updated**: 2026-01-14
+**Last Updated**: 2026-01-15
 **Status**: ACTIVE
+
+---
+
+## UI Reference
+
+For all visual design questions (colors, typography, tile states, buttons, animations), see:
+
+📄 **[`.specify/reference/ui-mockup-definitive.html`](../reference/ui-mockup-definitive.html)**
+
+This document focuses on **behavior and interaction patterns**, not visual styling.
 
 ---
 

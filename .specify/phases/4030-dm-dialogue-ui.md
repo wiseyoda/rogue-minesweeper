@@ -41,17 +41,29 @@ created: 2026-01-14
 
 ## Layout
 
+**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
+
+The mockup shows a DM Panel in the sidebar with:
+- **Animated watching eye** (not static portrait) - 6s movement cycle
+- **Status indicator** (e.g., "WATCHING", "AMUSED") - not mood text
+- **Dialogue appears in panel** - not a popup box
+
 ```
-┌─────────────────────────────────────┐
-│  [Portrait]  "Oh, you again..."     │
-│              [Mood: Amused]         │
-│                              [x]    │
-└─────────────────────────────────────┘
+┌─────────────────────────────────┐
+│     ┌──────────────────┐        │
+│     │    (o)  EYE      │        │
+│     └──────────────────┘        │
+│       ● WATCHING                │
+│                                 │
+│  "Oh, you again..."            │
+└─────────────────────────────────┘
 ```
 
 ## Notes
 
+- **Eye animates** - subtle movement, not static portrait
 - Keep dialogue short (1-2 sentences)
-- Typewriter effect adds personality
-- Don't block gameplay while showing
-- Position at bottom of screen
+- Typewriter effect for personality
+- Don't block gameplay
+- Use mockup colors: mystic purple for active states
+- Use timing tokens (`--tick`, `--beat`, etc.) from mockup

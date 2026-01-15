@@ -56,6 +56,7 @@ export const useGameStore = create<GameStore>()(
 
       startLevel: (level: number) => {
         const gridConfig = calculateLevelGridConfig(level);
+        const isNewRun = level === 1;
         set((state) => {
           state.grid = null;
           state.gridConfig = gridConfig;
@@ -63,8 +64,12 @@ export const useGameStore = create<GameStore>()(
           state.run.phase = 'playing';
           state.run.revealedCount = 0;
           state.run.flagsPlaced = 0;
-          state.run.damageTakenThisLevel = false;
+          state.run.damageTakenThisLevel = 0;
           state.run.isFirstClick = true;
+          // Only reset total damage on new run, not new level
+          if (isNewRun) {
+            state.run.totalDamageTaken = 0;
+          }
         });
       },
 
@@ -83,6 +88,8 @@ export const useGameStore = create<GameStore>()(
             state.grid = result.grid;
             state.run.isFirstClick = false;
             state.run.revealedCount += result.revealedPositions.length;
+            // Award 1 gold per revealed safe tile
+            state.player.gold += result.revealedPositions.length;
           });
 
           if (result.isWon) {
@@ -103,6 +110,13 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           state.grid = result.grid;
           state.run.revealedCount += result.revealedPositions.length;
+          // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
+          const goldToAdd = result.hitMonster
+            ? result.revealedPositions.length - 1
+            : result.revealedPositions.length;
+          if (goldToAdd > 0) {
+            state.player.gold += goldToAdd;
+          }
         });
 
         // Handle monster hit
@@ -142,6 +156,9 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           let remaining = amount;
 
+          // Track total damage for stats
+          state.run.totalDamageTaken += amount;
+
           // Absorb with shields first
           if (state.player.shields > 0) {
             const absorbed = Math.min(state.player.shields, remaining);
@@ -152,8 +169,10 @@ export const useGameStore = create<GameStore>()(
           // Apply remaining damage to lives
           if (remaining > 0) {
             state.player.lives = Math.max(0, state.player.lives - remaining);
-            state.run.damageTakenThisLevel = true;
           }
+
+          // Track damage this level (includes shielded damage for monster count)
+          state.run.damageTakenThisLevel += amount;
 
           // Check game over
           if (state.player.lives === 0) {

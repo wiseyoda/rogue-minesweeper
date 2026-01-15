@@ -28,15 +28,15 @@
   },
   "orchestration": {
     "phase": {
-      "number": null,
-      "name": null,
-      "branch": null,
-      "status": "not_started"
+      "number": "1040",
+      "name": "ui-integration-poc",
+      "branch": "1040-ui-integration-poc",
+      "status": "in_progress"
     },
     "step": {
-      "current": null,
-      "index": 0,
-      "status": "not_started"
+      "current": "implement",
+      "index": "7",
+      "status": "in_progress"
     },
     "progress": {
       "tasks_completed": 0,
@@ -118,6 +118,7 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T12:55:18Z",
-  "stage": "verify"
+  "last_updated": "2026-01-15T13:50:38Z",
+  "stage": "verify",
+  "next_action": "user_verify"
 }
