@@ -8,7 +8,7 @@
     "type": null,
     "criticality": null,
     "created_at": "2026-01-15T02:46:49Z",
-    "updated_at": "2026-01-15T18:57:22Z"
+    "updated_at": "2026-01-15T19:30:10Z"
   },
   "config": {
     "roadmap_path": "ROADMAP.md",
@@ -28,31 +28,25 @@
   },
   "orchestration": {
     "phase": {
-      "number": "2020",
-      "name": "floor-shop",
-      "branch": "2020-floor-shop",
-      "status": "in_progress"
+      "number": null,
+      "name": null,
+      "branch": null,
+      "status": "not_started"
     },
     "step": {
-      "current": "implement",
-      "index": "7",
-      "status": "in_progress"
+      "current": null,
+      "index": 0,
+      "status": "not_started"
     },
     "progress": {
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
-    },
-    "steps": {
-      "implement": {
-        "tasks_completed": 36,
-        "tasks_total": 37
-      }
     }
   },
   "health": {
     "status": "ready",
-    "last_check": "2026-01-15T18:57:22Z",
+    "last_check": "2026-01-15T19:30:10Z",
     "issues": []
   },
   "actions": {
@@ -142,6 +136,15 @@
         "phase_name": "floor-progression",
         "branch": "2010-floor-progression",
         "completed_at": "2026-01-15T18:57:22Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "2020",
+        "phase_name": "floor-shop",
+        "branch": "2020-floor-shop",
+        "completed_at": "2026-01-15T19:30:10Z",
         "tasks_completed": 0,
         "tasks_total": 0
       }
