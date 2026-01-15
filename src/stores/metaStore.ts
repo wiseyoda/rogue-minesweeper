@@ -12,7 +12,9 @@ import {
   createDefaultPlayerStats,
   isLeveledUpgrade,
   isUnlockableUpgrade,
+  getUpgradeCost,
 } from '@/types';
+import { createInitialUpgradeRegistry } from '@/data/permanentUpgrades';
 
 /**
  * Initial state for the meta store.
@@ -20,7 +22,8 @@ import {
 const initialState = {
   stats: createDefaultGameStats(),
   playerStats: createDefaultPlayerStats(),
-  upgrades: {},
+  upgrades: createInitialUpgradeRegistry(),
+  metaGold: 0,
 } as const;
 
 /**
@@ -54,20 +57,28 @@ export const useMetaStore = create<MetaStore>()(
         },
 
         purchaseUpgrade: (id: string): boolean => {
-          const upgrade = get().upgrades[id];
+          const { upgrades, metaGold } = get();
+          const upgrade = upgrades[id];
           if (!upgrade) return false;
 
-          // Check if purchasable
+          // Check if purchasable (level/unlock status)
           if (isLeveledUpgrade(upgrade)) {
             if (upgrade.level >= upgrade.maxLevel) return false;
           } else if (isUnlockableUpgrade(upgrade)) {
             if (upgrade.unlocked) return false;
           }
 
-          // Apply upgrade
+          // Check gold sufficiency
+          const cost = getUpgradeCost(upgrade);
+          if (metaGold < cost) return false;
+
+          // Apply upgrade and deduct gold
           set((state) => {
             const targetUpgrade = state.upgrades[id];
             if (!targetUpgrade) return;
+
+            // Deduct gold
+            state.metaGold -= cost;
 
             if (isLeveledUpgrade(targetUpgrade)) {
               targetUpgrade.level += 1;
@@ -109,8 +120,28 @@ export const useMetaStore = create<MetaStore>()(
           set(() => ({
             stats: createDefaultGameStats(),
             playerStats: createDefaultPlayerStats(),
-            upgrades: {},
+            upgrades: createInitialUpgradeRegistry(),
+            metaGold: 0,
           }));
+        },
+
+        addMetaGold: (amount: number) => {
+          set((state) => {
+            state.metaGold += amount;
+          });
+        },
+
+        initializeUpgrades: () => {
+          set((state) => {
+            // Merge with existing upgrades to preserve purchased state
+            const fresh = createInitialUpgradeRegistry();
+            Object.keys(fresh).forEach((key) => {
+              const freshUpgrade = fresh[key];
+              if (!state.upgrades[key] && freshUpgrade) {
+                state.upgrades[key] = freshUpgrade;
+              }
+            });
+          });
         },
       })),
       {
@@ -119,6 +150,7 @@ export const useMetaStore = create<MetaStore>()(
           stats: state.stats,
           playerStats: state.playerStats,
           upgrades: state.upgrades,
+          metaGold: state.metaGold,
         }),
       }
     ),

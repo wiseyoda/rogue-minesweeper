@@ -175,7 +175,6 @@ describe('Shop Integration - Full Purchase Flow', () => {
     });
 
     useGameStore.getState().generateShop();
-    const originalItems = [...useGameStore.getState().run.shopItems];
     const goldBefore = useGameStore.getState().player.gold;
 
     // Reroll

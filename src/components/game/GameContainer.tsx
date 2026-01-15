@@ -7,8 +7,9 @@
 
 import { memo, useCallback, useMemo } from 'react';
 import { useGameStore } from '../../stores/gameStore';
+import { useMetaStore } from '../../stores/metaStore';
 import { GameBoard } from './GameBoard';
-import { Panel, WinModal, GameOverModal } from '../ui';
+import { Panel, WinModal, GameOverModal, UpgradeShopModal } from '../ui';
 import { FloorShop } from '../shop';
 import { getFloorConfig } from '@/engine/difficulty';
 import type { GameMessage } from '../hud';
@@ -47,6 +48,10 @@ const selectRerollShop = (state: ReturnType<typeof useGameStore.getState>) =>
   state.rerollShop;
 const selectSetShowShop = (state: ReturnType<typeof useGameStore.getState>) =>
   state.setShowShop;
+const selectSetPhase = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.setPhase;
+const selectRunPhase = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.phase;
 
 /**
  * Container that composes Panel, GameBoard, and modal overlays.
@@ -65,6 +70,7 @@ export const GameContainer = memo(function GameContainer({
   const shopItems = useGameStore(selectShopItems);
   const purchasedIds = useGameStore(selectPurchasedIds);
   const showShop = useGameStore(selectShowShop);
+  const runPhase = useGameStore(selectRunPhase);
 
   // Get actions
   const startNewRun = useGameStore(selectStartNewRun);
@@ -73,6 +79,11 @@ export const GameContainer = memo(function GameContainer({
   const purchaseItem = useGameStore(selectPurchaseItem);
   const rerollShop = useGameStore(selectRerollShop);
   const setShowShop = useGameStore(selectSetShowShop);
+  const setPhase = useGameStore(selectSetPhase);
+
+  // Meta store actions
+  const addMetaGold = useMetaStore((state) => state.addMetaGold);
+  const recordRunEnd = useMetaStore((state) => state.recordRunEnd);
 
   // Calculate monsters avoided (total monsters - monsters hit this level)
   const monstersAvoided = monsterCount - run.damageTakenThisLevel;
@@ -102,7 +113,17 @@ export const GameContainer = memo(function GameContainer({
     startLevel(run.level + 1);
   }, [setShowShop, startLevel, run.level]);
 
-  const handleRetry = useCallback(() => {
+  // Handler for GameOverModal Continue - transitions to upgrade shop
+  const handleGameOverContinue = useCallback(() => {
+    // Record run stats and transfer gold to meta gold
+    recordRunEnd(run.level, playerGold);
+    addMetaGold(playerGold);
+    // Transition to upgrade shop phase
+    setPhase('upgradeShop');
+  }, [recordRunEnd, addMetaGold, setPhase, run.level, playerGold]);
+
+  // Handler for UpgradeShopModal Continue - starts new run
+  const handleUpgradeShopContinue = useCallback(() => {
     startNewRun();
     startLevel(1);
   }, [startNewRun, startLevel]);
@@ -110,8 +131,11 @@ export const GameContainer = memo(function GameContainer({
   // Show win modal when phase is 'shopping' and shop not yet open
   const showWinModal = run.phase === 'shopping' && !showShop;
 
-  // Show game over modal when game over flag is set
-  const showGameOverModal = gameOver;
+  // Show game over modal when game over flag is set and not in upgrade shop
+  const showGameOverModal = gameOver && runPhase === 'gameOver';
+
+  // Show upgrade shop modal when in upgradeShop phase
+  const showUpgradeShopModal = runPhase === 'upgradeShop';
 
   return (
     <>
@@ -151,8 +175,13 @@ export const GameContainer = memo(function GameContainer({
           tilesRevealed={run.revealedCount}
           monstersFlagged={run.flagsPlaced}
           damageTaken={run.totalDamageTaken}
-          onRetry={handleRetry}
+          onContinue={handleGameOverContinue}
         />
+      )}
+
+      {/* Upgrade Shop Modal */}
+      {showUpgradeShopModal && (
+        <UpgradeShopModal onContinue={handleUpgradeShopContinue} />
       )}
     </>
   );

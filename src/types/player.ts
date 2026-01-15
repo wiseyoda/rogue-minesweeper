@@ -83,6 +83,12 @@ export interface PlayerStats {
   startingGold: number;
   /** If true, first click on a monster flags it instead of taking damage */
   firstClickSafety: boolean;
+  /** Gold find bonus multiplier (0.0 = no bonus, 0.1 = +10%) */
+  goldFindBonus: number;
+  /** Number of shields at run start */
+  startingShields: number;
+  /** Number of random buffs to apply at run start (from Preparation upgrade) */
+  preparationLevel: number;
 }
 
 /**
@@ -107,5 +113,8 @@ export function createDefaultPlayerStats(): PlayerStats {
     maxLives: 3,
     startingGold: 0,
     firstClickSafety: false,
+    goldFindBonus: 0,
+    startingShields: 0,
+    preparationLevel: 0,
   };
 }

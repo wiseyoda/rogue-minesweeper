@@ -50,10 +50,14 @@ describe('GameContainer', () => {
     expect(screen.queryByText('You Died!')).not.toBeInTheDocument();
   });
 
-  it('shows GameOverModal when gameOver is true', () => {
+  it('shows GameOverModal when gameOver is true and phase is gameOver', () => {
     useGameStore.getState().startLevel(1);
-    // Set lives to 1 and take damage to trigger game over
-    useGameStore.setState({ player: { ...useGameStore.getState().player, lives: 0 }, gameOver: true });
+    // Set lives to 0 and trigger game over (phase must be 'gameOver' to show modal)
+    useGameStore.setState({
+      player: { ...useGameStore.getState().player, lives: 0 },
+      gameOver: true,
+      run: { ...useGameStore.getState().run, phase: 'gameOver' },
+    });
     render(<GameContainer message={null} />);
     expect(screen.getByText('You Died!')).toBeInTheDocument();
   });

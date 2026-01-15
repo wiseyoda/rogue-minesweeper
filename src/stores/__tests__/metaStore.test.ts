@@ -5,6 +5,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useMetaStore } from '../metaStore';
+import { createInitialUpgradeRegistry } from '@/data/permanentUpgrades';
 import type { LeveledUpgrade, UnlockableUpgrade } from '@/types';
 
 describe('metaStore', () => {
@@ -25,8 +26,12 @@ describe('metaStore', () => {
         maxLives: 3,
         startingGold: 0,
         firstClickSafety: false,
+        goldFindBonus: 0,
+        startingShields: 0,
+        preparationLevel: 0,
       },
       upgrades: {},
+      metaGold: 0,
     });
   });
 
@@ -46,6 +51,64 @@ describe('metaStore', () => {
     it('should have empty upgrades', () => {
       const state = useMetaStore.getState();
       expect(Object.keys(state.upgrades)).toHaveLength(0);
+    });
+
+    it('should have zero metaGold', () => {
+      const state = useMetaStore.getState();
+      expect(state.metaGold).toBe(0);
+    });
+  });
+
+  describe('addMetaGold', () => {
+    it('should add gold to metaGold', () => {
+      useMetaStore.getState().addMetaGold(100);
+      expect(useMetaStore.getState().metaGold).toBe(100);
+    });
+
+    it('should accumulate gold on multiple calls', () => {
+      useMetaStore.getState().addMetaGold(50);
+      useMetaStore.getState().addMetaGold(30);
+      useMetaStore.getState().addMetaGold(20);
+      expect(useMetaStore.getState().metaGold).toBe(100);
+    });
+  });
+
+  describe('initializeUpgrades', () => {
+    it('should initialize upgrades when empty', () => {
+      useMetaStore.getState().initializeUpgrades();
+      const upgrades = useMetaStore.getState().upgrades;
+      expect(Object.keys(upgrades).length).toBeGreaterThan(0);
+    });
+
+    it('should preserve existing upgrade state when merging', () => {
+      // First initialize with default state
+      useMetaStore.getState().initializeUpgrades();
+
+      // Add some gold and purchase an upgrade
+      useMetaStore.setState((state) => ({
+        ...state,
+        metaGold: 500,
+      }));
+
+      // Get vitality and modify its level
+      const upgrades = useMetaStore.getState().upgrades;
+      if (upgrades.vitality && upgrades.vitality.type === 'leveled') {
+        useMetaStore.setState((state) => ({
+          ...state,
+          upgrades: {
+            ...state.upgrades,
+            vitality: { ...upgrades.vitality, level: 2 } as LeveledUpgrade,
+          },
+        }));
+      }
+
+      // Re-initialize (should preserve existing state)
+      useMetaStore.getState().initializeUpgrades();
+
+      const finalVitality = useMetaStore.getState().upgrades.vitality;
+      if (finalVitality && finalVitality.type === 'leveled') {
+        expect(finalVitality.level).toBe(2);
+      }
     });
   });
 
@@ -90,6 +153,77 @@ describe('metaStore', () => {
       const result = useMetaStore.getState().purchaseUpgrade('nonexistent');
 
       expect(result).toBe(false);
+    });
+
+    it('should deduct correct metaGold when purchasing', () => {
+      const upgrade: LeveledUpgrade = {
+        type: 'leveled',
+        name: 'Test',
+        description: 'Test upgrade',
+        baseCost: 100,
+        level: 0,
+        maxLevel: 5,
+        costIncrease: 2,
+        apply: () => {},
+      };
+
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: { ...state.upgrades, test: upgrade },
+        metaGold: 500,
+      }));
+
+      useMetaStore.getState().purchaseUpgrade('test');
+
+      expect(useMetaStore.getState().metaGold).toBe(400); // 500 - 100
+    });
+
+    it('should return false when insufficient metaGold', () => {
+      const upgrade: LeveledUpgrade = {
+        type: 'leveled',
+        name: 'Test',
+        description: 'Test upgrade',
+        baseCost: 100,
+        level: 0,
+        maxLevel: 5,
+        costIncrease: 2,
+        apply: () => {},
+      };
+
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: { ...state.upgrades, test: upgrade },
+        metaGold: 50, // Not enough for 100 cost
+      }));
+
+      const result = useMetaStore.getState().purchaseUpgrade('test');
+
+      expect(result).toBe(false);
+      expect(useMetaStore.getState().metaGold).toBe(50); // Gold unchanged
+    });
+
+    it('should deduct increased cost for higher levels', () => {
+      const upgrade: LeveledUpgrade = {
+        type: 'leveled',
+        name: 'Test',
+        description: 'Test upgrade',
+        baseCost: 100,
+        level: 1, // Already level 1
+        maxLevel: 5,
+        costIncrease: 2, // Cost doubles each level
+        apply: () => {},
+      };
+
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: { ...state.upgrades, test: upgrade },
+        metaGold: 500,
+      }));
+
+      useMetaStore.getState().purchaseUpgrade('test');
+
+      // Cost at level 1 is baseCost * costIncrease = 100 * 2 = 200
+      expect(useMetaStore.getState().metaGold).toBe(300); // 500 - 200
     });
 
     it('should return false when leveled upgrade at max level', () => {
@@ -147,6 +281,7 @@ describe('metaStore', () => {
       useMetaStore.setState((state) => ({
         ...state,
         upgrades: { ...state.upgrades, test: upgrade },
+        metaGold: 500, // Provide gold to purchase
       }));
 
       const result = useMetaStore.getState().purchaseUpgrade('test');
@@ -169,6 +304,7 @@ describe('metaStore', () => {
       useMetaStore.setState((state) => ({
         ...state,
         upgrades: { ...state.upgrades, test: upgrade },
+        metaGold: 500, // Provide gold to purchase
       }));
 
       const result = useMetaStore.getState().purchaseUpgrade('test');
@@ -278,24 +414,38 @@ describe('metaStore', () => {
       expect(state.stats.maxGoldRun).toBe(0);
     });
 
-    it('should clear upgrades', () => {
-      const upgrade: UnlockableUpgrade = {
-        type: 'unlockable',
-        name: 'Test',
-        description: 'Test',
-        baseCost: 100,
-        unlocked: true,
-        apply: () => {},
-      };
-
-      useMetaStore.setState((state) => ({
-        ...state,
-        upgrades: { ...state.upgrades, test: upgrade },
-      }));
+    it('should reset metaGold to zero', () => {
+      useMetaStore.getState().addMetaGold(500);
 
       useMetaStore.getState().reset();
 
-      expect(Object.keys(useMetaStore.getState().upgrades)).toHaveLength(0);
+      expect(useMetaStore.getState().metaGold).toBe(0);
+    });
+
+    it('should reset upgrades to initial (unpurchased) state', () => {
+      // First set up some purchased upgrades
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: createInitialUpgradeRegistry(),
+        metaGold: 1000,
+      }));
+
+      // Purchase an upgrade (vitality)
+      useMetaStore.getState().purchaseUpgrade('vitality');
+      const vitalityBeforeReset = useMetaStore.getState().upgrades.vitality;
+      if (vitalityBeforeReset?.type === 'leveled') {
+        expect(vitalityBeforeReset.level).toBe(1);
+      }
+
+      // Reset the store
+      useMetaStore.getState().reset();
+
+      // After reset, upgrades should be back to initial state (level 0)
+      const upgrades = useMetaStore.getState().upgrades;
+      const vitalityAfterReset = upgrades.vitality;
+      if (vitalityAfterReset?.type === 'leveled') {
+        expect(vitalityAfterReset.level).toBe(0);
+      }
     });
   });
 

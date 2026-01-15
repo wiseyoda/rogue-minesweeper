@@ -17,6 +17,7 @@ created: 2026-01-14
 - Number pop animations
 - Color pulses
 - Framer Motion integration
+- UpgradeShopModal polish (see BACKLOG.md BL-002)
 
 ## Deliverables
 

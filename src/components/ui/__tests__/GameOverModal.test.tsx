@@ -14,7 +14,7 @@ describe('GameOverModal', () => {
     tilesRevealed: 45,
     monstersFlagged: 12,
     damageTaken: 4,
-    onRetry: vi.fn(),
+    onContinue: vi.fn(),
   };
 
   it('renders with correct title', () => {
@@ -52,13 +52,13 @@ describe('GameOverModal', () => {
     expect(screen.getByText('6')).toBeInTheDocument();
   });
 
-  it('calls onRetry when Try Again button is clicked', () => {
-    const onRetry = vi.fn();
-    render(<GameOverModal {...defaultProps} onRetry={onRetry} />);
+  it('calls onContinue when Continue button is clicked', () => {
+    const onContinue = vi.fn();
+    render(<GameOverModal {...defaultProps} onContinue={onContinue} />);
 
-    fireEvent.click(screen.getByText('Try Again'));
+    fireEvent.click(screen.getByText('Continue'));
 
-    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(onContinue).toHaveBeenCalledTimes(1);
   });
 
   it('has correct accessibility attributes', () => {
