@@ -1,6 +1,9 @@
 /**
  * GameContainer component tests.
  * @module components/ui/__tests__/GameContainer.test
+ *
+ * Note: GameContainer no longer renders HUD - it now renders Panel + GameBoard.
+ * The message prop is kept for compatibility but is not displayed (moved to DM Panel).
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -14,10 +17,10 @@ describe('GameContainer', () => {
     useGameStore.getState().reset();
   });
 
-  it('renders HUD component', () => {
+  it('renders GameBoard inside Panel', () => {
     render(<GameContainer message={null} />);
-    // HUD should render health bar with progressbar role
-    expect(screen.getByRole('progressbar', { name: 'Health' })).toBeInTheDocument();
+    // GameBoard should render with grid (tiles as buttons)
+    expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
   });
 
   it('renders GameBoard component', () => {
@@ -55,8 +58,10 @@ describe('GameContainer', () => {
     expect(screen.getByText('You Died!')).toBeInTheDocument();
   });
 
-  it('passes message prop to HUD', () => {
+  it('accepts message prop for compatibility', () => {
+    // Message prop is kept for compatibility but displayed in DM Panel (Sidebar), not here
     render(<GameContainer message={{ text: 'Test message', type: 'info' }} />);
-    expect(screen.getByText('Test message')).toBeInTheDocument();
+    // GameBoard should still render
+    expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
   });
 });

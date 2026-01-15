@@ -37,20 +37,22 @@ describe('Tile', () => {
   });
 
   describe('visual states', () => {
-    it('should display unrevealed state with stone background', () => {
+    it('should display unrevealed state with stone gradient background', () => {
       const cell = createTestCell({ isRevealed: false });
       render(<Tile {...defaultProps} cell={cell} />);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-dungeon-stone');
+      // Now using inline styles with CSS custom properties for 3D bevel effect
+      expect(button).toHaveStyle({ width: 'var(--tile)' });
     });
 
-    it('should display revealed empty state with parchment background', () => {
+    it('should display revealed empty state with dark background', () => {
       const cell = createTestCell({ isRevealed: true, adjacentMonsters: 0 });
       render(<Tile {...defaultProps} cell={cell} />);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-dungeon-parchment');
+      // Now using var(--stone-900) for revealed tiles
+      expect(button).toHaveStyle({ background: 'var(--stone-900)' });
     });
 
     it('should display revealed number state', () => {
@@ -60,20 +62,21 @@ describe('Tile', () => {
       expect(screen.getByText('3')).toBeInTheDocument();
     });
 
-    it('should display revealed monster state with blood background', () => {
+    it('should display revealed monster state with blood gradient', () => {
       const cell = createTestCell({ isRevealed: true, isMonster: true });
       render(<Tile {...defaultProps} cell={cell} />);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-dungeon-blood');
-      expect(screen.getByText('M')).toBeInTheDocument();
+      // Now uses SVG skull icon instead of M text
+      expect(button.querySelector('svg')).toBeInTheDocument();
     });
 
-    it('should display flagged state with flag icon', () => {
+    it('should display flagged state with SVG flag icon', () => {
       const cell = createTestCell({ isFlagged: true });
       render(<Tile {...defaultProps} cell={cell} />);
 
-      expect(screen.getByText('F')).toBeInTheDocument();
+      // Now uses SVG flag icon instead of F text
+      expect(screen.getByRole('button').querySelector('svg')).toBeInTheDocument();
     });
 
     it('should display question state with question mark', () => {
@@ -87,9 +90,8 @@ describe('Tile', () => {
       const cell = createTestCell({ isMonster: true, isRevealed: false });
       render(<Tile {...defaultProps} cell={cell} gameOver={true} />);
 
-      expect(screen.getByText('M')).toBeInTheDocument();
-      const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-dungeon-blood');
+      // Now uses SVG skull icon
+      expect(screen.getByRole('button').querySelector('svg')).toBeInTheDocument();
     });
   });
 

@@ -34,7 +34,7 @@ Phases use **ABBC** format:
 | 1020                                 | game-board-ui            | ✅ Complete | Interactive tile grid renders                    |
 | 1030                                 | hud-components           | ✅ Complete | HP, gold, level display working                  |
 | 1040                                 | **ui-integration-poc**   | ✅ Complete | **USER GATE**: Full game loop works              |
-| 1041                                 | design-system-integration | ⬜ Not Started | Mockup design implemented in React              |
+| 1041                                 | design-system-integration | ✅ Complete | Mockup design implemented in React              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
 | 2010                                 | floor-progression        | ⬜ Not Started | Level advancement and scaling                    |
 | 2020                                 | floor-shop               | ⬜ Not Started | Between-floor shop UI and logic                  |

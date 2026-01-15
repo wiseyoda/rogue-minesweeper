@@ -1,0 +1,124 @@
+/**
+ * ATMOSPHERE LAYERS
+ * Source: ui-mockup-definitive.html
+ *
+ * Fixed-position background effects that create the "living dungeon" feel.
+ * Layers are stacked by z-index: brick (0) → vignette (1) → aura (1) → particles (2) → scanlines (100)
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRICK PATTERN - Hand-crafted dungeon walls
+   ═══════════════════════════════════════════════════════════════════════════ */
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16"><rect fill="%2310101a"/><rect x="0" y="0" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="16" y="0" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="8" y="8" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="24" y="8" width="8" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="0" y="8" width="8" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/></svg>');
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VIGNETTE - The darkness closes in
+   ═══════════════════════════════════════════════════════════════════════════ */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    transparent 0%,
+    transparent 30%,
+    rgba(5, 5, 10, 0.4) 60%,
+    rgba(5, 5, 10, 0.9) 100%
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MYSTIC AURA - The dungeon's magic seeps through
+   ═══════════════════════════════════════════════════════════════════════════ */
+.mystic-aura {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 350px;
+  background: radial-gradient(ellipse, rgba(112, 48, 176, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  animation: aura-breathe 8s ease-in-out infinite;
+}
+
+@keyframes aura-breathe {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.15);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLE FIELD - Dust in ancient halls
+   ═══════════════════════════════════════════════════════════════════════════ */
+.particle-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--bone);
+  opacity: 0;
+  animation: particle-float 20s linear infinite;
+}
+
+/* Stagger particles across the screen */
+.particle:nth-child(1) { left: 8%;  animation-delay: 0s; }
+.particle:nth-child(2) { left: 18%; animation-delay: -3s; }
+.particle:nth-child(3) { left: 32%; animation-delay: -7s; }
+.particle:nth-child(4) { left: 48%; animation-delay: -11s; }
+.particle:nth-child(5) { left: 62%; animation-delay: -13s; }
+.particle:nth-child(6) { left: 78%; animation-delay: -16s; }
+.particle:nth-child(7) { left: 88%; animation-delay: -19s; }
+.particle:nth-child(8) { left: 95%; animation-delay: -5s; }
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateY(-20px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCANLINES - Subtle CRT effect
+   ═══════════════════════════════════════════════════════════════════════════ */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.03) 3px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}

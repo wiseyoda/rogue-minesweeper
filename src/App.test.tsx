@@ -14,14 +14,15 @@ describe('App', () => {
     expect(screen.getByText('DUNGEON DELVER')).toBeInTheDocument();
   });
 
-  it('renders the POC subtitle', () => {
+  it('renders the subtitle', () => {
     render(<App />);
-    expect(screen.getByText('Core Logic POC')).toBeInTheDocument();
+    expect(screen.getByText('Roguelike Minesweeper')).toBeInTheDocument();
   });
 
-  it('renders the initial game status', () => {
+  it('renders the sidebar with DM Panel', () => {
     render(<App />);
-    expect(screen.getByText('Click any cell to start')).toBeInTheDocument();
+    // DM Panel shows "WATCHING" status indicator
+    expect(screen.getByText('WATCHING')).toBeInTheDocument();
   });
 
   it('renders grid cells based on gridConfig', () => {

@@ -1,0 +1,139 @@
+/**
+ * VITALS PANEL
+ * Source: ui-mockup-definitive.html
+ *
+ * Health bar (segmented), shields, gold display.
+ * Life hangs by a thread.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VITALS CONTAINER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.vitals-panel {
+  padding: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEALTH SECTION
+   ═══════════════════════════════════════════════════════════════════════════ */
+.health-section {
+  margin-bottom: 12px;
+}
+
+.health-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+
+.health-label {
+  font-size: 6px;
+  color: var(--stone-300);
+  letter-spacing: 2px;
+}
+
+.health-value {
+  font-size: 10px;
+  color: var(--blood-bright);
+  text-shadow: 0 0 6px var(--blood-dark);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEGMENTED HEALTH BAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+.health-bar {
+  height: 18px;
+  background: var(--void);
+  border: 2px solid var(--stone-700);
+  padding: 2px;
+  display: flex;
+  gap: 1px;
+  box-shadow: inset 2px 2px 4px var(--abyss);
+}
+
+.health-seg {
+  flex: 1;
+  transition: all var(--beat);
+}
+
+.health-seg.filled {
+  background: linear-gradient(180deg, var(--blood-bright) 0%, var(--blood) 60%, var(--blood-dark) 100%);
+  box-shadow: 0 0 4px var(--blood);
+}
+
+.health-seg.empty {
+  background: var(--stone-850);
+}
+
+/* Critical health animation */
+.health-bar.critical .health-seg.filled {
+  animation: health-critical 0.4s ease-in-out infinite;
+}
+
+@keyframes health-critical {
+  0%, 100% { box-shadow: 0 0 4px var(--blood); }
+  50% { box-shadow: 0 0 10px var(--blood-bright); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESOURCE CARDS (Gold, Shields)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.resource-card {
+  background: var(--stone-850);
+  border: 2px solid var(--stone-700);
+  padding: 10px 8px;
+  text-align: center;
+  transition: all var(--beat);
+  cursor: default;
+}
+
+.resource-card:hover {
+  border-color: var(--stone-600);
+  background: var(--stone-800);
+}
+
+.resource-card.gold:hover {
+  border-color: var(--gold-dark);
+  box-shadow: 0 0 12px var(--gold-shadow);
+}
+
+.resource-card.shields:hover {
+  border-color: var(--ice-dark);
+  box-shadow: 0 0 12px rgba(32, 144, 176, 0.2);
+}
+
+.resource-icon {
+  margin-bottom: 4px;
+  transition: transform var(--beat);
+}
+
+.resource-card:hover .resource-icon {
+  transform: scale(1.1);
+}
+
+.resource-val {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.resource-val.gold-val {
+  color: var(--gold-bright);
+  text-shadow: 0 0 6px var(--gold-dark);
+}
+
+.resource-val.shield-val {
+  color: var(--ice-bright);
+}
+
+.resource-name {
+  font-size: 5px;
+  color: var(--stone-300);
+  letter-spacing: 2px;
+}

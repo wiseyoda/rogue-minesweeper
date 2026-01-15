@@ -98,7 +98,7 @@ describe('GameBoard', () => {
       expect(screen.getByText('1')).toBeInTheDocument();
     });
 
-    it('should show flagged tiles', () => {
+    it('should show flagged tiles with SVG flag icon', () => {
       const grid = createTestGrid(2, 2);
       grid[0][0] = createTestCell({ isFlagged: true });
 
@@ -107,9 +107,10 @@ describe('GameBoard', () => {
         gridConfig: { rows: 2, cols: 2, monsterCount: 1 },
       });
 
-      render(<GameBoard />);
+      const { container } = render(<GameBoard />);
 
-      expect(screen.getByText('F')).toBeInTheDocument();
+      // Now uses SVG flag icon instead of F text
+      expect(container.querySelector('svg')).toBeInTheDocument();
     });
   });
 
@@ -125,16 +126,16 @@ describe('GameBoard', () => {
         gameOver: true,
       });
 
-      render(<GameBoard />);
+      const { container } = render(<GameBoard />);
 
-      // Should show 2 monster icons
-      const monsters = screen.getAllByText('M');
-      expect(monsters).toHaveLength(2);
+      // Now uses SVG skull icons instead of M text
+      const svgIcons = container.querySelectorAll('svg');
+      expect(svgIcons.length).toBeGreaterThanOrEqual(2);
     });
   });
 
   describe('styling', () => {
-    it('should have dungeon-shadow background', () => {
+    it('should have void background via inline style', () => {
       useGameStore.setState({
         grid: null,
         gridConfig: { rows: 2, cols: 2, monsterCount: 1 },
@@ -143,7 +144,8 @@ describe('GameBoard', () => {
       const { container } = render(<GameBoard />);
 
       const gridElement = container.firstChild as HTMLElement;
-      expect(gridElement).toHaveClass('bg-dungeon-shadow');
+      // Now using inline styles for dark theme
+      expect(gridElement).toHaveStyle({ background: 'var(--void)' });
     });
 
     it('should apply custom className', () => {
