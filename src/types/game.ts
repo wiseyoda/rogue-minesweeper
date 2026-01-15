@@ -5,6 +5,7 @@
 
 import type { Grid, GridConfig } from './grid';
 import type { PlayerState } from './player';
+import type { ShopItem } from './item';
 
 /**
  * Current phase of the game.
@@ -50,6 +51,14 @@ export interface RunState {
   isFirstClick: boolean;
   /** Total damage taken this run (for game over stats) */
   totalDamageTaken: number;
+  /** Current shop items (populated when entering shop) */
+  shopItems: ShopItem[];
+  /** IDs of items purchased this shop visit */
+  purchasedIds: string[];
+  /** Whether the shop modal is currently shown */
+  showShop: boolean;
+  /** Number of safe tiles to reveal at level start (from Reveal Scroll buff) */
+  pendingRevealTiles?: number;
 }
 
 /**
@@ -81,6 +90,9 @@ export function createInitialRunState(level: number = 1): RunState {
     damageTakenThisLevel: 0,
     isFirstClick: true,
     totalDamageTaken: 0,
+    shopItems: [],
+    purchasedIds: [],
+    showShop: false,
   };
 }
 

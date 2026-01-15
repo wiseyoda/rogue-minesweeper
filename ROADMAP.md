@@ -37,7 +37,7 @@ Phases use **ABBC** format:
 | 1041                                 | design-system-integration | ✅ Complete | Mockup design implemented in React              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
 | 2010                                 | floor-progression        | ✅ Complete | Level advancement and scaling                    |
-| 2020                                 | floor-shop               | ⬜ Not Started | Between-floor shop UI and logic                  |
+| 2020                                 | floor-shop               | ✅ Complete | Between-floor shop UI and logic                  |
 | 2030                                 | meta-progression         | ⬜ Not Started | Permanent upgrades persist                       |
 | 2040                                 | meta-shop                | ⬜ Not Started | End-of-run upgrade shop                          |
 | 2050                                 | **progression-poc**      | ⬜ Not Started | **USER GATE**: Complete run loop works           |
@@ -256,3 +256,14 @@ Open this file in a browser to see:
 - **Segmented health bar** (not continuous)
 
 See also: `.specify/memory/design-system.md` for quick reference tables.
+
+---
+
+## Backlog
+
+Items captured for future triage. Run `/speckit.backlog` to assign to phases.
+
+| Item | Description | Priority | Notes |
+|------|-------------|----------|-------|
+| [Recommendation] Add more shop items for variety (healing, buffs, utility) | Added 2026-01-15 | - | |
+| [Deferred from 2020] T036: Add purchase confirmation animation - P3 polish item | Added 2026-01-15 | - | |

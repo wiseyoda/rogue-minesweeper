@@ -19,6 +19,11 @@ import {
   revealCell as engineRevealCell,
   toggleFlag as engineToggleFlag,
 } from '@/engine';
+import {
+  generateShopItems,
+  getShopItem,
+  REROLL_COST,
+} from '@/data/shopItems';
 
 /**
  * Initial state for the game store.
@@ -57,6 +62,8 @@ export const useGameStore = create<GameStore>()(
       startLevel: (level: number) => {
         const floorConfig = getFloorConfig(level);
         const isNewRun = level === 1;
+        const { player } = get();
+        const nextBuffs = player.nextLevelBuffs;
         set((state) => {
           state.grid = null;
           state.gridConfig = floorConfig;
@@ -66,10 +73,29 @@ export const useGameStore = create<GameStore>()(
           state.run.flagsPlaced = 0;
           state.run.damageTakenThisLevel = 0;
           state.run.isFirstClick = true;
+          // Clear shop state
+          state.run.shopItems = [];
+          state.run.purchasedIds = [];
+          state.run.showShop = false;
           // Only reset total damage on new run, not new level
           if (isNewRun) {
             state.run.totalDamageTaken = 0;
           }
+          // Clear activeBuffs from previous level (single-level buffs expire)
+          state.player.activeBuffs = {};
+          // Apply nextLevelBuffs to activeBuffs (T030)
+          if (nextBuffs.goldMagnet) {
+            state.player.activeBuffs.goldMagnet = true;
+          }
+          if (nextBuffs.shields && nextBuffs.shields > 0) {
+            state.player.shields += nextBuffs.shields;
+          }
+          // Store revealTiles count in run state to apply after grid init
+          if (nextBuffs.revealTiles && nextBuffs.revealTiles > 0) {
+            state.run.pendingRevealTiles = nextBuffs.revealTiles;
+          }
+          // Clear nextLevelBuffs after applying (T031)
+          state.player.nextLevelBuffs = {};
         });
       },
 
@@ -83,17 +109,57 @@ export const useGameStore = create<GameStore>()(
         if (run.isFirstClick) {
           const newGrid = initializeGrid(gridConfig, position);
           const result = engineRevealCell(newGrid, position);
+          let currentGrid = result.grid;
+          let totalRevealed = result.revealedPositions.length;
+
+          // Apply pending reveal tiles buff (from Reveal Scroll)
+          const pendingReveal = run.pendingRevealTiles ?? 0;
+          if (pendingReveal > 0) {
+            // Find all unrevealed safe (non-monster) tiles
+            const unrevealedSafe: Array<{ row: number; col: number }> = [];
+            for (let r = 0; r < currentGrid.length; r++) {
+              for (let c = 0; c < currentGrid[r].length; c++) {
+                const cell = currentGrid[r][c];
+                if (!cell.isRevealed && !cell.isMonster) {
+                  unrevealedSafe.push({ row: r, col: c });
+                }
+              }
+            }
+
+            // Randomly reveal up to pendingReveal tiles
+            const toReveal = Math.min(pendingReveal, unrevealedSafe.length);
+            for (let i = 0; i < toReveal; i++) {
+              // Pick a random unrevealed safe tile
+              const randomIndex = Math.floor(Math.random() * unrevealedSafe.length);
+              const tilePos = unrevealedSafe[randomIndex];
+              unrevealedSafe.splice(randomIndex, 1);
+
+              // Reveal it
+              const revealResult = engineRevealCell(currentGrid, tilePos);
+              currentGrid = revealResult.grid;
+              totalRevealed += revealResult.revealedPositions.length;
+            }
+          }
 
           set((state) => {
-            state.grid = result.grid;
+            state.grid = currentGrid;
             state.run.isFirstClick = false;
-            state.run.revealedCount += result.revealedPositions.length;
-            // Award 1 gold per revealed safe tile
-            state.player.gold += result.revealedPositions.length;
+            state.run.revealedCount += totalRevealed;
+            state.run.pendingRevealTiles = undefined; // Clear the buff
+            // Award 1 gold per revealed safe tile (2x if goldMagnet active)
+            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
+            state.player.gold += totalRevealed * goldMultiplier;
           });
 
-          if (result.isWon) {
-            get().setPhase('shopping');
+          // Check win condition after all reveals
+          const currentState = get();
+          const finalGrid = currentState.grid;
+          if (finalGrid) {
+            const totalCells = gridConfig.rows * gridConfig.cols;
+            const safeTotal = totalCells - gridConfig.monsterCount;
+            if (currentState.run.revealedCount >= safeTotal) {
+              get().setPhase('shopping');
+            }
           }
           return;
         }
@@ -111,11 +177,13 @@ export const useGameStore = create<GameStore>()(
           state.grid = result.grid;
           state.run.revealedCount += result.revealedPositions.length;
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
+          // 2x gold if goldMagnet active
           const goldToAdd = result.hitMonster
             ? result.revealedPositions.length - 1
             : result.revealedPositions.length;
           if (goldToAdd > 0) {
-            state.player.gold += goldToAdd;
+            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
+            state.player.gold += goldToAdd * goldMultiplier;
           }
         });
 
@@ -212,6 +280,57 @@ export const useGameStore = create<GameStore>()(
 
       reset: () => {
         set(() => ({ ...initialState }));
+      },
+
+      generateShop: () => {
+        const items = generateShopItems();
+        set((state) => {
+          state.run.shopItems = items;
+          state.run.purchasedIds = [];
+        });
+      },
+
+      purchaseItem: (itemId: string) => {
+        const { player, run } = get();
+        const item = getShopItem(itemId);
+
+        // Validate purchase
+        if (!item) return false;
+        if (player.gold < item.cost) return false;
+        if (run.purchasedIds.includes(itemId)) return false;
+
+        // Apply purchase
+        set((state) => {
+          state.player.gold -= item.cost;
+          state.run.purchasedIds.push(itemId);
+          // Apply item effect directly to player state
+          item.apply(state.player, createDefaultPlayerStats());
+        });
+
+        return true;
+      },
+
+      rerollShop: () => {
+        const { player } = get();
+
+        // Check if can afford reroll
+        if (player.gold < REROLL_COST) return false;
+
+        // Deduct cost and regenerate
+        const newItems = generateShopItems();
+        set((state) => {
+          state.player.gold -= REROLL_COST;
+          state.run.shopItems = newItems;
+          // Keep purchasedIds - can't re-buy previously purchased items
+        });
+
+        return true;
+      },
+
+      setShowShop: (show: boolean) => {
+        set((state) => {
+          state.run.showShop = show;
+        });
       },
     })),
     { name: 'GameStore' }

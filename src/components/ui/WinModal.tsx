@@ -17,8 +17,8 @@ export interface WinModalProps {
   monstersAvoided: number;
   /** Gold bonus awarded for completing this floor */
   floorBonus: number;
-  /** Called when Continue button clicked */
-  onContinue: () => void;
+  /** Called when Enter Shop button clicked */
+  onEnterShop: () => void;
 }
 
 /**
@@ -30,7 +30,7 @@ export const WinModal = memo(function WinModal({
   goldCollected,
   monstersAvoided,
   floorBonus,
-  onContinue,
+  onEnterShop,
 }: WinModalProps) {
   return (
     <div
@@ -92,7 +92,7 @@ export const WinModal = memo(function WinModal({
         </div>
 
         <button
-          onClick={onContinue}
+          onClick={onEnterShop}
           className="w-full py-3 transition-all"
           style={{
             background: 'linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%)',
@@ -103,7 +103,7 @@ export const WinModal = memo(function WinModal({
             cursor: 'pointer',
           }}
         >
-          Continue
+          Enter Shop
         </button>
       </div>
     </div>
