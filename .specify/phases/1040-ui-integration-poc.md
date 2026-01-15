@@ -49,7 +49,11 @@ User must manually verify complete game loop:
 
 ## Notes
 
+**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
+
 - This is the complete single-floor game
 - No shops or progression yet (next milestone)
 - Focus on tight, responsive gameplay feel
 - Must pass before proceeding to Milestone 2
+- Layout should match mockup: game board + sidebar (DM, Vitals, Runes)
+- Use mockup atmosphere layers (brick, vignette, particles, scanlines)

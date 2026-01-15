@@ -169,10 +169,12 @@ describe('gameStore', () => {
       expect(state.run.phase).toBe('gameOver');
     });
 
-    it('should set damageTakenThisLevel when lives are damaged', () => {
+    it('should increment damageTakenThisLevel when damage is taken', () => {
       useGameStore.getState().takeDamage(1);
+      expect(useGameStore.getState().run.damageTakenThisLevel).toBe(1);
 
-      expect(useGameStore.getState().run.damageTakenThisLevel).toBe(true);
+      useGameStore.getState().takeDamage(2);
+      expect(useGameStore.getState().run.damageTakenThisLevel).toBe(3);
     });
   });
 

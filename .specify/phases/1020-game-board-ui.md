@@ -61,6 +61,11 @@ interface TileProps {
 
 ## Notes
 
+**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
+
 - Use CSS Grid for layout
 - Consider memo for Tile to prevent unnecessary re-renders
-- Add subtle hover effects for unrevealed tiles
+- **40px tiles** with 2px gap (from mockup)
+- **No rounded corners** on tiles
+- Use mockup colors and number color scale (1-8)
+- **3D beveled appearance** with top-left light source

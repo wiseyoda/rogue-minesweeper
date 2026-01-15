@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useGameStore } from '@/stores';
-import { GameBoard } from '@/components/game';
-import { HUD } from '@/components/hud';
+import { GameContainer } from '@/components/game';
 import type { GameMessage } from '@/components/hud';
 
 /**
@@ -62,13 +61,8 @@ function App() {
       </h1>
       <p className="text-dungeon-stone text-sm mb-6">Core Logic POC</p>
 
-      {/* HUD - Heads Up Display */}
-      <div className="mb-4 w-full max-w-md">
-        <HUD message={message} />
-      </div>
-
-      {/* Game Board */}
-      <GameBoard />
+      {/* Game Container - HUD, Board, and Modals */}
+      <GameContainer message={message} />
 
       {/* Reset Button */}
       <button

@@ -1,0 +1,2859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DUNGEON DELVER - The Definitive Edition</title>
+
+  <!-- The One True Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       ████████╗██╗  ██╗███████╗    ██████╗ ███████╗███████╗██╗███╗   ██╗██╗████████╗██╗██╗   ██╗███████╗
+       ╚══██╔══╝██║  ██║██╔════╝    ██╔══██╗██╔════╝██╔════╝██║████╗  ██║██║╚══██╔══╝██║██║   ██║██╔════╝
+          ██║   ███████║█████╗      ██║  ██║█████╗  █████╗  ██║██╔██╗ ██║██║   ██║   ██║██║   ██║█████╗
+          ██║   ██╔══██║██╔══╝      ██║  ██║██╔══╝  ██╔══╝  ██║██║╚██╗██║██║   ██║   ██║╚██╗ ██╔╝██╔══╝
+          ██║   ██║  ██║███████╗    ██████╔╝███████╗██║     ██║██║ ╚████║██║   ██║   ██║ ╚████╔╝ ███████╗
+          ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝  ╚═══╝  ╚══════╝
+       ═══════════════════════════════════════════════════════════════════════════
+
+       DESIGN PRINCIPLES:
+       1. Pure Pixel Art - Single font, square tiles, no rounded corners
+       2. Self-Contained - No external dependencies (textures, CDNs)
+       3. Living Atmosphere - Particles, breathing effects, watching eye
+       4. Mystic Purple Signature - Our distinctive brand color
+       5. Tactile Feedback - Every interaction has weight and consequence
+
+       ═══════════════════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* ═══════════════════════════════════════════════════════════════════════
+         THE PALETTE - Colors of the deep
+         ═══════════════════════════════════════════════════════════════════════ */
+
+      /* THE VOID - Where light fears to tread */
+      --void: #05050a;
+      --abyss: #0a0a12;
+      --deep: #10101a;
+
+      /* THE STONE - Ancient dungeon walls (expanded scale) */
+      --stone-950: #0c0c14;
+      --stone-900: #12121c;
+      --stone-850: #18182a;
+      --stone-800: #1e1e30;
+      --stone-700: #2a2a40;
+      --stone-600: #3a3a52;
+      --stone-500: #4a4a66;
+      --stone-400: #5e5e7a;
+      --stone-300: #7a7a96;
+      --stone-200: #9a9ab2;
+
+      /* THE BONE - What remains of the fallen */
+      --bone-dark: #9a9280;
+      --bone: #c4b8a0;
+      --bone-light: #e8dcc4;
+      --bone-bright: #f8f0e0;
+
+      /* THE BLOOD - Life and death made visible */
+      --blood-void: #1a0404;
+      --blood-shadow: #400808;
+      --blood-dark: #801010;
+      --blood: #cc2020;
+      --blood-bright: #ff4040;
+      --blood-glow: #ff8080;
+
+      /* THE GOLD - Fortune favors the bold */
+      --gold-void: #1a1000;
+      --gold-shadow: #402800;
+      --gold-dark: #806000;
+      --gold: #d0a020;
+      --gold-bright: #ffe040;
+      --gold-glow: #fff8c0;
+
+      /* THE MYSTIC - Our signature, our soul */
+      --mystic-void: #0a0418;
+      --mystic-shadow: #1a0840;
+      --mystic-dark: #401080;
+      --mystic: #7030b0;
+      --mystic-bright: #a060e0;
+      --mystic-glow: #d0a0ff;
+
+      /* THE VENOM - Hope renewed */
+      --venom-dark: #104010;
+      --venom: #20a020;
+      --venom-bright: #40ff40;
+
+      /* THE ICE - Shields against the dark */
+      --ice-dark: #103040;
+      --ice: #2090b0;
+      --ice-bright: #40d0f0;
+
+      /* ═══════════════════════════════════════════════════════════════════════
+         TIMING - The rhythm of the dungeon
+         ═══════════════════════════════════════════════════════════════════════ */
+      --tick: 50ms;
+      --beat: 100ms;
+      --breath: 200ms;
+      --pulse: 400ms;
+      --wave: 800ms;
+
+      /* ═══════════════════════════════════════════════════════════════════════
+         SCALE - Pixel-perfect measurements
+         ═══════════════════════════════════════════════════════════════════════ */
+      --tile: 40px;
+      --gap: 2px;
+      --unit: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       FOUNDATION - The bedrock
+       ═══════════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: unset;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      line-height: 2;
+      color: var(--bone);
+      background: var(--void);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="7" y="0" width="2" height="16" fill="%23d0a020"/><rect x="0" y="7" width="16" height="2" fill="%23d0a020"/><rect x="6" y="6" width="4" height="4" fill="%23ffe040"/></svg>') 8 8, crosshair;
+    }
+
+    ::selection {
+      background: var(--mystic-dark);
+      color: var(--mystic-glow);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--stone-600);
+      border: 2px solid var(--void);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE ATMOSPHERE - A living, breathing dungeon
+       ═══════════════════════════════════════════════════════════════════════════ */
+
+    /* Hand-crafted brick pattern - no external dependencies */
+    .atmosphere {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16" viewBox="0 0 32 16"><rect fill="%2310101a"/><rect x="0" y="0" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="16" y="0" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="8" y="8" width="16" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="24" y="8" width="8" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/><rect x="0" y="8" width="8" height="8" stroke="%231a1a2a" stroke-width="1" fill="none"/></svg>');
+      opacity: 0.4;
+    }
+
+    /* Vignette - the darkness closes in */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(
+        ellipse 80% 60% at 50% 40%,
+        transparent 0%,
+        transparent 30%,
+        rgba(5, 5, 10, 0.4) 60%,
+        rgba(5, 5, 10, 0.9) 100%
+      );
+    }
+
+    /* Mystic glow - the dungeon's magic seeps through */
+    .mystic-aura {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 350px;
+      background: radial-gradient(ellipse, rgba(112, 48, 176, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      animation: aura-breathe 8s ease-in-out infinite;
+    }
+
+    @keyframes aura-breathe {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+    }
+
+    /* Floating particles - dust in ancient halls */
+    .particle-field {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--bone);
+      opacity: 0;
+      animation: particle-float 20s linear infinite;
+    }
+
+    .particle:nth-child(1) { left: 8%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 18%; animation-delay: -3s; }
+    .particle:nth-child(3) { left: 32%; animation-delay: -7s; }
+    .particle:nth-child(4) { left: 48%; animation-delay: -11s; }
+    .particle:nth-child(5) { left: 62%; animation-delay: -13s; }
+    .particle:nth-child(6) { left: 78%; animation-delay: -16s; }
+    .particle:nth-child(7) { left: 88%; animation-delay: -19s; }
+    .particle:nth-child(8) { left: 95%; animation-delay: -5s; }
+
+    @keyframes particle-float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.4; }
+      100% {
+        transform: translateY(-20px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Subtle scanlines - the dungeon's pulse */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(0, 0, 0, 0.03) 3px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE TITLE - A legend carved in stone
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .title-container {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .title {
+      font-size: 22px;
+      letter-spacing: 6px;
+      color: var(--blood);
+      text-shadow:
+        0 0 20px var(--blood-dark),
+        3px 3px 0 var(--blood-void),
+        0 0 40px var(--blood-shadow);
+      animation: title-pulse 4s ease-in-out infinite;
+      position: relative;
+      display: inline-block;
+    }
+
+    .title::before,
+    .title::after {
+      content: '◆';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: var(--gold);
+      text-shadow: 0 0 10px var(--gold-dark);
+      animation: gem-sparkle 2s ease-in-out infinite;
+    }
+
+    .title::before { left: -32px; animation-delay: 0s; }
+    .title::after { right: -32px; animation-delay: 1s; }
+
+    @keyframes title-pulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.1); }
+    }
+
+    @keyframes gem-sparkle {
+      0%, 100% { opacity: 0.6; transform: translateY(-50%) scale(1); }
+      50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+    }
+
+    .subtitle {
+      font-size: 7px;
+      color: var(--stone-300);
+      letter-spacing: 4px;
+      margin-top: 6px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE LAYOUT - Two pillars of the experience
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .game-container {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .game-container {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE PANELS - Frames of stone and shadow
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .panel {
+      background: linear-gradient(135deg, var(--stone-800) 0%, var(--stone-850) 100%);
+      border: 3px solid var(--stone-600);
+      position: relative;
+      box-shadow:
+        inset 2px 2px 0 var(--stone-500),
+        inset -2px -2px 0 var(--abyss),
+        0 8px 0 var(--void),
+        0 12px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Animated corner accents - inspired by Gemini but pixelated */
+    .corner {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      transition: all var(--breath) ease;
+    }
+
+    .corner-tl { top: -3px; left: -3px; border-top: 3px solid var(--gold-dark); border-left: 3px solid var(--gold-dark); }
+    .corner-tr { top: -3px; right: -3px; border-top: 3px solid var(--gold-dark); border-right: 3px solid var(--gold-dark); }
+    .corner-bl { bottom: -3px; left: -3px; border-bottom: 3px solid var(--gold-dark); border-left: 3px solid var(--gold-dark); }
+    .corner-br { bottom: -3px; right: -3px; border-bottom: 3px solid var(--gold-dark); border-right: 3px solid var(--gold-dark); }
+
+    .panel:hover .corner {
+      width: 12px;
+      height: 12px;
+      border-color: var(--gold);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE HEADER - Where you stand in the darkness
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .header {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--stone-900);
+      border-bottom: 2px solid var(--stone-700);
+    }
+
+    .floor-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .floor-badge {
+      background: var(--abyss);
+      border: 2px solid var(--stone-700);
+      padding: 6px 10px;
+      box-shadow: inset 2px 2px 0 var(--void);
+    }
+
+    .floor-label {
+      font-size: 5px;
+      color: var(--stone-400);
+      letter-spacing: 2px;
+      margin-bottom: 2px;
+    }
+
+    .floor-value {
+      font-size: 11px;
+      color: var(--gold);
+      text-shadow: 0 0 10px var(--gold-shadow);
+    }
+
+    .floor-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .floor-name {
+      font-size: 8px;
+      color: var(--bone);
+      letter-spacing: 1px;
+    }
+
+    .floor-env {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 5px;
+      color: var(--stone-300);
+    }
+
+    .env-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--mystic);
+      animation: env-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes env-pulse {
+      0%, 100% { opacity: 0.5; box-shadow: 0 0 4px var(--mystic); }
+      50% { opacity: 1; box-shadow: 0 0 10px var(--mystic-bright); }
+    }
+
+    /* Threat meter - segmented bars */
+    .threat-section {
+      text-align: right;
+    }
+
+    .threat-label {
+      font-size: 5px;
+      color: var(--stone-400);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .threat-meter {
+      display: flex;
+      gap: 3px;
+      justify-content: flex-end;
+    }
+
+    .threat-seg {
+      width: 6px;
+      height: 14px;
+      background: var(--stone-700);
+      transition: all var(--beat);
+    }
+
+    .threat-seg.filled {
+      background: var(--blood);
+      box-shadow: 0 0 6px var(--blood-dark);
+    }
+
+    .threat-seg.filled.pulse {
+      animation: threat-pulse 0.8s ease-in-out infinite;
+    }
+
+    @keyframes threat-pulse {
+      0%, 100% { background: var(--blood); box-shadow: 0 0 6px var(--blood-dark); }
+      50% { background: var(--blood-bright); box-shadow: 0 0 12px var(--blood); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE BOARD - Where fate is decided
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .board-area {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 50% 30%, var(--stone-700) 0%, var(--stone-850) 50%, var(--abyss) 100%);
+    }
+
+    /* Subtle grid pattern overlay */
+    .board-area::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(var(--stone-600) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .tile-grid {
+      display: grid;
+      gap: var(--gap);
+      padding: 6px;
+      background: var(--void);
+      border: 2px solid var(--stone-700);
+      box-shadow:
+        inset 0 0 30px rgba(0, 0, 0, 0.8),
+        0 0 0 1px var(--stone-600),
+        0 8px 0 var(--void),
+        0 12px 30px rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE TILES - Each one a choice, each choice a consequence
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .tile {
+      width: var(--tile);
+      height: var(--tile);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform var(--tick), box-shadow var(--beat);
+      position: relative;
+    }
+
+    /* UNREVEALED - The unknown beckons */
+    .t-hidden {
+      background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 40%, var(--stone-700) 100%);
+      border: 2px solid;
+      border-color: var(--stone-400) var(--stone-800) var(--stone-800) var(--stone-400);
+      box-shadow:
+        inset 2px 2px 0 var(--stone-300),
+        inset -2px -2px 0 var(--abyss),
+        0 4px 0 var(--void);
+    }
+
+    .t-hidden:hover {
+      background: linear-gradient(135deg, var(--stone-400) 0%, var(--stone-500) 40%, var(--stone-600) 100%);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 2px 2px 0 var(--stone-300),
+        inset -2px -2px 0 var(--abyss),
+        0 6px 0 var(--void),
+        0 0 20px var(--mystic-shadow);
+      z-index: 10;
+    }
+
+    .t-hidden:active {
+      transform: translateY(3px);
+      border-color: var(--stone-800) var(--stone-400) var(--stone-400) var(--stone-800);
+      box-shadow:
+        inset 2px 2px 0 var(--abyss),
+        inset -2px -2px 0 var(--stone-300),
+        0 1px 0 var(--void);
+    }
+
+    /* REVEALED - Light in the darkness */
+    .t-revealed {
+      background: var(--stone-800);
+      border: 1px solid var(--stone-900);
+      box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.5);
+      cursor: default;
+    }
+
+    /* FLAGGED - Your claim staked */
+    .t-flagged {
+      background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 100%);
+      border: 2px solid;
+      border-color: var(--gold) var(--gold-dark) var(--gold-dark) var(--gold);
+      box-shadow:
+        inset 2px 2px 0 var(--gold-bright),
+        inset -2px -2px 0 var(--gold-shadow),
+        0 4px 0 var(--void),
+        0 0 12px var(--gold-shadow);
+      animation: flag-planted 0.3s ease-out;
+    }
+
+    @keyframes flag-planted {
+      0% { transform: scale(1.2); }
+      50% { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+
+    .t-flagged:hover {
+      box-shadow:
+        inset 2px 2px 0 var(--gold-bright),
+        inset -2px -2px 0 var(--gold-shadow),
+        0 4px 0 var(--void),
+        0 0 20px var(--gold-dark);
+    }
+
+    /* QUESTION - Uncertainty made visible */
+    .t-question {
+      background: linear-gradient(135deg, var(--stone-500) 0%, var(--stone-600) 100%);
+      border: 2px solid;
+      border-color: var(--mystic) var(--mystic-dark) var(--mystic-dark) var(--mystic);
+      box-shadow:
+        inset 2px 2px 0 var(--mystic-bright),
+        inset -2px -2px 0 var(--mystic-shadow),
+        0 4px 0 var(--void);
+    }
+
+    .t-question .qmark {
+      color: var(--mystic-bright);
+      text-shadow: 0 0 8px var(--mystic);
+      animation: question-wobble 1s ease-in-out infinite;
+    }
+
+    @keyframes question-wobble {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    /* MONSTER HIT - Pain made manifest */
+    .t-hit {
+      background: linear-gradient(135deg, var(--blood-bright) 0%, var(--blood) 50%, var(--blood-dark) 100%);
+      border: 2px solid;
+      border-color: var(--blood-glow) var(--blood-shadow) var(--blood-shadow) var(--blood-glow);
+      box-shadow:
+        inset 0 0 8px var(--blood-void),
+        0 0 15px var(--blood),
+        0 0 30px var(--blood-dark);
+      animation: hit-shake 0.4s ease-out, hit-glow 0.8s ease-in-out infinite;
+    }
+
+    @keyframes hit-shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+
+    @keyframes hit-glow {
+      0%, 100% { box-shadow: inset 0 0 8px var(--blood-void), 0 0 15px var(--blood), 0 0 30px var(--blood-dark); }
+      50% { box-shadow: inset 0 0 8px var(--blood-void), 0 0 25px var(--blood-bright), 0 0 50px var(--blood); }
+    }
+
+    /* Number colors - the sacred count */
+    .n1 { color: #4090e0; text-shadow: 0 0 8px rgba(64, 144, 224, 0.4); }
+    .n2 { color: #40b040; text-shadow: 0 0 8px rgba(64, 176, 64, 0.4); }
+    .n3 { color: #e04040; text-shadow: 0 0 8px rgba(224, 64, 64, 0.4); }
+    .n4 { color: #a040d0; text-shadow: 0 0 8px rgba(160, 64, 208, 0.4); }
+    .n5 { color: #c02020; text-shadow: 0 0 8px rgba(192, 32, 32, 0.4); }
+    .n6 { color: #40b0b0; text-shadow: 0 0 8px rgba(64, 176, 176, 0.4); }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE FLOATING TEXT - Consequences made visible
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .float-text {
+      position: absolute;
+      font-size: 9px;
+      pointer-events: none;
+      animation: float-away 1.5s ease-out forwards;
+      z-index: 50;
+    }
+
+    .float-gold {
+      color: var(--gold-bright);
+      text-shadow: 0 0 8px var(--gold), 2px 2px 0 var(--gold-shadow);
+    }
+
+    .float-damage {
+      color: var(--blood-bright);
+      text-shadow: 0 0 8px var(--blood), 2px 2px 0 var(--blood-shadow);
+    }
+
+    @keyframes float-away {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(0.8); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE PIXEL ICONS - Crafted with intention
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .icon { display: inline-block; vertical-align: middle; }
+    .icon-sm { width: 12px; height: 12px; }
+    .icon-md { width: 16px; height: 16px; }
+    .icon-lg { width: 20px; height: 20px; }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE SIDEBAR - Systems of survival
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE DUNGEON MASTER - The darkness watches
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .dm-panel {
+      background: linear-gradient(180deg, var(--mystic-void) 0%, var(--stone-850) 50%);
+      border: 3px solid var(--mystic-dark);
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 1px 1px 0 var(--mystic),
+        inset -1px -1px 0 var(--abyss),
+        0 8px 0 var(--void),
+        0 0 20px var(--mystic-void);
+    }
+
+    /* Mystic glow in corner */
+    .dm-panel::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(112, 48, 176, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+      animation: dm-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes dm-glow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .dm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--mystic-dark);
+    }
+
+    .dm-title {
+      font-size: 6px;
+      color: var(--stone-300);
+      letter-spacing: 3px;
+    }
+
+    .dm-status {
+      font-size: 5px;
+      color: var(--mystic-bright);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dm-status-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--mystic-bright);
+      animation: status-blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes status-blink {
+      0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--mystic-bright); }
+      50% { opacity: 0.3; box-shadow: none; }
+    }
+
+    .dm-content {
+      display: flex;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* THE EYE - It sees all */
+    .dm-eye-container {
+      width: 48px;
+      height: 48px;
+      background: var(--void);
+      border: 2px solid var(--mystic-dark);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 20px var(--mystic-void),
+        0 0 10px var(--mystic-shadow);
+    }
+
+    .dm-eye {
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(
+        circle,
+        var(--mystic-glow) 0%,
+        var(--mystic-bright) 20%,
+        var(--mystic) 50%,
+        var(--mystic-dark) 80%,
+        var(--mystic-shadow) 100%
+      );
+      border-radius: 50%;
+      position: relative;
+      animation: eye-look 6s ease-in-out infinite;
+      box-shadow: 0 0 20px var(--mystic);
+    }
+
+    /* Pupil */
+    .dm-eye::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      background: var(--void);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 4px var(--mystic-glow);
+    }
+
+    /* Highlight */
+    .dm-eye::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 7px;
+      width: 4px;
+      height: 4px;
+      background: var(--mystic-glow);
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    @keyframes eye-look {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-2px) translateX(-2px); }
+      50% { transform: translateY(0) translateX(2px); }
+      75% { transform: translateY(2px) translateX(-1px); }
+    }
+
+    .dm-message {
+      flex: 1;
+    }
+
+    .dm-text {
+      font-size: 7px;
+      color: var(--bone-light);
+      line-height: 2;
+      font-style: italic;
+    }
+
+    .dm-text .hl {
+      color: var(--gold);
+      font-style: normal;
+      cursor: help;
+      border-bottom: 1px dotted var(--gold-dark);
+      transition: all var(--beat);
+    }
+
+    .dm-text .hl:hover {
+      color: var(--gold-bright);
+      text-shadow: 0 0 6px var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE VITALS - Life hangs by a thread
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .vitals-panel {
+      padding: 12px;
+    }
+
+    .health-section {
+      margin-bottom: 12px;
+    }
+
+    .health-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 6px;
+    }
+
+    .health-label {
+      font-size: 6px;
+      color: var(--stone-300);
+      letter-spacing: 2px;
+    }
+
+    .health-value {
+      font-size: 10px;
+      color: var(--blood-bright);
+      text-shadow: 0 0 6px var(--blood-dark);
+    }
+
+    .health-bar {
+      height: 18px;
+      background: var(--void);
+      border: 2px solid var(--stone-700);
+      padding: 2px;
+      display: flex;
+      gap: 1px;
+      box-shadow: inset 2px 2px 4px var(--abyss);
+    }
+
+    .health-seg {
+      flex: 1;
+      transition: all var(--beat);
+    }
+
+    .health-seg.filled {
+      background: linear-gradient(180deg, var(--blood-bright) 0%, var(--blood) 60%, var(--blood-dark) 100%);
+      box-shadow: 0 0 4px var(--blood);
+    }
+
+    .health-seg.empty {
+      background: var(--stone-850);
+    }
+
+    .health-bar.critical .health-seg.filled {
+      animation: health-critical 0.4s ease-in-out infinite;
+    }
+
+    @keyframes health-critical {
+      0%, 100% { box-shadow: 0 0 4px var(--blood); }
+      50% { box-shadow: 0 0 10px var(--blood-bright); }
+    }
+
+    /* Resources */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .resource-card {
+      background: var(--stone-850);
+      border: 2px solid var(--stone-700);
+      padding: 10px 8px;
+      text-align: center;
+      transition: all var(--beat);
+      cursor: default;
+    }
+
+    .resource-card:hover {
+      border-color: var(--stone-600);
+      background: var(--stone-800);
+    }
+
+    .resource-card.gold:hover {
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 12px var(--gold-shadow);
+    }
+
+    .resource-card.shields:hover {
+      border-color: var(--ice-dark);
+      box-shadow: 0 0 12px rgba(32, 144, 176, 0.2);
+    }
+
+    .resource-icon {
+      margin-bottom: 4px;
+      transition: transform var(--beat);
+    }
+
+    .resource-card:hover .resource-icon {
+      transform: scale(1.1);
+    }
+
+    .resource-val {
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .resource-val.gold-val {
+      color: var(--gold-bright);
+      text-shadow: 0 0 6px var(--gold-dark);
+    }
+
+    .resource-val.shield-val {
+      color: var(--ice-bright);
+    }
+
+    .resource-name {
+      font-size: 5px;
+      color: var(--stone-300);
+      letter-spacing: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE RUNES - Power earned, not given
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .runes-panel {
+      padding: 12px;
+      flex: 1;
+    }
+
+    .runes-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--stone-700);
+    }
+
+    .runes-diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--mystic);
+      transform: rotate(45deg);
+    }
+
+    .runes-title {
+      font-size: 6px;
+      color: var(--stone-200);
+      letter-spacing: 2px;
+    }
+
+    .rune-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rune-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      background: var(--stone-850);
+      border: 2px solid var(--stone-700);
+      cursor: pointer;
+      transition: all var(--beat);
+    }
+
+    .rune-card:hover {
+      background: var(--stone-800);
+      border-color: var(--stone-600);
+    }
+
+    .rune-card.active {
+      border-color: var(--mystic-dark);
+      box-shadow: 0 0 10px var(--mystic-shadow);
+    }
+
+    .rune-card.active:hover {
+      border-color: var(--mystic);
+    }
+
+    .rune-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--abyss);
+      border: 2px solid var(--stone-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--beat);
+    }
+
+    .rune-card.active .rune-icon {
+      background: var(--mystic-shadow);
+      border-color: var(--mystic-dark);
+      box-shadow: 0 0 8px var(--mystic-shadow);
+    }
+
+    .rune-card:hover .rune-icon {
+      transform: scale(1.05);
+    }
+
+    .rune-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rune-name {
+      font-size: 7px;
+      color: var(--bone);
+      margin-bottom: 2px;
+      transition: color var(--beat);
+    }
+
+    .rune-card.active .rune-name {
+      color: var(--mystic-bright);
+    }
+
+    .rune-desc {
+      font-size: 5px;
+      color: var(--stone-300);
+      line-height: 1.8;
+    }
+
+    .rune-slot-empty {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border: 2px dashed var(--stone-700);
+      opacity: 0.5;
+      transition: all var(--beat);
+      cursor: pointer;
+    }
+
+    .rune-slot-empty:hover {
+      opacity: 0.8;
+      border-color: var(--stone-600);
+    }
+
+    .rune-slot-empty .rune-icon {
+      border-style: dashed;
+      background: transparent;
+    }
+
+    .rune-slot-empty .plus {
+      color: var(--stone-500);
+      font-size: 14px;
+    }
+
+    .rune-slot-empty .empty-text {
+      font-size: 6px;
+      color: var(--stone-500);
+      font-style: italic;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE ACTION BUTTON - Commit to your choice
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .action-btn {
+      width: 100%;
+      padding: 12px 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--tick);
+    }
+
+    .action-btn-primary {
+      background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: var(--void);
+      border: 3px solid;
+      border-color: var(--gold-bright) var(--gold-shadow) var(--gold-shadow) var(--gold-bright);
+      box-shadow:
+        inset 2px 2px 0 var(--gold-glow),
+        inset -2px -2px 0 var(--gold-shadow),
+        0 6px 0 var(--void);
+      text-shadow: 1px 1px 0 var(--gold-bright);
+      letter-spacing: 2px;
+    }
+
+    .action-btn-primary:hover {
+      background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 100%);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 2px 2px 0 var(--gold-glow),
+        inset -2px -2px 0 var(--gold-shadow),
+        0 8px 0 var(--void),
+        0 0 20px var(--gold-shadow);
+    }
+
+    .action-btn-primary:active {
+      transform: translateY(4px);
+      box-shadow:
+        inset 2px 2px 0 var(--gold-shadow),
+        inset -2px -2px 0 var(--gold-glow),
+        0 2px 0 var(--void);
+    }
+
+    /* Shine sweep effect */
+    .action-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .action-btn:hover::after {
+      left: 100%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       THE FOOTER - Your actions, remembered
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .footer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .footer-btn {
+      padding: 8px 14px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px;
+      background: var(--stone-800);
+      color: var(--bone);
+      border: 2px solid var(--stone-600);
+      cursor: pointer;
+      transition: all var(--beat);
+      box-shadow: 0 3px 0 var(--void);
+      letter-spacing: 1px;
+    }
+
+    .footer-btn:hover {
+      background: var(--stone-700);
+      border-color: var(--stone-500);
+    }
+
+    .footer-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--void);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       CREDITS - Where honor is due
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .credits {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 5px;
+      color: var(--stone-500);
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- THE ATMOSPHERE -->
+  <div class="atmosphere"></div>
+  <div class="vignette"></div>
+  <div class="mystic-aura"></div>
+  <div class="particle-field">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+  <div class="scanlines"></div>
+
+  <!-- THE TITLE -->
+  <div class="title-container">
+    <h1 class="title">DUNGEON DELVER</h1>
+    <p class="subtitle">A ROGUELIKE MINESWEEPER</p>
+  </div>
+
+  <!-- THE GAME -->
+  <div class="game-container">
+
+    <!-- LEFT: THE FIELD OF BATTLE -->
+    <main>
+      <div class="panel">
+        <span class="corner corner-tl"></span>
+        <span class="corner corner-tr"></span>
+        <span class="corner corner-bl"></span>
+        <span class="corner corner-br"></span>
+
+        <!-- Header -->
+        <div class="header">
+          <div class="floor-info">
+            <div class="floor-badge">
+              <div class="floor-label">DEPTH</div>
+              <div class="floor-value">FLOOR 7</div>
+            </div>
+            <div class="floor-details">
+              <div class="floor-name">THE WHISPERING CRYPT</div>
+              <div class="floor-env">
+                <span class="env-dot"></span>
+                <span>ARCANE RESIDUE</span>
+              </div>
+            </div>
+          </div>
+          <div class="threat-section">
+            <div class="threat-label">THREAT</div>
+            <div class="threat-meter">
+              <div class="threat-seg filled"></div>
+              <div class="threat-seg filled"></div>
+              <div class="threat-seg filled"></div>
+              <div class="threat-seg filled pulse"></div>
+              <div class="threat-seg"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Board -->
+        <div class="board-area">
+          <!-- Floating Text -->
+          <div class="float-text float-gold" style="top: 22%; left: 42%;">+150 GOLD</div>
+
+          <div class="tile-grid" style="grid-template-columns: repeat(10, var(--tile));">
+            <!-- Row 1 -->
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-flagged">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+                <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+              </svg>
+            </button>
+            <div class="tile t-revealed n2">2</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 2 -->
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n3">3</div>
+            <button class="tile t-hidden"></button>
+            <div class="tile t-revealed n3">3</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-question"><span class="qmark">?</span></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 3 -->
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-flagged">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+                <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+              </svg>
+            </button>
+            <div class="tile t-revealed n2">2</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 4 -->
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-flagged">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+                <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+              </svg>
+            </button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 5 (Monster Hit) -->
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-hit">
+              <svg class="icon icon-lg" viewBox="0 0 16 16" fill="var(--bone-light)">
+                <rect x="4" y="2" width="8" height="8" rx="1"/>
+                <rect x="5" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+                <rect x="9" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+                <rect x="6" y="10" width="1" height="4"/>
+                <rect x="9" y="10" width="1" height="4"/>
+              </svg>
+            </div>
+            <div class="tile t-revealed n3">3</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 6 -->
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n2">2</div>
+            <div class="tile t-revealed n3">3</div>
+            <div class="tile t-revealed n4">4</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 7 -->
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-flagged">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+                <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+              </svg>
+            </button>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <button class="tile t-flagged">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+                <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+              </svg>
+            </button>
+            <div class="tile t-revealed n3">3</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+
+            <!-- Row 8 -->
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed"></div>
+            <div class="tile t-revealed n1">1</div>
+            <div class="tile t-revealed n2">2</div>
+            <div class="tile t-revealed n2">2</div>
+            <button class="tile t-hidden"></button>
+            <button class="tile t-hidden"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-controls">
+        <button class="footer-btn">NEW GAME</button>
+        <button class="footer-btn">HOW TO PLAY</button>
+      </div>
+    </main>
+
+    <!-- RIGHT: THE SYSTEMS -->
+    <aside class="sidebar">
+
+      <!-- Dungeon Master -->
+      <div class="dm-panel">
+        <div class="dm-header">
+          <span class="dm-title">DUNGEON MASTER</span>
+          <span class="dm-status">
+            <span class="dm-status-dot"></span>
+            WATCHING
+          </span>
+        </div>
+        <div class="dm-content">
+          <div class="dm-eye-container">
+            <div class="dm-eye"></div>
+          </div>
+          <div class="dm-message">
+            <p class="dm-text">
+              "Another flag? <span class="hl">Confident</span>, aren't we? Let's see if your math holds up..."
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vitals -->
+      <div class="panel vitals-panel">
+        <span class="corner corner-tl"></span>
+        <span class="corner corner-tr"></span>
+        <span class="corner corner-bl"></span>
+        <span class="corner corner-br"></span>
+
+        <div class="health-section">
+          <div class="health-header">
+            <span class="health-label">VITALITY</span>
+            <span class="health-value">75 / 100</span>
+          </div>
+          <div class="health-bar">
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg filled"></div>
+            <div class="health-seg empty"></div>
+            <div class="health-seg empty"></div>
+            <div class="health-seg empty"></div>
+            <div class="health-seg empty"></div>
+            <div class="health-seg empty"></div>
+          </div>
+        </div>
+
+        <div class="resource-grid">
+          <div class="resource-card gold">
+            <div class="resource-icon">
+              <svg class="icon icon-lg" viewBox="0 0 20 20" fill="var(--gold)">
+                <circle cx="10" cy="10" r="8"/>
+                <circle cx="10" cy="10" r="5" fill="var(--gold-dark)"/>
+                <text x="10" y="13" text-anchor="middle" font-size="7" fill="var(--gold-bright)" font-family="Press Start 2P">$</text>
+              </svg>
+            </div>
+            <div class="resource-val gold-val">1,250</div>
+            <div class="resource-name">GOLD</div>
+          </div>
+          <div class="resource-card shields">
+            <div class="resource-icon">
+              <svg class="icon icon-lg" viewBox="0 0 20 20" fill="var(--ice)">
+                <path d="M10 2 L3 5 V10 C3 14 6 17 10 18 C14 17 17 14 17 10 V5 L10 2 Z"/>
+                <path d="M10 4 L5 6 V10 C5 13 7 15 10 16 C13 15 15 13 15 10 V6 L10 4 Z" fill="var(--ice-dark)"/>
+              </svg>
+            </div>
+            <div class="resource-val shield-val">3</div>
+            <div class="resource-name">DEFENSE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Runes -->
+      <div class="panel runes-panel">
+        <span class="corner corner-tl"></span>
+        <span class="corner corner-tr"></span>
+        <span class="corner corner-bl"></span>
+        <span class="corner corner-br"></span>
+
+        <div class="runes-header">
+          <span class="runes-diamond"></span>
+          <span class="runes-title">ACTIVE RUNES</span>
+        </div>
+
+        <div class="rune-list">
+          <div class="rune-card active">
+            <div class="rune-icon">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none" stroke="var(--mystic-bright)" stroke-width="1.5">
+                <circle cx="8" cy="8" r="3"/>
+                <line x1="8" y1="2" x2="8" y2="5"/>
+                <line x1="8" y1="11" x2="8" y2="14"/>
+                <line x1="2" y1="8" x2="5" y2="8"/>
+                <line x1="11" y1="8" x2="14" y2="8"/>
+              </svg>
+            </div>
+            <div class="rune-info">
+              <div class="rune-name">SEER'S STONE</div>
+              <div class="rune-desc">Reveals 1 adjacent tile</div>
+            </div>
+          </div>
+
+          <div class="rune-card">
+            <div class="rune-icon">
+              <svg class="icon icon-md" viewBox="0 0 16 16" fill="none" stroke="var(--stone-300)" stroke-width="1.5">
+                <path d="M8 2 L3 8 L8 14 L13 8 Z"/>
+              </svg>
+            </div>
+            <div class="rune-info">
+              <div class="rune-name">WARD CRYSTAL</div>
+              <div class="rune-desc">25% block chance</div>
+            </div>
+          </div>
+
+          <div class="rune-slot-empty">
+            <div class="rune-icon">
+              <span class="plus">+</span>
+            </div>
+            <span class="empty-text">Empty Socket</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <button class="action-btn action-btn-primary">
+        ENTER SHOP
+      </button>
+
+    </aside>
+  </div>
+
+  <!-- Credits -->
+  <div class="credits">
+    V5 DEFINITIVE // PURE PIXEL COMMITMENT
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════════════
+       ██████╗  ██████╗  ██████╗██╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+       ██╔══██╗██╔═══██╗██╔════╝██║   ██║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║
+       ██║  ██║██║   ██║██║     ██║   ██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████║   ██║   ██║██║   ██║██╔██╗ ██║
+       ██║  ██║██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+       ██████╔╝╚██████╔╝╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+       ╚═════╝  ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+       ═══════════════════════════════════════════════════════════════════════════════ -->
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       DOCUMENTATION STYLES
+       ═══════════════════════════════════════════════════════════════════════════ */
+    .docs {
+      position: relative;
+      z-index: 10;
+      max-width: 1100px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+    }
+
+    .docs-divider {
+      text-align: center;
+      margin: 60px 0 40px;
+      position: relative;
+    }
+
+    .docs-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--stone-600), transparent);
+    }
+
+    .docs-divider span {
+      background: var(--void);
+      padding: 0 20px;
+      position: relative;
+      font-size: 8px;
+      color: var(--stone-400);
+      letter-spacing: 4px;
+    }
+
+    .docs-section {
+      margin-bottom: 50px;
+    }
+
+    .docs-title {
+      font-size: 14px;
+      color: var(--gold);
+      letter-spacing: 4px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 20px var(--gold-shadow);
+    }
+
+    .docs-subtitle {
+      font-size: 6px;
+      color: var(--stone-400);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    .docs-note {
+      background: var(--stone-900);
+      border-left: 3px solid var(--mystic);
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 7px;
+      line-height: 2.2;
+      color: var(--bone-light);
+    }
+
+    .docs-note strong {
+      color: var(--mystic-bright);
+    }
+
+    .docs-warning {
+      border-left-color: var(--blood);
+    }
+
+    .docs-warning strong {
+      color: var(--blood-bright);
+    }
+
+    .docs-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .docs-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .docs-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .docs-grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .docs-grid-6 { grid-template-columns: repeat(6, 1fr); }
+
+    @media (max-width: 768px) {
+      .docs-grid-3, .docs-grid-4, .docs-grid-6 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Color Swatches */
+    .swatch-group {
+      margin-bottom: 24px;
+    }
+
+    .swatch-group-title {
+      font-size: 7px;
+      color: var(--bone);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--stone-700);
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      background: var(--stone-900);
+      border: 2px solid var(--stone-700);
+      overflow: hidden;
+    }
+
+    .swatch-color {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .swatch-info {
+      padding: 8px;
+      background: var(--stone-850);
+    }
+
+    .swatch-name {
+      font-size: 6px;
+      color: var(--bone);
+      margin-bottom: 2px;
+    }
+
+    .swatch-hex {
+      font-size: 5px;
+      color: var(--stone-400);
+      font-family: monospace;
+    }
+
+    .swatch-var {
+      font-size: 5px;
+      color: var(--mystic-bright);
+      font-family: monospace;
+    }
+
+    /* Typography Samples */
+    .type-sample {
+      background: var(--stone-900);
+      border: 2px solid var(--stone-700);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .type-label {
+      font-size: 5px;
+      color: var(--stone-400);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .type-specs {
+      font-size: 5px;
+      color: var(--mystic-bright);
+      font-family: monospace;
+      margin-top: 8px;
+    }
+
+    /* Component Showcase */
+    .component-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .component-label {
+      font-size: 6px;
+      color: var(--stone-300);
+      min-width: 80px;
+    }
+
+    .component-demo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Timing Visualization */
+    .timing-bar {
+      height: 8px;
+      background: var(--mystic);
+      margin-top: 4px;
+    }
+
+    /* Icon Grid */
+    .icon-showcase {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--stone-850);
+      border: 2px solid var(--stone-700);
+      padding: 16px;
+      flex-direction: column;
+    }
+
+    .icon-showcase svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .icon-showcase-label {
+      font-size: 5px;
+      color: var(--stone-400);
+      text-align: center;
+    }
+
+    /* Decision Log */
+    .decision-item {
+      background: var(--stone-900);
+      border: 2px solid var(--stone-700);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .decision-q {
+      font-size: 7px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .decision-a {
+      font-size: 6px;
+      color: var(--bone-light);
+      line-height: 2;
+    }
+
+    .decision-tag {
+      display: inline-block;
+      font-size: 5px;
+      padding: 2px 6px;
+      margin-right: 6px;
+      margin-top: 8px;
+    }
+
+    .decision-tag.kept { background: var(--venom-dark); color: var(--venom-bright); }
+    .decision-tag.rejected { background: var(--blood-shadow); color: var(--blood-bright); }
+    .decision-tag.principle { background: var(--mystic-shadow); color: var(--mystic-bright); }
+
+    /* Spacing Demo */
+    .spacing-demo {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 16px;
+      background: var(--stone-900);
+      border: 2px solid var(--stone-700);
+    }
+
+    .spacing-block {
+      background: var(--mystic);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 4px;
+    }
+
+    .spacing-label {
+      font-size: 5px;
+      color: var(--bone);
+      margin-top: 4px;
+    }
+  </style>
+
+  <div class="docs">
+    <div class="docs-divider">
+      <span>DESIGN SYSTEM DOCUMENTATION</span>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: DESIGN PRINCIPLES
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">DESIGN PRINCIPLES</h2>
+      <p class="docs-subtitle">THE NON-NEGOTIABLES FOR FUTURE AGENTS</p>
+
+      <div class="docs-note">
+        <strong>FOR FUTURE AGENTS:</strong> This mockup is the source of truth. When implementing
+        in React, match these exact colors, spacing, and behaviors. The pixel art aesthetic is
+        CORE to the game's identity - do not introduce rounded corners, gradients that aren't
+        explicitly shown here, or fonts other than Press Start 2P.
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">1. PURE PIXEL ART COMMITMENT</div>
+        <div class="decision-a">
+          We use a SINGLE font (Press Start 2P) throughout the entire UI. No mixing fonts
+          for "visual hierarchy" - hierarchy comes from size, color, and spacing. All tiles
+          are SQUARE with hard edges. No border-radius anywhere except the DM eye (which is
+          literally an eye and needs to be round).
+        </div>
+        <span class="decision-tag principle">CORE PRINCIPLE</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">2. SELF-CONTAINED / NO EXTERNAL DEPENDENCIES</div>
+        <div class="decision-a">
+          All textures, icons, and patterns are inline SVG or data URIs. No external texture
+          URLs (they can fail, change, or slow loading). No Tailwind CDN. The mockup runs
+          anywhere with just a browser and the Google Fonts CDN for Press Start 2P.
+        </div>
+        <span class="decision-tag principle">CORE PRINCIPLE</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">3. LIVING ATMOSPHERE</div>
+        <div class="decision-a">
+          The dungeon is ALIVE. Floating dust particles drift upward. The mystic aura breathes.
+          The DM eye looks around. Threat meters pulse. This creates a sense that the dungeon
+          is watching and reacting - not just a static game board.
+        </div>
+        <span class="decision-tag principle">CORE PRINCIPLE</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">4. MYSTIC PURPLE AS SIGNATURE</div>
+        <div class="decision-a">
+          The mystic purple (#7030b0) is our BRAND COLOR. It appears in: the DM panel border,
+          the DM eye, active rune states, question mark tiles, hover glows on unrevealed tiles,
+          and the breathing aura. It distinguishes us from generic dark fantasy games.
+        </div>
+        <span class="decision-tag kept">KEPT</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">5. TACTILE FEEDBACK</div>
+        <div class="decision-a">
+          Every interactive element has three states: normal, hover (lifts up with shadow),
+          and active/pressed (pushes down). Tiles have a 3D beveled look with light source
+          from top-left. Buttons have visible "depth" via box-shadow that compresses on click.
+        </div>
+        <span class="decision-tag kept">KEPT</span>
+      </div>
+
+      <div class="docs-note docs-warning">
+        <strong>REJECTED PATTERNS:</strong> Multiple fonts (Gemini used 4), external texture
+        URLs, rounded corners on tiles, Tailwind/utility-class CDNs, generic Material icons,
+        glassmorphism effects, RGB/CRT subpixel tricks. These dilute the pixel art identity.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: COLOR PALETTE
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">COLOR PALETTE</h2>
+      <p class="docs-subtitle">EVERY COLOR HAS A PURPOSE</p>
+
+      <!-- Void & Stone -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">THE VOID & STONE - Backgrounds and Structure</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--void);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Void</div>
+              <div class="swatch-hex">#05050a</div>
+              <div class="swatch-var">--void</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--abyss);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Abyss</div>
+              <div class="swatch-hex">#0a0a12</div>
+              <div class="swatch-var">--abyss</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-850);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Stone 850</div>
+              <div class="swatch-hex">#18182a</div>
+              <div class="swatch-var">--stone-850</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-700);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Stone 700</div>
+              <div class="swatch-hex">#2a2a40</div>
+              <div class="swatch-var">--stone-700</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-500);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Stone 500</div>
+              <div class="swatch-hex">#4a4a66</div>
+              <div class="swatch-var">--stone-500</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-300);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Stone 300</div>
+              <div class="swatch-hex">#7a7a96</div>
+              <div class="swatch-var">--stone-300</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bone -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">THE BONE - Text and Light Elements</div>
+        <div class="docs-grid docs-grid-4">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--bone-dark);"><span style="color: var(--void);">Aa</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Bone Dark</div>
+              <div class="swatch-hex">#9a9280</div>
+              <div class="swatch-var">--bone-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--bone);"><span style="color: var(--void);">Aa</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Bone (Primary Text)</div>
+              <div class="swatch-hex">#c4b8a0</div>
+              <div class="swatch-var">--bone</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--bone-light);"><span style="color: var(--void);">Aa</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Bone Light</div>
+              <div class="swatch-hex">#e8dcc4</div>
+              <div class="swatch-var">--bone-light</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--bone-bright);"><span style="color: var(--void);">Aa</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Bone Bright</div>
+              <div class="swatch-hex">#f8f0e0</div>
+              <div class="swatch-var">--bone-bright</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blood -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">THE BLOOD - Health, Damage, Danger</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood-void);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Void</div>
+              <div class="swatch-hex">#1a0404</div>
+              <div class="swatch-var">--blood-void</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood-shadow);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Shadow</div>
+              <div class="swatch-hex">#400808</div>
+              <div class="swatch-var">--blood-shadow</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood-dark);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Dark</div>
+              <div class="swatch-hex">#801010</div>
+              <div class="swatch-var">--blood-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood (Base)</div>
+              <div class="swatch-hex">#cc2020</div>
+              <div class="swatch-var">--blood</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood-bright);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Bright</div>
+              <div class="swatch-hex">#ff4040</div>
+              <div class="swatch-var">--blood-bright</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--blood-glow);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blood Glow</div>
+              <div class="swatch-hex">#ff8080</div>
+              <div class="swatch-var">--blood-glow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gold -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">THE GOLD - Currency, Flags, CTAs, Rewards</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold-void);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold Void</div>
+              <div class="swatch-hex">#1a1000</div>
+              <div class="swatch-var">--gold-void</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold-shadow);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold Shadow</div>
+              <div class="swatch-hex">#402800</div>
+              <div class="swatch-var">--gold-shadow</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold-dark);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold Dark</div>
+              <div class="swatch-hex">#806000</div>
+              <div class="swatch-var">--gold-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold);"><span style="color: var(--void);">$</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold (Base)</div>
+              <div class="swatch-hex">#d0a020</div>
+              <div class="swatch-var">--gold</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold-bright);"><span style="color: var(--void);">$</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold Bright</div>
+              <div class="swatch-hex">#ffe040</div>
+              <div class="swatch-var">--gold-bright</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--gold-glow);"><span style="color: var(--void);">$</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Gold Glow</div>
+              <div class="swatch-hex">#fff8c0</div>
+              <div class="swatch-var">--gold-glow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mystic -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">THE MYSTIC - Brand Signature, DM, Magic, Active States</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic-void);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic Void</div>
+              <div class="swatch-hex">#0a0418</div>
+              <div class="swatch-var">--mystic-void</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic-shadow);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic Shadow</div>
+              <div class="swatch-hex">#1a0840</div>
+              <div class="swatch-var">--mystic-shadow</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic-dark);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic Dark</div>
+              <div class="swatch-hex">#401080</div>
+              <div class="swatch-var">--mystic-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic (Base)</div>
+              <div class="swatch-hex">#7030b0</div>
+              <div class="swatch-var">--mystic</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic-bright);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic Bright</div>
+              <div class="swatch-hex">#a060e0</div>
+              <div class="swatch-var">--mystic-bright</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--mystic-glow);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Mystic Glow</div>
+              <div class="swatch-hex">#d0a0ff</div>
+              <div class="swatch-var">--mystic-glow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Utility Colors -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">UTILITY COLORS - Venom (Healing), Ice (Shields)</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--venom-dark);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Venom Dark</div>
+              <div class="swatch-hex">#104010</div>
+              <div class="swatch-var">--venom-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--venom);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Venom</div>
+              <div class="swatch-hex">#20a020</div>
+              <div class="swatch-var">--venom</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--venom-bright);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Venom Bright</div>
+              <div class="swatch-hex">#40ff40</div>
+              <div class="swatch-var">--venom-bright</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--ice-dark);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Ice Dark</div>
+              <div class="swatch-hex">#103040</div>
+              <div class="swatch-var">--ice-dark</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--ice);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Ice</div>
+              <div class="swatch-hex">#2090b0</div>
+              <div class="swatch-var">--ice</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--ice-bright);"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Ice Bright</div>
+              <div class="swatch-hex">#40d0f0</div>
+              <div class="swatch-var">--ice-bright</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Number Colors -->
+      <div class="swatch-group">
+        <div class="swatch-group-title">NUMBER COLORS - Tile Count Indicators</div>
+        <div class="docs-grid docs-grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n1" style="font-size: 16px;">1</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N1 - Blue</div>
+              <div class="swatch-hex">#4090e0</div>
+              <div class="swatch-var">.n1</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n2" style="font-size: 16px;">2</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N2 - Green</div>
+              <div class="swatch-hex">#40b040</div>
+              <div class="swatch-var">.n2</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n3" style="font-size: 16px;">3</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N3 - Red</div>
+              <div class="swatch-hex">#e04040</div>
+              <div class="swatch-var">.n3</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n4" style="font-size: 16px;">4</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N4 - Purple</div>
+              <div class="swatch-hex">#a040d0</div>
+              <div class="swatch-var">.n4</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n5" style="font-size: 16px;">5</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N5 - Maroon</div>
+              <div class="swatch-hex">#c02020</div>
+              <div class="swatch-var">.n5</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: var(--stone-800);"><span class="n6" style="font-size: 16px;">6</span></div>
+            <div class="swatch-info">
+              <div class="swatch-name">N6 - Teal</div>
+              <div class="swatch-hex">#40b0b0</div>
+              <div class="swatch-var">.n6</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: TYPOGRAPHY
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">TYPOGRAPHY</h2>
+      <p class="docs-subtitle">ONE FONT TO RULE THEM ALL</p>
+
+      <div class="docs-note">
+        <strong>FONT DECISION:</strong> We use Press Start 2P exclusively. This was a deliberate
+        choice over Gemini's 4-font approach (Cinzel, JetBrains Mono, Crimson Pro, Press Start 2P).
+        Mixing fonts breaks the pixel art commitment and makes the UI feel like a web app instead
+        of a retro game. Hierarchy is achieved through SIZE, COLOR, and SPACING - not font variety.
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">TITLE - Game Name, Section Headers</div>
+        <div style="font-size: 22px; color: var(--blood); letter-spacing: 6px;">DUNGEON DELVER</div>
+        <div class="type-specs">font-size: 22px | letter-spacing: 6px | color: --blood</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">HEADING - Panel Titles, Large Labels</div>
+        <div style="font-size: 11px; color: var(--gold); letter-spacing: 2px;">FLOOR 7</div>
+        <div class="type-specs">font-size: 11px | letter-spacing: 2px | color: --gold</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">SUBHEADING - Floor Names, Section Titles</div>
+        <div style="font-size: 8px; color: var(--bone); letter-spacing: 1px;">THE WHISPERING CRYPT</div>
+        <div class="type-specs">font-size: 8px | letter-spacing: 1px | color: --bone</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">BODY - DM Messages, Rune Names</div>
+        <div style="font-size: 7px; color: var(--bone-light); line-height: 2;">"Another flag? Confident, aren't we?"</div>
+        <div class="type-specs">font-size: 7px | line-height: 2 | color: --bone-light</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">SMALL - Labels, Descriptions, Meta Info</div>
+        <div style="font-size: 6px; color: var(--stone-300); letter-spacing: 2px;">DUNGEON MASTER</div>
+        <div class="type-specs">font-size: 6px | letter-spacing: 2px | color: --stone-300</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">MICRO - Tiny Labels, Status Text</div>
+        <div style="font-size: 5px; color: var(--stone-400); letter-spacing: 2px;">ARCANE RESIDUE</div>
+        <div class="type-specs">font-size: 5px | letter-spacing: 2px | color: --stone-400</div>
+      </div>
+
+      <div class="type-sample">
+        <div class="type-label">NUMBERS - Tile Counts (with glow)</div>
+        <div style="display: flex; gap: 16px; margin-top: 8px;">
+          <span class="n1" style="font-size: 14px;">1</span>
+          <span class="n2" style="font-size: 14px;">2</span>
+          <span class="n3" style="font-size: 14px;">3</span>
+          <span class="n4" style="font-size: 14px;">4</span>
+        </div>
+        <div class="type-specs">font-size: 12px (in tiles) | text-shadow with matching color glow</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: SPACING & SCALE
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">SPACING & SCALE</h2>
+      <p class="docs-subtitle">PIXEL-PERFECT MEASUREMENTS</p>
+
+      <div class="docs-note">
+        <strong>BASE UNIT:</strong> 4px (--unit). All spacing should be multiples of 4px to maintain
+        pixel-perfect alignment. The tile size is 40px (10 units), tile gap is 2px.
+      </div>
+
+      <div class="spacing-demo">
+        <div class="spacing-block" style="width: 16px; height: 16px;">
+          <span class="spacing-label">4px</span>
+        </div>
+        <div class="spacing-block" style="width: 24px; height: 24px;">
+          <span class="spacing-label">8px</span>
+        </div>
+        <div class="spacing-block" style="width: 32px; height: 32px;">
+          <span class="spacing-label">12px</span>
+        </div>
+        <div class="spacing-block" style="width: 40px; height: 40px;">
+          <span class="spacing-label">16px</span>
+        </div>
+        <div class="spacing-block" style="width: 56px; height: 56px;">
+          <span class="spacing-label">24px</span>
+        </div>
+        <div class="spacing-block" style="width: 72px; height: 72px;">
+          <span class="spacing-label">40px</span>
+        </div>
+      </div>
+
+      <div class="docs-grid docs-grid-3" style="margin-top: 20px;">
+        <div class="decision-item">
+          <div class="decision-q">--tile: 40px</div>
+          <div class="decision-a">Base tile size. All tiles are square.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--gap: 2px</div>
+          <div class="decision-a">Gap between tiles in the grid.</div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--unit: 4px</div>
+          <div class="decision-a">Base spacing unit. Use multiples.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: TIMING & ANIMATION
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">TIMING & ANIMATION</h2>
+      <p class="docs-subtitle">THE RHYTHM OF THE DUNGEON</p>
+
+      <div class="docs-note">
+        <strong>ANIMATION PHILOSOPHY:</strong> Animations should feel "snappy" but not jarring.
+        Use --tick for instant feedback, --beat for hover states, --breath for transitions,
+        --pulse for attention-getters, and --wave for ambient breathing effects.
+      </div>
+
+      <div class="docs-grid docs-grid-2">
+        <div class="decision-item">
+          <div class="decision-q">--tick: 50ms</div>
+          <div class="decision-a">Instant feedback. Tile press, cursor change.</div>
+          <div class="timing-bar" style="width: 5%;"></div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--beat: 100ms</div>
+          <div class="decision-a">Hover states, quick transitions.</div>
+          <div class="timing-bar" style="width: 10%;"></div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--breath: 200ms</div>
+          <div class="decision-a">Panel transitions, corner growth.</div>
+          <div class="timing-bar" style="width: 20%;"></div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--pulse: 400ms</div>
+          <div class="decision-a">Status blinks, threat pulses.</div>
+          <div class="timing-bar" style="width: 40%;"></div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">--wave: 800ms</div>
+          <div class="decision-a">Ambient effects, slow pulses.</div>
+          <div class="timing-bar" style="width: 80%;"></div>
+        </div>
+        <div class="decision-item">
+          <div class="decision-q">Ambient: 6-20s</div>
+          <div class="decision-a">Particle floats, eye movement, aura breathing.</div>
+          <div class="timing-bar" style="width: 100%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: TILE STATES
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">TILE STATES</h2>
+      <p class="docs-subtitle">EVERY STATE HAS MEANING</p>
+
+      <div class="docs-note">
+        <strong>CRITICAL:</strong> Tiles NEVER have rounded corners. The beveled 3D effect with
+        light from top-left is essential for the tactile feel. Each state has distinct visual
+        language so players instantly understand what they're looking at.
+      </div>
+
+      <div class="component-row" style="margin-top: 20px;">
+        <span class="component-label">HIDDEN</span>
+        <div class="component-demo">
+          <button class="tile t-hidden" style="position: relative;"></button>
+          <span style="font-size: 6px; color: var(--stone-400);">Default unrevealed tile. Raised 3D, clickable.</span>
+        </div>
+      </div>
+
+      <div class="component-row">
+        <span class="component-label">REVEALED</span>
+        <div class="component-demo">
+          <div class="tile t-revealed" style="position: relative;"></div>
+          <div class="tile t-revealed n1" style="position: relative;">1</div>
+          <div class="tile t-revealed n2" style="position: relative;">2</div>
+          <div class="tile t-revealed n3" style="position: relative;">3</div>
+          <span style="font-size: 6px; color: var(--stone-400);">Sunken, inset shadow. Safe.</span>
+        </div>
+      </div>
+
+      <div class="component-row">
+        <span class="component-label">FLAGGED</span>
+        <div class="component-demo">
+          <button class="tile t-flagged" style="position: relative;">
+            <svg class="icon icon-md" viewBox="0 0 16 16" fill="none">
+              <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+              <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+            </svg>
+          </button>
+          <span style="font-size: 6px; color: var(--stone-400);">Gold border, flag icon. Player's claim.</span>
+        </div>
+      </div>
+
+      <div class="component-row">
+        <span class="component-label">QUESTION</span>
+        <div class="component-demo">
+          <button class="tile t-question" style="position: relative;"><span class="qmark">?</span></button>
+          <span style="font-size: 6px; color: var(--stone-400);">Mystic border, wobbling ?. Uncertainty.</span>
+        </div>
+      </div>
+
+      <div class="component-row">
+        <span class="component-label">HIT (MONSTER)</span>
+        <div class="component-demo">
+          <div class="tile t-hit" style="position: relative;">
+            <svg class="icon icon-lg" viewBox="0 0 16 16" fill="var(--bone-light)">
+              <rect x="4" y="2" width="8" height="8" rx="1"/>
+              <rect x="5" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+              <rect x="9" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+              <rect x="6" y="10" width="1" height="4"/>
+              <rect x="9" y="10" width="1" height="4"/>
+            </svg>
+          </div>
+          <span style="font-size: 6px; color: var(--stone-400);">Blood red, shaking, glowing. DAMAGE!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: BUTTON STATES
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">BUTTON VARIANTS</h2>
+      <p class="docs-subtitle">TACTILE FEEDBACK IS KEY</p>
+
+      <div class="component-row" style="margin-top: 20px;">
+        <span class="component-label">PRIMARY</span>
+        <div class="component-demo">
+          <button class="action-btn action-btn-primary" style="width: auto; padding: 10px 20px;">ENTER SHOP</button>
+        </div>
+      </div>
+
+      <div class="component-row">
+        <span class="component-label">SECONDARY</span>
+        <div class="component-demo">
+          <button class="footer-btn">NEW GAME</button>
+          <button class="footer-btn">HOW TO PLAY</button>
+        </div>
+      </div>
+
+      <div class="docs-note" style="margin-top: 16px;">
+        <strong>BUTTON BEHAVIOR:</strong> All buttons have three states:
+        <br>• <strong>Normal:</strong> Visible "depth" via box-shadow (appears raised)
+        <br>• <strong>Hover:</strong> Lifts up 2px, shadow grows, may glow
+        <br>• <strong>Active:</strong> Pushes down 4px, shadow shrinks to 2px (pressed into surface)
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: ICON LIBRARY
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">ICON LIBRARY</h2>
+      <p class="docs-subtitle">ALL ICONS ARE INLINE SVG - NO EXTERNAL DEPENDENCIES</p>
+
+      <div class="docs-note">
+        <strong>ICON PHILOSOPHY:</strong> All icons are hand-crafted inline SVGs using the color
+        variables. NO emoji, NO icon fonts, NO external icon libraries. This ensures consistent
+        style and zero external dependencies.
+      </div>
+
+      <div class="docs-grid docs-grid-6" style="margin-top: 16px;">
+        <div class="icon-showcase">
+          <svg viewBox="0 0 16 16" fill="none">
+            <rect x="5" y="3" width="2" height="11" fill="var(--gold-dark)"/>
+            <path d="M7 3 L13 6 L7 9 Z" fill="var(--gold)"/>
+          </svg>
+          <span class="icon-showcase-label">FLAG</span>
+        </div>
+
+        <div class="icon-showcase">
+          <svg viewBox="0 0 16 16" fill="var(--bone-light)">
+            <rect x="4" y="2" width="8" height="8" rx="1"/>
+            <rect x="5" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+            <rect x="9" y="4" width="2" height="2" fill="var(--blood-dark)"/>
+            <rect x="6" y="10" width="1" height="4"/>
+            <rect x="9" y="10" width="1" height="4"/>
+          </svg>
+          <span class="icon-showcase-label">SKELETON</span>
+        </div>
+
+        <div class="icon-showcase">
+          <svg viewBox="0 0 20 20" fill="var(--gold)">
+            <circle cx="10" cy="10" r="8"/>
+            <circle cx="10" cy="10" r="5" fill="var(--gold-dark)"/>
+            <text x="10" y="13" text-anchor="middle" font-size="7" fill="var(--gold-bright)" font-family="Press Start 2P">$</text>
+          </svg>
+          <span class="icon-showcase-label">GOLD COIN</span>
+        </div>
+
+        <div class="icon-showcase">
+          <svg viewBox="0 0 20 20" fill="var(--ice)">
+            <path d="M10 2 L3 5 V10 C3 14 6 17 10 18 C14 17 17 14 17 10 V5 L10 2 Z"/>
+            <path d="M10 4 L5 6 V10 C5 13 7 15 10 16 C13 15 15 13 15 10 V6 L10 4 Z" fill="var(--ice-dark)"/>
+          </svg>
+          <span class="icon-showcase-label">SHIELD</span>
+        </div>
+
+        <div class="icon-showcase">
+          <svg viewBox="0 0 16 16" fill="none" stroke="var(--mystic-bright)" stroke-width="1.5">
+            <circle cx="8" cy="8" r="3"/>
+            <line x1="8" y1="2" x2="8" y2="5"/>
+            <line x1="8" y1="11" x2="8" y2="14"/>
+            <line x1="2" y1="8" x2="5" y2="8"/>
+            <line x1="11" y1="8" x2="14" y2="8"/>
+          </svg>
+          <span class="icon-showcase-label">SEER RUNE</span>
+        </div>
+
+        <div class="icon-showcase">
+          <svg viewBox="0 0 16 16" fill="none" stroke="var(--stone-300)" stroke-width="1.5">
+            <path d="M8 2 L3 8 L8 14 L13 8 Z"/>
+          </svg>
+          <span class="icon-showcase-label">WARD RUNE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: ATMOSPHERE COMPONENTS
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">ATMOSPHERE SYSTEM</h2>
+      <p class="docs-subtitle">THE DUNGEON IS ALIVE</p>
+
+      <div class="docs-note">
+        <strong>ATMOSPHERE LAYERS (z-index order):</strong>
+        <br>• z-0: .atmosphere (brick pattern, 0.4 opacity)
+        <br>• z-1: .vignette (radial gradient darkening edges)
+        <br>• z-1: .mystic-aura (breathing purple glow at top)
+        <br>• z-2: .particle-field (8 floating dust particles)
+        <br>• z-10: .game-container (actual game content)
+        <br>• z-100: .scanlines (subtle 4px scanline overlay)
+      </div>
+
+      <div class="docs-grid docs-grid-2" style="margin-top: 16px;">
+        <div class="decision-item">
+          <div class="decision-q">BRICK PATTERN</div>
+          <div class="decision-a">Hand-crafted SVG data URI. 32x16px repeating brick pattern.
+            No external texture URLs that could fail or change.</div>
+          <span class="decision-tag kept">SELF-CONTAINED</span>
+        </div>
+
+        <div class="decision-item">
+          <div class="decision-q">VIGNETTE</div>
+          <div class="decision-a">Radial gradient from transparent center to 90% opacity edges.
+            Creates "spotlight" effect centering attention on the game board.</div>
+          <span class="decision-tag kept">KEPT</span>
+        </div>
+
+        <div class="decision-item">
+          <div class="decision-q">MYSTIC AURA</div>
+          <div class="decision-a">600x350px breathing purple glow at top. Breathes on 8s cycle.
+            Reinforces the mystic purple brand color.</div>
+          <span class="decision-tag kept">SIGNATURE</span>
+        </div>
+
+        <div class="decision-item">
+          <div class="decision-q">FLOATING PARTICLES</div>
+          <div class="decision-a">8 dust particles drifting upward on 20s cycle with staggered
+            delays. Creates "ancient dusty dungeon" atmosphere.</div>
+          <span class="decision-tag kept">KEPT</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: DESIGN DECISIONS LOG
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">DESIGN DECISIONS LOG</h2>
+      <p class="docs-subtitle">WHAT WE CHOSE AND WHY</p>
+
+      <div class="decision-item">
+        <div class="decision-q">Why single font instead of a font stack?</div>
+        <div class="decision-a">
+          Gemini v4 used 4 fonts (Cinzel for headings, Crimson Pro for body, JetBrains Mono for
+          numbers, Press Start 2P for retro accents). This looked polished but felt like a web app,
+          not a retro game. We chose Press Start 2P exclusively because: (1) It commits fully to
+          the pixel art aesthetic, (2) It forces hierarchy through size/color/spacing instead of
+          font changes, (3) It's more memorable and distinctive.
+        </div>
+        <span class="decision-tag kept">KEPT: Single font</span>
+        <span class="decision-tag rejected">REJECTED: Font mixing</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why inline SVG patterns instead of external textures?</div>
+        <div class="decision-a">
+          External texture URLs (like transparenttextures.com) can fail, change, slow loading,
+          or be blocked. Inline SVG data URIs are self-contained - the mockup works offline,
+          loads instantly, and never breaks due to external changes.
+        </div>
+        <span class="decision-tag kept">KEPT: Self-contained</span>
+        <span class="decision-tag rejected">REJECTED: External URLs</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why no rounded corners on tiles?</div>
+        <div class="decision-a">
+          Rounded corners break the pixel art aesthetic. Classic Minesweeper, retro games, and
+          8-bit/16-bit UI all use hard square edges. The only round element is the DM eye (which
+          is literally an eyeball). Gemini's v4 added border-radius to tiles which looked modern
+          but lost the retro feel.
+        </div>
+        <span class="decision-tag principle">PIXEL ART COMMITMENT</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why mystic purple as brand color?</div>
+        <div class="decision-a">
+          Most dark fantasy games use gold/red/stone. Mystic purple (#7030b0) distinguishes us
+          while fitting the "dungeon magic" theme. It appears in: DM panel, active runes, question
+          tiles, hover states, the breathing aura. It says "this dungeon has ancient magic" not
+          just "this is a dark cave."
+        </div>
+        <span class="decision-tag kept">BRAND IDENTITY</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why animated corner accents on panels?</div>
+        <div class="decision-a">
+          Borrowed from Gemini v4 - panels have small gold corner accents that grow on hover.
+          This adds subtle interactivity without breaking the pixel aesthetic (we kept them
+          square, not rounded). It rewards exploration and makes the UI feel responsive.
+        </div>
+        <span class="decision-tag kept">FROM GEMINI</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why segmented health bar instead of continuous?</div>
+        <div class="decision-a">
+          Segmented bars (like Diablo orbs, Dark Souls HP) make damage/healing more readable.
+          You can count segments. Each hit visibly removes chunks. The critical state (low HP)
+          triggers pulsing animation for urgency.
+        </div>
+        <span class="decision-tag kept">BOTH VERSIONS</span>
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Why does the DM eye look around?</div>
+        <div class="decision-a">
+          The Constitution says "Dungeon Is Alive" - the DM should feel like it's watching you.
+          The eye subtly moves on a 6s cycle (not frantic, not static). Combined with the
+          "WATCHING" status indicator, it creates presence without being distracting.
+        </div>
+        <span class="decision-tag principle">DUNGEON IS ALIVE</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════
+         SECTION: IMPLEMENTATION NOTES
+         ═══════════════════════════════════════════════════════════════════════════ -->
+    <section class="docs-section">
+      <h2 class="docs-title">IMPLEMENTATION NOTES</h2>
+      <p class="docs-subtitle">FOR FUTURE AGENTS BUILDING THE REACT VERSION</p>
+
+      <div class="docs-note">
+        <strong>WHEN IMPLEMENTING IN REACT:</strong>
+        <br>1. Create CSS custom properties file matching :root variables exactly
+        <br>2. Use Tailwind ONLY if you extend it with these exact colors (no defaults)
+        <br>3. Atmosphere layers should be fixed-position siblings of the game container
+        <br>4. Tile states should be CSS classes, not inline styles
+        <br>5. All animations should use the timing tokens (--tick, --beat, etc.)
+        <br>6. Icons should be React components wrapping the exact SVG paths shown here
+      </div>
+
+      <div class="docs-note docs-warning">
+        <strong>DO NOT:</strong>
+        <br>• Use emoji for icons (❤️🛡️💰) - use the SVG icons shown here
+        <br>• Add Tailwind's default colors - only use our palette
+        <br>• Use external icon libraries (Heroicons, Lucide, etc.)
+        <br>• Add border-radius to tiles or panels
+        <br>• Change the font or add additional fonts
+        <br>• Use external texture URLs
+        <br>• Skip the atmosphere layers - they're essential to the feel
+      </div>
+
+      <div class="decision-item">
+        <div class="decision-q">Suggested React Component Structure</div>
+        <div class="decision-a" style="font-family: monospace; white-space: pre-wrap;">
+src/
+├── styles/
+│   ├── tokens.css        # CSS custom properties
+│   └── animations.css    # Keyframe animations
+├── components/
+│   ├── Atmosphere/       # Background layers
+│   │   ├── BrickPattern.tsx
+│   │   ├── Vignette.tsx
+│   │   ├── MysticAura.tsx
+│   │   ├── ParticleField.tsx
+│   │   └── Scanlines.tsx
+│   ├── GameBoard/
+│   │   ├── TileGrid.tsx
+│   │   ├── Tile.tsx      # All tile states
+│   │   └── FloatingText.tsx
+│   ├── Sidebar/
+│   │   ├── DMPanel.tsx   # With animated eye
+│   │   ├── VitalsPanel.tsx
+│   │   └── RunesPanel.tsx
+│   ├── ui/
+│   │   ├── Panel.tsx     # With corner accents
+│   │   ├── Button.tsx    # Primary/Secondary
+│   │   └── HealthBar.tsx # Segmented
+│   └── icons/            # SVG components
+│       ├── Flag.tsx
+│       ├── Coin.tsx
+│       ├── Shield.tsx
+│       └── ...
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Note -->
+    <div class="docs-divider">
+      <span>END OF DOCUMENTATION</span>
+    </div>
+
+    <div style="text-align: center; padding: 20px 0;">
+      <p style="font-size: 6px; color: var(--stone-500); letter-spacing: 2px;">
+        THIS MOCKUP IS THE SOURCE OF TRUTH
+      </p>
+      <p style="font-size: 5px; color: var(--stone-600); letter-spacing: 1px; margin-top: 8px;">
+        When in doubt, match what's shown here exactly.
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

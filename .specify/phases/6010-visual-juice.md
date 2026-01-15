@@ -49,6 +49,18 @@ created: 2026-01-14
 
 ## Notes
 
-- Install Framer Motion
-- Keep animations snappy (<200ms)
-- Respect reduced motion preferences
+**See `.specify/reference/ui-mockup-definitive.html` for animation timing tokens.**
+
+### Timing Tokens (MUST USE)
+
+| Token | Duration | Usage |
+|-------|----------|-------|
+| `--tick` | 50ms | Instant feedback |
+| `--beat` | 100ms | Quick transitions |
+| `--breath` | 200ms | Standard animations |
+| `--pulse` | 400ms | Noticeable effects |
+| `--wave` | 800ms | Dramatic moments |
+
+- Consider Framer Motion for complex sequences
+- Respect `prefers-reduced-motion`
+- Use mockup CSS custom properties for colors

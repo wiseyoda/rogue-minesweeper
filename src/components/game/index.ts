@@ -6,6 +6,9 @@
 export { GameBoard } from './GameBoard';
 export type { GameBoardProps } from './GameBoard';
 
+export { GameContainer } from './GameContainer';
+export type { GameContainerProps } from './GameContainer';
+
 export { Tile } from './Tile';
 export type { TileProps } from './Tile';
 

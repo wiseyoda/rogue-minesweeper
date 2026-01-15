@@ -33,7 +33,8 @@ Phases use **ABBC** format:
 | 1010                                 | **zustand-stores**       | ✅ Complete | State management with persistence                |
 | 1020                                 | game-board-ui            | ✅ Complete | Interactive tile grid renders                    |
 | 1030                                 | hud-components           | ✅ Complete | HP, gold, level display working                  |
-| 1040                                 | **ui-integration-poc**   | ⬜ Not Started | **USER GATE**: Full game loop works              |
+| 1040                                 | **ui-integration-poc**   | ⏳ Awaiting User | **USER GATE**: Full game loop works              |
+| 1041                                 | design-system-integration | ⬜ Not Started | Mockup design implemented in React              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
 | 2010                                 | floor-progression        | ⬜ Not Started | Level advancement and scaling                    |
 | 2020                                 | floor-shop               | ⬜ Not Started | Between-floor shop UI and logic                  |
@@ -78,7 +79,7 @@ Phases use **ABBC** format:
 | 8040                                 | error-handling           | ⬜ Not Started | Graceful failures, recovery                      |
 | 8050                                 | **production-gate**      | ⬜ Not Started | **USER GATE**: Ready for public release          |
 
-**Legend**: ⬜ Not Started | 🔄 In Progress | ✅ Complete | **USER GATE** = Requires user verification
+**Legend**: ⬜ Not Started | 🔄 In Progress | ⏳ Awaiting User | ✅ Complete | **USER GATE** = Requires user verification
 
 ---
 
@@ -230,3 +231,28 @@ From `.specify/memory/constitution.md`:
 5. **Passive Mastery** - No ability buttons, runes modify behavior
 6. **Juice Is Holistic** - Audio + visual + pacing all matter
 7. **Move Fast, Iterate Often** - Each phase produces playable build
+
+---
+
+## UI Design Reference
+
+**All visual design decisions are documented in the definitive UI mockup:**
+
+📄 **`.specify/reference/ui-mockup-definitive.html`**
+
+Open this file in a browser to see:
+- Live interactive mockup with all tile states
+- Complete color palette with CSS custom properties
+- Typography scale, spacing system, timing tokens
+- Button variants, icon library, atmosphere layers
+- Design decisions log with rationale
+- DO/DON'T implementation guidelines
+
+**Any phase touching UI MUST reference this mockup.** Key decisions:
+- **Single font**: Press Start 2P only (no font mixing)
+- **No rounded corners** on tiles or panels
+- **Mystic purple (#7030b0)** as brand signature color
+- **40px tiles** with 2px gap
+- **Segmented health bar** (not continuous)
+
+See also: `.specify/memory/design-system.md` for quick reference tables.
