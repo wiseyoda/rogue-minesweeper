@@ -1,0 +1,227 @@
+/**
+ * Tests for gameStore.
+ * @module stores/__tests__/gameStore.test
+ */
+
+import { describe, it, expect, beforeEach } from 'vitest';
+import { useGameStore } from '../gameStore';
+
+describe('gameStore', () => {
+  beforeEach(() => {
+    // Reset store before each test
+    useGameStore.getState().reset();
+  });
+
+  describe('initial state', () => {
+    it('should have null grid initially', () => {
+      const state = useGameStore.getState();
+      expect(state.grid).toBeNull();
+    });
+
+    it('should have default player values', () => {
+      const state = useGameStore.getState();
+      expect(state.player.lives).toBeGreaterThan(0);
+      expect(state.player.gold).toBe(0);
+      expect(state.player.shields).toBe(0);
+    });
+
+    it('should have gameOver false initially', () => {
+      const state = useGameStore.getState();
+      expect(state.gameOver).toBe(false);
+    });
+  });
+
+  describe('startNewRun', () => {
+    it('should reset all state to initial values', () => {
+      // Modify state first
+      useGameStore.setState({ gameOver: true });
+      useGameStore.getState().addGold(100);
+
+      // Start new run
+      useGameStore.getState().startNewRun();
+
+      const state = useGameStore.getState();
+      expect(state.gameOver).toBe(false);
+      expect(state.player.gold).toBe(0);
+      expect(state.grid).toBeNull();
+      expect(state.run.level).toBe(1);
+    });
+  });
+
+  describe('startLevel', () => {
+    it('should set level and reset level-specific state', () => {
+      useGameStore.getState().startLevel(3);
+
+      const state = useGameStore.getState();
+      expect(state.run.level).toBe(3);
+      expect(state.run.phase).toBe('playing');
+      expect(state.run.revealedCount).toBe(0);
+      expect(state.run.flagsPlaced).toBe(0);
+      expect(state.run.isFirstClick).toBe(true);
+    });
+
+    it('should update grid config for the level', () => {
+      useGameStore.getState().startLevel(5);
+
+      const state = useGameStore.getState();
+      // Grid config should be calculated for level 5
+      expect(state.gridConfig.rows).toBeGreaterThan(8);
+      expect(state.gridConfig.cols).toBeGreaterThan(8);
+    });
+  });
+
+  describe('revealCell', () => {
+    it('should initialize grid on first click', () => {
+      useGameStore.getState().startLevel(1);
+
+      // First click
+      useGameStore.getState().revealCell(0, 0);
+
+      const state = useGameStore.getState();
+      expect(state.grid).not.toBeNull();
+      expect(state.run.isFirstClick).toBe(false);
+      expect(state.run.revealedCount).toBeGreaterThan(0);
+    });
+
+    it('should not reveal when not in playing phase', () => {
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().revealCell(0, 0); // Initialize grid
+      useGameStore.getState().setPhase('shopping');
+
+      const revealedBefore = useGameStore.getState().run.revealedCount;
+      useGameStore.getState().revealCell(1, 1);
+
+      expect(useGameStore.getState().run.revealedCount).toBe(revealedBefore);
+    });
+  });
+
+  describe('toggleFlag', () => {
+    it('should toggle flag state', () => {
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().revealCell(0, 0); // Initialize grid
+
+      const grid = useGameStore.getState().grid;
+      if (!grid) throw new Error('Grid should be initialized');
+
+      // Find an unrevealed cell
+      let targetRow = -1;
+      let targetCol = -1;
+      for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[r].length; c++) {
+          if (!grid[r][c].isRevealed) {
+            targetRow = r;
+            targetCol = c;
+            break;
+          }
+        }
+        if (targetRow >= 0) break;
+      }
+
+      if (targetRow >= 0) {
+        useGameStore.getState().toggleFlag(targetRow, targetCol);
+        const newGrid = useGameStore.getState().grid;
+        expect(newGrid?.[targetRow][targetCol].isFlagged).toBe(true);
+      }
+    });
+
+    it('should not toggle flag when not in playing phase', () => {
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().setPhase('shopping');
+
+      const flagsBefore = useGameStore.getState().run.flagsPlaced;
+      useGameStore.getState().toggleFlag(0, 0);
+
+      expect(useGameStore.getState().run.flagsPlaced).toBe(flagsBefore);
+    });
+  });
+
+  describe('takeDamage', () => {
+    it('should absorb damage with shields first', () => {
+      useGameStore.getState().addShield(2);
+      const livesBefore = useGameStore.getState().player.lives;
+
+      useGameStore.getState().takeDamage(1);
+
+      const state = useGameStore.getState();
+      expect(state.player.shields).toBe(1);
+      expect(state.player.lives).toBe(livesBefore);
+    });
+
+    it('should damage lives after shields are depleted', () => {
+      useGameStore.getState().addShield(1);
+      const livesBefore = useGameStore.getState().player.lives;
+
+      useGameStore.getState().takeDamage(3);
+
+      const state = useGameStore.getState();
+      expect(state.player.shields).toBe(0);
+      expect(state.player.lives).toBe(livesBefore - 2);
+    });
+
+    it('should set gameOver when lives reach 0', () => {
+      const lives = useGameStore.getState().player.lives;
+
+      useGameStore.getState().takeDamage(lives);
+
+      const state = useGameStore.getState();
+      expect(state.player.lives).toBe(0);
+      expect(state.gameOver).toBe(true);
+      expect(state.run.phase).toBe('gameOver');
+    });
+
+    it('should set damageTakenThisLevel when lives are damaged', () => {
+      useGameStore.getState().takeDamage(1);
+
+      expect(useGameStore.getState().run.damageTakenThisLevel).toBe(true);
+    });
+  });
+
+  describe('addGold', () => {
+    it('should increase player gold', () => {
+      useGameStore.getState().addGold(50);
+
+      expect(useGameStore.getState().player.gold).toBe(50);
+    });
+
+    it('should accumulate gold', () => {
+      useGameStore.getState().addGold(30);
+      useGameStore.getState().addGold(20);
+
+      expect(useGameStore.getState().player.gold).toBe(50);
+    });
+  });
+
+  describe('addShield', () => {
+    it('should increase player shields', () => {
+      useGameStore.getState().addShield(2);
+
+      expect(useGameStore.getState().player.shields).toBe(2);
+    });
+  });
+
+  describe('setPhase', () => {
+    it('should update run phase', () => {
+      useGameStore.getState().setPhase('shopping');
+
+      expect(useGameStore.getState().run.phase).toBe('shopping');
+    });
+  });
+
+  describe('reset', () => {
+    it('should return to initial state', () => {
+      // Modify state
+      useGameStore.getState().addGold(100);
+      useGameStore.getState().addShield(5);
+      useGameStore.setState({ gameOver: true });
+
+      // Reset
+      useGameStore.getState().reset();
+
+      const state = useGameStore.getState();
+      expect(state.player.gold).toBe(0);
+      expect(state.player.shields).toBe(0);
+      expect(state.gameOver).toBe(false);
+      expect(state.grid).toBeNull();
+    });
+  });
+});
