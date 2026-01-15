@@ -1,5 +1,5 @@
 ---
-phase: "4030"
+phase: '4030'
 name: dm-dialogue-ui
 status: not_started
 created: 2026-01-14
@@ -19,13 +19,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/components/dungeon-master/DialogueBox.tsx` | Main dialogue |
-| `src/components/dungeon-master/MoodIndicator.tsx` | Mood display |
-| `src/components/dungeon-master/Portrait.tsx` | DM avatar |
-| `src/components/dungeon-master/index.ts` | Exports |
-| `src/styles/dungeon-master.css` | DM styling |
+| File                                              | Description   |
+| ------------------------------------------------- | ------------- |
+| `src/components/dungeon-master/DialogueBox.tsx`   | Main dialogue |
+| `src/components/dungeon-master/MoodIndicator.tsx` | Mood display  |
+| `src/components/dungeon-master/Portrait.tsx`      | DM avatar     |
+| `src/components/dungeon-master/index.ts`          | Exports       |
+| `src/styles/dungeon-master.css`                   | DM styling    |
 
 ## Verification Gate
 

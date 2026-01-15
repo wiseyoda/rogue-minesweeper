@@ -1,5 +1,5 @@
 ---
-phase: "2020"
+phase: '2020'
 name: floor-shop
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/components/shop/FloorShop.tsx` | Shop modal |
-| `src/components/shop/ShopItem.tsx` | Purchasable item |
-| `src/components/shop/ItemGrid.tsx` | Item layout |
-| `src/data/shopItems.ts` | Item definitions |
-| `src/stores/gameStore.ts` | Updated: purchasing logic |
+| File                                | Description               |
+| ----------------------------------- | ------------------------- |
+| `src/components/shop/FloorShop.tsx` | Shop modal                |
+| `src/components/shop/ShopItem.tsx`  | Purchasable item          |
+| `src/components/shop/ItemGrid.tsx`  | Item layout               |
+| `src/data/shopItems.ts`             | Item definitions          |
+| `src/stores/gameStore.ts`           | Updated: purchasing logic |
 
 ## Verification Gate
 
@@ -44,13 +44,13 @@ created: 2026-01-14
 
 ## Shop Items (MVP)
 
-| Item | Cost | Effect |
-|------|------|--------|
-| Heal Potion | 30g | +1 HP |
-| Max HP Up | 80g | +1 Max HP |
-| Shield Orb | 40g | +1 Shield |
-| Gold Magnet | 60g | 2x gold next floor |
-| Reveal Scroll | 50g | Reveal 5 random tiles |
+| Item          | Cost | Effect                |
+| ------------- | ---- | --------------------- |
+| Heal Potion   | 30g  | +1 HP                 |
+| Max HP Up     | 80g  | +1 Max HP             |
+| Shield Orb    | 40g  | +1 Shield             |
+| Gold Magnet   | 60g  | 2x gold next floor    |
+| Reveal Scroll | 50g  | Reveal 5 random tiles |
 
 ## Notes
 

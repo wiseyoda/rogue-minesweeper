@@ -1,5 +1,5 @@
 ---
-phase: "1020"
+phase: '1020'
 name: game-board-ui
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/components/game/GameBoard.tsx` | Main board container |
-| `src/components/game/Tile.tsx` | Individual tile component |
-| `src/components/game/NumberDisplay.tsx` | Colored number (1-8) |
-| `src/components/game/index.ts` | Game component exports |
-| `src/styles/game.css` | Game-specific styles |
+| File                                    | Description               |
+| --------------------------------------- | ------------------------- |
+| `src/components/game/GameBoard.tsx`     | Main board container      |
+| `src/components/game/Tile.tsx`          | Individual tile component |
+| `src/components/game/NumberDisplay.tsx` | Colored number (1-8)      |
+| `src/components/game/index.ts`          | Game component exports    |
+| `src/styles/game.css`                   | Game-specific styles      |
 
 ## Verification Gate
 

@@ -1,5 +1,5 @@
 ---
-phase: "6050"
+phase: '6050'
 name: polish-poc
 status: not_started
 created: 2026-01-14
@@ -43,6 +43,7 @@ User must verify game "feel":
 ## Success Criteria
 
 Constitution Principle VI: "Juice Is Holistic"
+
 - Audio + visual + pacing all work together
 - No single element feels out of place
 - Game is satisfying to play, not just functional

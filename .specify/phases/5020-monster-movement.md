@@ -1,5 +1,5 @@
 ---
-phase: "5020"
+phase: '5020'
 name: monster-movement
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/engine/monsters.ts` | Monster AI |
-| `src/engine/pathfinding.ts` | Simple pathfinding |
-| `src/types/monster.ts` | Updated: movement |
+| File                                  | Description              |
+| ------------------------------------- | ------------------------ |
+| `src/engine/monsters.ts`              | Monster AI               |
+| `src/engine/pathfinding.ts`           | Simple pathfinding       |
+| `src/types/monster.ts`                | Updated: movement        |
 | `src/components/game/MonsterPath.tsx` | Path preview (with rune) |
 
 ## Verification Gate
@@ -40,13 +40,13 @@ created: 2026-01-14
 
 ## Monster Movement Types
 
-| Type | Behavior | Speed |
-|------|----------|-------|
-| Static | Never moves | 0 |
-| Random | Random adjacent tile | 1 |
-| Chase | Move toward player | 1 |
-| Fast Chase | Move toward player | 2 |
-| Patrol | Fixed pattern | 1 |
+| Type       | Behavior             | Speed |
+| ---------- | -------------------- | ----- |
+| Static     | Never moves          | 0     |
+| Random     | Random adjacent tile | 1     |
+| Chase      | Move toward player   | 1     |
+| Fast Chase | Move toward player   | 2     |
+| Patrol     | Fixed pattern        | 1     |
 
 ## Notes
 

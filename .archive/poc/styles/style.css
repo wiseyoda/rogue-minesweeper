@@ -1,0 +1,142 @@
+body {
+  font-family: 'Merriweather', serif;
+  background-color: #f8f4e3;
+  color: #2b2b2b;
+  overflow-y: auto; /* Allow scrolling for inventory on small screens */
+}
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+.game-grid {
+  display: grid;
+  border: 2px solid #4b2e02;
+  box-shadow: 0 0 20px rgba(139, 69, 19, 0.3);
+}
+.cell {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #8b7355;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s ease-in-out;
+  background-color: #d2b48c;
+}
+.cell:hover {
+  background-color: #c8a165;
+}
+.cell.revealed {
+  background-color: #ede0c8;
+  border-color: #b89b5e;
+  cursor: default;
+}
+.cell.flagged {
+  background-color: #d2b48c;
+  color: #b22222;
+}
+.cell.question {
+  background-color: #d2b48c;
+  color: #1e3a8a;
+}
+.cell.monster {
+  background-color: #8b0000;
+  color: #f8f4e3;
+}
+.cell.exit {
+  background-color: #6b8e23;
+  color: #f8f4e3;
+  animation: pulse-exit 2s infinite;
+}
+@keyframes pulse-exit {
+  0%,
+  100% {
+    box-shadow: 0 0 10px #6b8e23;
+  }
+  50% {
+    box-shadow: 0 0 20px #98c379;
+  }
+}
+.text-c-1 {
+  color: #7f1d1d;
+}
+.text-c-2 {
+  color: #14532d;
+}
+.text-c-3 {
+  color: #1e40af;
+}
+.text-c-4 {
+  color: #6d28d9;
+}
+.text-c-5 {
+  color: #9d174d;
+}
+.text-c-6 {
+  color: #0f766e;
+}
+.text-c-7 {
+  color: #b45309;
+}
+.text-c-8 {
+  color: #44403c;
+}
+
+/* Modal and Shop styles */
+.modal {
+  transition: opacity 0.25s ease;
+}
+.modal-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.modal-inactive {
+  opacity: 0;
+  pointer-events: none;
+}
+.rarity-common {
+  border-color: #8b7355;
+}
+.rarity-uncommon {
+  border-color: #6b8e23;
+}
+.rarity-rare {
+  border-color: #1e40af;
+}
+.rarity-legendary {
+  border-color: #b22222;
+}
+
+.shop-item {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+.shop-item.selected {
+  transform: scale(1.05);
+  border-color: #d97706 !important; /* Golden glow to show selection */
+  box-shadow: 0 0 15px rgba(217, 119, 6, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .cell {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+}
+@media (max-width: 480px) {
+  .cell {
+    width: 24px;
+    height: 24px;
+  }
+  .status-bar > div {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+  }
+}

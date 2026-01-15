@@ -55,8 +55,8 @@ description: 'Accumulated knowledge from implementation - check before making de
 
 > Quick reference for technology-specific issues and workarounds.
 
-| Technology | Gotcha | Workaround |
-|------------|--------|------------|
+| Technology    | Gotcha              | Workaround |
+| ------------- | ------------------- | ---------- |
 | [e.g., React] | [Issue description] | [Solution] |
 
 <!--
@@ -129,6 +129,7 @@ Examples:
 ## Usage Instructions
 
 This file should be:
+
 1. **Checked BEFORE starting implementation tasks** - Agents should scan for relevant entries
 2. **Updated AFTER encountering issues** - Add entries when problems are solved
 3. **Reviewed at phase completion** - During `/speckit.verify`, add any new learnings

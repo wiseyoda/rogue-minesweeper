@@ -1,5 +1,5 @@
 ---
-phase: "1040"
+phase: '1040'
 name: ui-integration-poc
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ user_gate: true
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/pages/GamePage.tsx` | Main game page |
-| `src/components/game/GameContainer.tsx` | Game + HUD layout |
-| `src/components/ui/NewGameButton.tsx` | Reset game |
-| `src/components/ui/GameOverModal.tsx` | Death screen |
-| `src/components/ui/WinModal.tsx` | Floor cleared screen |
+| File                                    | Description          |
+| --------------------------------------- | -------------------- |
+| `src/pages/GamePage.tsx`                | Main game page       |
+| `src/components/game/GameContainer.tsx` | Game + HUD layout    |
+| `src/components/ui/NewGameButton.tsx`   | Reset game           |
+| `src/components/ui/GameOverModal.tsx`   | Death screen         |
+| `src/components/ui/WinModal.tsx`        | Floor cleared screen |
 
 ## Verification Gate - USER GATE
 

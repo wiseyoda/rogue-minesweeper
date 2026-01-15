@@ -1,5 +1,5 @@
 ---
-phase: "6010"
+phase: '6010'
 name: visual-juice
 status: not_started
 created: 2026-01-14
@@ -20,12 +20,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/hooks/useScreenShake.ts` | Screen shake hook |
-| `src/components/effects/Particles.tsx` | Particle system |
-| `src/components/game/Tile.tsx` | Updated: animations |
-| `src/styles/animations.css` | Keyframe animations |
+| File                                   | Description         |
+| -------------------------------------- | ------------------- |
+| `src/hooks/useScreenShake.ts`          | Screen shake hook   |
+| `src/components/effects/Particles.tsx` | Particle system     |
+| `src/components/game/Tile.tsx`         | Updated: animations |
+| `src/styles/animations.css`            | Keyframe animations |
 
 ## Verification Gate
 

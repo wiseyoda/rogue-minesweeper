@@ -1,5 +1,5 @@
 ---
-phase: "5050"
+phase: '5050'
 name: moving-monsters-poc
 status: not_started
 created: 2026-01-14
@@ -43,6 +43,7 @@ User must manually verify tactical combat:
 ## Success Criteria
 
 Combat should feel tactical:
+
 - Movement prediction matters
 - Ability avoidance is possible
 - Bosses feel like checkpoints

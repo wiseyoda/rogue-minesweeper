@@ -1,5 +1,5 @@
 ---
-phase: "5040"
+phase: '5040'
 name: boss-encounters
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/engine/boss.ts` | Boss logic |
-| `src/data/bosses.ts` | Boss definitions |
-| `src/components/game/BossHealth.tsx` | Boss HP bar |
-| `src/components/ui/BossIntro.tsx` | Boss entrance |
+| File                                 | Description      |
+| ------------------------------------ | ---------------- |
+| `src/engine/boss.ts`                 | Boss logic       |
+| `src/data/bosses.ts`                 | Boss definitions |
+| `src/components/game/BossHealth.tsx` | Boss HP bar      |
+| `src/components/ui/BossIntro.tsx`    | Boss entrance    |
 
 ## Verification Gate
 
@@ -40,12 +40,12 @@ created: 2026-01-14
 
 ## Boss Roster
 
-| Boss | Floor | HP | Ability |
-|------|-------|----|---------|
-| Dragon | 3 | 5 | Fire Breath |
-| Beholder | 6 | 8 | Eye Rays |
-| Lich | 9 | 10 | Summon Skeletons |
-| Demon Lord | 12 | 15 | All abilities |
+| Boss       | Floor | HP  | Ability          |
+| ---------- | ----- | --- | ---------------- |
+| Dragon     | 3     | 5   | Fire Breath      |
+| Beholder   | 6     | 8   | Eye Rays         |
+| Lich       | 9     | 10  | Summon Skeletons |
+| Demon Lord | 12    | 15  | All abilities    |
 
 ## Notes
 

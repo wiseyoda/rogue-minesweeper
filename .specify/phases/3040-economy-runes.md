@@ -1,5 +1,5 @@
 ---
-phase: "3040"
+phase: '3040'
 name: economy-runes
 status: not_started
 created: 2026-01-14
@@ -18,11 +18,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/data/runes/economyRunes.ts` | Economy rune definitions |
-| `src/engine/runes/economy.ts` | Economy rune effects |
-| `src/engine/__tests__/economyRunes.test.ts` | Effect tests |
+| File                                        | Description              |
+| ------------------------------------------- | ------------------------ |
+| `src/data/runes/economyRunes.ts`            | Economy rune definitions |
+| `src/engine/runes/economy.ts`               | Economy rune effects     |
+| `src/engine/__tests__/economyRunes.test.ts` | Effect tests             |
 
 ## Verification Gate
 
@@ -37,13 +37,13 @@ created: 2026-01-14
 
 ## Rune Details
 
-| Rune | Rarity | Effect |
-|------|--------|--------|
-| Lucky Coin | Common | +25% gold find |
-| Bargain Hunter | Common | 10% shop discount |
-| Treasure Hunter | Uncommon | 20% chance for bonus loot |
-| Midas Touch | Rare | +1 gold per reveal |
-| Golden Goose | Legendary | +100% gold, +50% prices |
+| Rune            | Rarity    | Effect                    |
+| --------------- | --------- | ------------------------- |
+| Lucky Coin      | Common    | +25% gold find            |
+| Bargain Hunter  | Common    | 10% shop discount         |
+| Treasure Hunter | Uncommon  | 20% chance for bonus loot |
+| Midas Touch     | Rare      | +1 gold per reveal        |
+| Golden Goose    | Legendary | +100% gold, +50% prices   |
 
 ## Notes
 

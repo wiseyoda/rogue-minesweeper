@@ -9,12 +9,12 @@ description: 'Task list template for feature implementation'
 
 > Last updated: [TIMESTAMP] | Run `speckit tasks sync` to refresh
 
-| Phase | Status | Progress |
-|-------|--------|----------|
-| Setup | PENDING | 0/0 |
-| Foundational | PENDING | 0/0 |
-| User Story 1 | PENDING | 0/0 |
-| Polish | PENDING | 0/0 |
+| Phase        | Status  | Progress |
+| ------------ | ------- | -------- |
+| Setup        | PENDING | 0/0      |
+| Foundational | PENDING | 0/0      |
+| User Story 1 | PENDING | 0/0      |
+| Polish       | PENDING | 0/0      |
 
 **Overall**: 0/0 (0%) | **Current**: None
 

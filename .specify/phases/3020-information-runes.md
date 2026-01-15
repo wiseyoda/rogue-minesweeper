@@ -1,5 +1,5 @@
 ---
-phase: "3020"
+phase: '3020'
 name: information-runes
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/data/runes/informationRunes.ts` | Information rune definitions |
-| `src/engine/runes/information.ts` | Information rune effects |
-| `src/engine/__tests__/informationRunes.test.ts` | Effect tests |
+| File                                            | Description                  |
+| ----------------------------------------------- | ---------------------------- |
+| `src/data/runes/informationRunes.ts`            | Information rune definitions |
+| `src/engine/runes/information.ts`               | Information rune effects     |
+| `src/engine/__tests__/informationRunes.test.ts` | Effect tests                 |
 
 ## Verification Gate
 
@@ -39,13 +39,13 @@ created: 2026-01-14
 
 ## Rune Details
 
-| Rune | Rarity | Effect |
-|------|--------|--------|
-| Scout's Eye | Common | See 1 random monster location at floor start |
-| Danger Sense | Common | Danger numbers show +1 range |
-| Monster Lens | Uncommon | Revealed numbers show monster TYPE count |
-| Prophecy | Rare | Highlight safest tile to click |
-| Omniscience | Legendary | See all monster locations (not types) |
+| Rune         | Rarity    | Effect                                       |
+| ------------ | --------- | -------------------------------------------- |
+| Scout's Eye  | Common    | See 1 random monster location at floor start |
+| Danger Sense | Common    | Danger numbers show +1 range                 |
+| Monster Lens | Uncommon  | Revealed numbers show monster TYPE count     |
+| Prophecy     | Rare      | Highlight safest tile to click               |
+| Omniscience  | Legendary | See all monster locations (not types)        |
 
 ## Notes
 

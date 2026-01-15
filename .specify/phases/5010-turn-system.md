@@ -1,5 +1,5 @@
 ---
-phase: "5010"
+phase: '5010'
 name: turn-system
 status: not_started
 created: 2026-01-14
@@ -18,12 +18,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/engine/turns.ts` | Turn management |
-| `src/types/turn.ts` | Turn types |
-| `src/stores/gameStore.ts` | Updated: turn state |
-| `src/components/hud/TurnIndicator.tsx` | Turn display |
+| File                                   | Description         |
+| -------------------------------------- | ------------------- |
+| `src/engine/turns.ts`                  | Turn management     |
+| `src/types/turn.ts`                    | Turn types          |
+| `src/stores/gameStore.ts`              | Updated: turn state |
+| `src/components/hud/TurnIndicator.tsx` | Turn display        |
 
 ## Verification Gate
 

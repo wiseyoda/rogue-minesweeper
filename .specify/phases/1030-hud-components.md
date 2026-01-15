@@ -1,5 +1,5 @@
 ---
-phase: "1030"
+phase: '1030'
 name: hud-components
 status: not_started
 created: 2026-01-14
@@ -21,16 +21,16 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/components/hud/HUD.tsx` | Main HUD container |
-| `src/components/hud/HealthDisplay.tsx` | HP hearts/bar |
-| `src/components/hud/ShieldDisplay.tsx` | Shield icons |
-| `src/components/hud/GoldCounter.tsx` | Gold amount |
-| `src/components/hud/LevelIndicator.tsx` | Current floor |
-| `src/components/hud/BuffBar.tsx` | Active buff icons |
-| `src/components/hud/MessageArea.tsx` | Game messages |
-| `src/components/hud/index.ts` | HUD exports |
+| File                                    | Description        |
+| --------------------------------------- | ------------------ |
+| `src/components/hud/HUD.tsx`            | Main HUD container |
+| `src/components/hud/HealthDisplay.tsx`  | HP hearts/bar      |
+| `src/components/hud/ShieldDisplay.tsx`  | Shield icons       |
+| `src/components/hud/GoldCounter.tsx`    | Gold amount        |
+| `src/components/hud/LevelIndicator.tsx` | Current floor      |
+| `src/components/hud/BuffBar.tsx`        | Active buff icons  |
+| `src/components/hud/MessageArea.tsx`    | Game messages      |
+| `src/components/hud/index.ts`           | HUD exports        |
 
 ## Verification Gate
 

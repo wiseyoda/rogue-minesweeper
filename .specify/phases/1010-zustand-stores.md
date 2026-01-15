@@ -1,5 +1,5 @@
 ---
-phase: "1010"
+phase: '1010'
 name: zustand-stores
 status: not_started
 created: 2026-01-14
@@ -21,13 +21,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/stores/gameStore.ts` | Current run: grid, HP, gold, level, buffs |
-| `src/stores/metaStore.ts` | Persistent: upgrades, stats, unlocks |
-| `src/stores/uiStore.ts` | UI: modals, settings |
-| `src/stores/index.ts` | Store exports |
-| `src/stores/__tests__/gameStore.test.ts` | Store logic tests |
+| File                                     | Description                               |
+| ---------------------------------------- | ----------------------------------------- |
+| `src/stores/gameStore.ts`                | Current run: grid, HP, gold, level, buffs |
+| `src/stores/metaStore.ts`                | Persistent: upgrades, stats, unlocks      |
+| `src/stores/uiStore.ts`                  | UI: modals, settings                      |
+| `src/stores/index.ts`                    | Store exports                             |
+| `src/stores/__tests__/gameStore.test.ts` | Store logic tests                         |
 
 ## Verification Gate
 

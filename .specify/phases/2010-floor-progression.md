@@ -1,5 +1,5 @@
 ---
-phase: "2010"
+phase: '2010'
 name: floor-progression
 status: not_started
 created: 2026-01-14
@@ -20,12 +20,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/engine/difficulty.ts` | Scaling calculations |
-| `src/engine/floor-transition.ts` | Floor completion logic |
-| `src/stores/gameStore.ts` | Updated: level progression |
-| `src/engine/__tests__/difficulty.test.ts` | Scaling tests |
+| File                                      | Description                |
+| ----------------------------------------- | -------------------------- |
+| `src/engine/difficulty.ts`                | Scaling calculations       |
+| `src/engine/floor-transition.ts`          | Floor completion logic     |
+| `src/stores/gameStore.ts`                 | Updated: level progression |
+| `src/engine/__tests__/difficulty.test.ts` | Scaling tests              |
 
 ## Verification Gate
 
@@ -44,10 +44,10 @@ created: 2026-01-14
 
 ```typescript
 interface FloorConfig {
-  rows: number;      // min(8 + level, 20)
-  cols: number;      // min(8 + level, 30)
+  rows: number; // min(8 + level, 20)
+  cols: number; // min(8 + level, 30)
   monsterCount: number; // min(5 + level * 2.5, rows * cols * 0.3)
-  goldBonus: number;    // level * 10
+  goldBonus: number; // level * 10
 }
 ```
 

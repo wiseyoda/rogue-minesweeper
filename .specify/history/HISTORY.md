@@ -8,7 +8,7 @@
 
 ## Completed Phases
 
-*No phases completed yet.*
+_No phases completed yet._
 
 ---
 
@@ -31,12 +31,15 @@ When a phase is completed:
 **Original Goal**: ...
 
 **What Was Built**:
+
 - File 1
 - File 2
 
 **Deferred Items**:
+
 - Item 1 (moved to backlog)
 
 **Lessons Learned**:
+
 - Lesson 1
 ```

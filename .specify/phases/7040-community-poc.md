@@ -1,5 +1,5 @@
 ---
-phase: "7040"
+phase: '7040'
 name: community-poc
 status: not_started
 created: 2026-01-14
@@ -41,6 +41,7 @@ User must verify community features:
 ## Success Criteria
 
 Community engagement:
+
 - "Try this seed!" sharing
 - Daily challenge anticipation
 - Leaderboard competition

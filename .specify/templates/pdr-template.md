@@ -46,6 +46,7 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
 -->
 
 **After this feature ships, users will be able to**:
+
 - [Outcome 1 - what they can DO that they couldn't before]
 - [Outcome 2]
 - [Outcome 3]
@@ -62,6 +63,7 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
 -->
 
 ### Story 1: [Brief Title]
+
 **As a** [type of user],
 **I want to** [goal or desire],
 **So that** [benefit or value I receive].
@@ -71,6 +73,7 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
 ---
 
 ### Story 2: [Brief Title]
+
 **As a** [type of user],
 **I want to** [goal or desire],
 **So that** [benefit or value I receive].
@@ -80,6 +83,7 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
 ---
 
 ### Story 3: [Brief Title]
+
 **As a** [type of user],
 **I want to** [goal or desire],
 **So that** [benefit or value I receive].
@@ -96,11 +100,11 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
   Avoid technical metrics - focus on user outcomes.
 -->
 
-| Criterion | Target | How We'll Measure |
-|-----------|--------|-------------------|
-| [User behavior/outcome] | [Specific target] | [Observable indicator] |
+| Criterion                  | Target            | How We'll Measure      |
+| -------------------------- | ----------------- | ---------------------- |
+| [User behavior/outcome]    | [Specific target] | [Observable indicator] |
 | [User satisfaction metric] | [Specific target] | [Observable indicator] |
-| [Business outcome] | [Specific target] | [Observable indicator] |
+| [Business outcome]         | [Specific target] | [Observable indicator] |
 
 ---
 
@@ -138,10 +142,10 @@ description: 'Product Design Requirements template - captures WHAT we want, not 
   These are product/business dependencies, not technical ones.
 -->
 
-| Dependency | Type | Impact | Status |
-|------------|------|--------|--------|
+| Dependency                | Type                     | Impact              | Status          |
+| ------------------------- | ------------------------ | ------------------- | --------------- |
 | [External system/process] | Blocking / Informational | [How it affects us] | Known / Unknown |
-| [Other feature/PDR] | Blocking / Informational | [How it affects us] | Known / Unknown |
+| [Other feature/PDR]       | Blocking / Informational | [How it affects us] | Known / Unknown |
 
 ---
 

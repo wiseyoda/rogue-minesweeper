@@ -1,5 +1,5 @@
 ---
-phase: "8020"
+phase: '8020'
 name: performance-optimization
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| Bundle analysis report | |
-| Optimized builds | |
-| Performance benchmarks | |
+| File                   | Description |
+| ---------------------- | ----------- |
+| Bundle analysis report |             |
+| Optimized builds       |             |
+| Performance benchmarks |             |
 
 ## Verification Gate
 
@@ -39,13 +39,13 @@ created: 2026-01-14
 
 ## Optimization Targets
 
-| Metric | Target |
-|--------|--------|
+| Metric      | Target  |
+| ----------- | ------- |
 | Bundle size | < 500KB |
-| FCP | < 1s |
-| LCP | < 2s |
-| Frame rate | 60fps |
-| Memory | < 100MB |
+| FCP         | < 1s    |
+| LCP         | < 2s    |
+| Frame rate  | 60fps   |
+| Memory      | < 100MB |
 
 ## Notes
 

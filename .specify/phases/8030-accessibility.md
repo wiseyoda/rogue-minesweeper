@@ -1,5 +1,5 @@
 ---
-phase: "8030"
+phase: '8030'
 name: accessibility
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| Updated components | A11y attributes |
+| File                            | Description       |
+| ------------------------------- | ----------------- |
+| Updated components              | A11y attributes   |
 | `src/hooks/useReducedMotion.ts` | Motion preference |
-| Accessibility audit | |
+| Accessibility audit             |                   |
 
 ## Verification Gate
 
@@ -39,13 +39,13 @@ created: 2026-01-14
 
 ## A11y Features
 
-| Feature | Implementation |
-|---------|---------------|
-| Keyboard | Arrow keys + Enter/Space |
-| Screen Reader | ARIA labels on tiles |
-| Color | Symbols in addition to colors |
-| Motion | prefers-reduced-motion |
-| Focus | Visible focus ring |
+| Feature       | Implementation                |
+| ------------- | ----------------------------- |
+| Keyboard      | Arrow keys + Enter/Space      |
+| Screen Reader | ARIA labels on tiles          |
+| Color         | Symbols in addition to colors |
+| Motion        | prefers-reduced-motion        |
+| Focus         | Visible focus ring            |
 
 ## Notes
 

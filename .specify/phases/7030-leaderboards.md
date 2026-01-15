@@ -1,5 +1,5 @@
 ---
-phase: "7030"
+phase: '7030'
 name: leaderboards
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/api/leaderboard.ts` | API routes |
-| `src/components/ui/Leaderboard.tsx` | Leaderboard display |
-| `app/api/scores/route.ts` | Next.js API route (if using) |
-| Vercel KV configuration | |
+| File                                | Description                  |
+| ----------------------------------- | ---------------------------- |
+| `src/api/leaderboard.ts`            | API routes                   |
+| `src/components/ui/Leaderboard.tsx` | Leaderboard display          |
+| `app/api/scores/route.ts`           | Next.js API route (if using) |
+| Vercel KV configuration             |                              |
 
 ## Verification Gate
 

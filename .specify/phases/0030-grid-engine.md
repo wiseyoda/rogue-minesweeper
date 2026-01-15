@@ -1,5 +1,5 @@
 ---
-phase: "0030"
+phase: '0030'
 name: grid-engine
 status: not_started
 created: 2026-01-14
@@ -22,14 +22,14 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/engine/grid.ts` | Core grid logic |
-| `src/engine/reveal.ts` | Reveal and flood-fill logic |
-| `src/engine/win-condition.ts` | Check if floor is cleared |
-| `src/engine/index.ts` | Engine exports |
-| `src/engine/__tests__/grid.test.ts` | Grid creation tests |
-| `src/engine/__tests__/reveal.test.ts` | Reveal logic tests |
+| File                                  | Description                 |
+| ------------------------------------- | --------------------------- |
+| `src/engine/grid.ts`                  | Core grid logic             |
+| `src/engine/reveal.ts`                | Reveal and flood-fill logic |
+| `src/engine/win-condition.ts`         | Check if floor is cleared   |
+| `src/engine/index.ts`                 | Engine exports              |
+| `src/engine/__tests__/grid.test.ts`   | Grid creation tests         |
+| `src/engine/__tests__/reveal.test.ts` | Reveal logic tests          |
 
 ## Verification Gate
 

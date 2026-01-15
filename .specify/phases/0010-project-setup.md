@@ -1,5 +1,5 @@
 ---
-phase: "0010"
+phase: '0010'
 name: project-setup
 status: not_started
 created: 2026-01-14
@@ -23,18 +23,18 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `package.json` | Project dependencies and scripts |
-| `vite.config.ts` | Vite configuration |
-| `tsconfig.json` | TypeScript strict config |
-| `tailwind.config.ts` | Tailwind setup |
-| `.eslintrc.cjs` | ESLint rules |
-| `.prettierrc` | Prettier config |
-| `vitest.config.ts` | Vitest setup |
-| `src/App.tsx` | Placeholder app component |
-| `src/main.tsx` | Entry point |
-| `vercel.json` | Deployment config |
+| File                 | Description                      |
+| -------------------- | -------------------------------- |
+| `package.json`       | Project dependencies and scripts |
+| `vite.config.ts`     | Vite configuration               |
+| `tsconfig.json`      | TypeScript strict config         |
+| `tailwind.config.ts` | Tailwind setup                   |
+| `.eslintrc.cjs`      | ESLint rules                     |
+| `.prettierrc`        | Prettier config                  |
+| `vitest.config.ts`   | Vitest setup                     |
+| `src/App.tsx`        | Placeholder app component        |
+| `src/main.tsx`       | Entry point                      |
+| `vercel.json`        | Deployment config                |
 
 ## Verification Gate
 

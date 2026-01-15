@@ -1,5 +1,5 @@
 ---
-phase: "2040"
+phase: '2040'
 name: meta-shop
 status: not_started
 created: 2026-01-14
@@ -20,12 +20,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File | Description |
-|------|-------------|
-| `src/components/shop/MetaShop.tsx` | Meta shop modal |
-| `src/components/shop/UpgradeItem.tsx` | Upgrade display |
-| `src/components/shop/UpgradeGrid.tsx` | Grid layout |
-| `src/pages/GamePage.tsx` | Updated: meta shop flow |
+| File                                  | Description             |
+| ------------------------------------- | ----------------------- |
+| `src/components/shop/MetaShop.tsx`    | Meta shop modal         |
+| `src/components/shop/UpgradeItem.tsx` | Upgrade display         |
+| `src/components/shop/UpgradeGrid.tsx` | Grid layout             |
+| `src/pages/GamePage.tsx`              | Updated: meta shop flow |
 
 ## Verification Gate
 

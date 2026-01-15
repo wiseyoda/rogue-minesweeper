@@ -193,13 +193,13 @@ speckit status
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue               | Solution                                           |
+| ------------------- | -------------------------------------------------- |
 | "Command not found" | Check PATH includes `~/.claude/speckit-system/bin` |
-| State file corrupt | Run `speckit doctor --fix` |
-| Branch mismatch | Run `speckit reconcile` |
-| Missing artifacts | Re-run the producing step |
-| Missing templates | Run `speckit templates sync` |
+| State file corrupt  | Run `speckit doctor --fix`                         |
+| Branch mismatch     | Run `speckit reconcile`                            |
+| Missing artifacts   | Re-run the producing step                          |
+| Missing templates   | Run `speckit templates sync`                       |
 
 ### Diagnostics
 

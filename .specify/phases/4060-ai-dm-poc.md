@@ -1,5 +1,5 @@
 ---
-phase: "4060"
+phase: '4060'
 name: ai-dm-poc
 status: not_started
 created: 2026-01-14
@@ -44,6 +44,7 @@ User must manually verify DM personality:
 ## Success Criteria
 
 DM should feel like a character:
+
 - Players should look forward to DM quips
 - Deaths feel less frustrating with commentary
 - DM creates rivalry/relationship
