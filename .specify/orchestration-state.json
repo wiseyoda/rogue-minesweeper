@@ -27,14 +27,28 @@
     "completed_at": null
   },
   "orchestration": {
-    "phase": null,
-    "step": null,
+    "phase": {
+      "number": "0020",
+      "name": "core-types",
+      "branch": "0020-core-types",
+      "status": "complete"
+    },
+    "step": {
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
+    },
     "progress": {
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
     },
-    "steps": {}
+    "steps": {
+      "implement": {
+        "tasks_completed": 17,
+        "tasks_total": 17
+      }
+    }
   },
   "health": {
     "status": "healthy",
@@ -58,5 +72,5 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T05:00:00Z"
+  "last_updated": "2026-01-15T04:44:19Z"
 }
