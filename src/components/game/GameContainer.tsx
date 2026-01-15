@@ -5,10 +5,11 @@
  * Design System: .specify/reference/design-system/10-layout.css
  */
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useGameStore } from '../../stores/gameStore';
 import { GameBoard } from './GameBoard';
 import { Panel, WinModal, GameOverModal } from '../ui';
+import { getFloorConfig } from '@/engine/difficulty';
 import type { GameMessage } from '../hud';
 
 /**
@@ -54,6 +55,9 @@ export const GameContainer = memo(function GameContainer({
   // Calculate monsters avoided (total monsters - monsters hit this level)
   const monstersAvoided = monsterCount - run.damageTakenThisLevel;
 
+  // Get floor bonus for current level
+  const floorBonus = useMemo(() => getFloorConfig(run.level).goldBonus, [run.level]);
+
   // Handlers
   const handleContinue = useCallback(() => {
     startLevel(run.level + 1);
@@ -83,6 +87,7 @@ export const GameContainer = memo(function GameContainer({
           tilesRevealed={run.revealedCount}
           goldCollected={run.revealedCount} // 1 gold per tile revealed
           monstersAvoided={monstersAvoided}
+          floorBonus={floorBonus}
           onContinue={handleContinue}
         />
       )}

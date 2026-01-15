@@ -12,8 +12,8 @@ import {
   createInitialPlayerState,
   createInitialRunState,
   createDefaultPlayerStats,
-  calculateLevelGridConfig,
 } from '@/types';
+import { getFloorConfig } from '@/engine/difficulty';
 import {
   initializeGrid,
   revealCell as engineRevealCell,
@@ -25,7 +25,7 @@ import {
  */
 const initialState = {
   grid: null,
-  gridConfig: calculateLevelGridConfig(1),
+  gridConfig: getFloorConfig(1),
   player: createInitialPlayerState(createDefaultPlayerStats()),
   run: createInitialRunState(1),
   gameOver: false,
@@ -47,7 +47,7 @@ export const useGameStore = create<GameStore>()(
         const playerStats = createDefaultPlayerStats();
         set((state) => {
           state.grid = null;
-          state.gridConfig = calculateLevelGridConfig(1);
+          state.gridConfig = getFloorConfig(1);
           state.player = createInitialPlayerState(playerStats);
           state.run = createInitialRunState(1);
           state.gameOver = false;
@@ -55,11 +55,11 @@ export const useGameStore = create<GameStore>()(
       },
 
       startLevel: (level: number) => {
-        const gridConfig = calculateLevelGridConfig(level);
+        const floorConfig = getFloorConfig(level);
         const isNewRun = level === 1;
         set((state) => {
           state.grid = null;
-          state.gridConfig = gridConfig;
+          state.gridConfig = floorConfig;
           state.run.level = level;
           state.run.phase = 'playing';
           state.run.revealedCount = 0;
@@ -195,9 +195,19 @@ export const useGameStore = create<GameStore>()(
       },
 
       setPhase: (phase: GamePhase) => {
-        set((state) => {
-          state.run.phase = phase;
-        });
+        // Award floor completion bonus when transitioning to shopping
+        if (phase === 'shopping') {
+          const { run } = get();
+          const floorBonus = getFloorConfig(run.level).goldBonus;
+          set((state) => {
+            state.player.gold += floorBonus;
+            state.run.phase = phase;
+          });
+        } else {
+          set((state) => {
+            state.run.phase = phase;
+          });
+        }
       },
 
       reset: () => {

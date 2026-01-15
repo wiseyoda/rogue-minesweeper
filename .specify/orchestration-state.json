@@ -28,20 +28,26 @@
   },
   "orchestration": {
     "phase": {
-      "number": null,
-      "name": null,
-      "branch": null,
-      "status": "not_started"
+      "number": "2010",
+      "name": "floor-progression",
+      "branch": "2010-floor-progression",
+      "status": "in_progress"
     },
     "step": {
-      "current": null,
-      "index": 0,
-      "status": "not_started"
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
     },
     "progress": {
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
+    },
+    "steps": {
+      "implement": {
+        "tasks_completed": 22,
+        "tasks_total": 22
+      }
     }
   },
   "health": {
@@ -136,7 +142,7 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T18:12:22Z",
+  "last_updated": "2026-01-15T18:40:19Z",
   "stage": "verify",
   "next_action": "user_verify"
 }

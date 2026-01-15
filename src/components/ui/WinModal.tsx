@@ -15,6 +15,8 @@ export interface WinModalProps {
   goldCollected: number;
   /** Monsters avoided (not hit) this level */
   monstersAvoided: number;
+  /** Gold bonus awarded for completing this floor */
+  floorBonus: number;
   /** Called when Continue button clicked */
   onContinue: () => void;
 }
@@ -27,6 +29,7 @@ export const WinModal = memo(function WinModal({
   tilesRevealed,
   goldCollected,
   monstersAvoided,
+  floorBonus,
   onContinue,
 }: WinModalProps) {
   return (
@@ -78,6 +81,12 @@ export const WinModal = memo(function WinModal({
             <span style={{ color: 'var(--stone-300)', fontSize: '10px' }}>Monsters Avoided</span>
             <span style={{ color: 'var(--blood)', fontSize: '12px', fontWeight: 'bold' }}>
               {monstersAvoided}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span style={{ color: 'var(--stone-300)', fontSize: '10px' }}>Floor Bonus</span>
+            <span style={{ color: 'var(--gold)', fontSize: '12px', fontWeight: 'bold' }}>
+              +{floorBonus}
             </span>
           </div>
         </div>

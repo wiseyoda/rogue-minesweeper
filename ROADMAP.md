@@ -36,7 +36,7 @@ Phases use **ABBC** format:
 | 1040                                 | **ui-integration-poc**   | ✅ Complete | **USER GATE**: Full game loop works              |
 | 1041                                 | design-system-integration | ✅ Complete | Mockup design implemented in React              |
 | **Milestone 2: Progression Systems** |                          |                |                                                  |
-| 2010                                 | floor-progression        | ⬜ Not Started | Level advancement and scaling                    |
+| 2010                                 | floor-progression        | ✅ Complete | Level advancement and scaling                    |
 | 2020                                 | floor-shop               | ⬜ Not Started | Between-floor shop UI and logic                  |
 | 2030                                 | meta-progression         | ⬜ Not Started | Permanent upgrades persist                       |
 | 2040                                 | meta-shop                | ⬜ Not Started | End-of-run upgrade shop                          |
