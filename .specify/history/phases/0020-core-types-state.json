@@ -27,18 +27,32 @@
     "completed_at": null
   },
   "orchestration": {
-    "phase": null,
-    "step": null,
+    "phase": {
+      "number": "0020",
+      "name": "core-types",
+      "branch": "0020-core-types",
+      "status": "complete"
+    },
+    "step": {
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
+    },
     "progress": {
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
     },
-    "steps": {}
+    "steps": {
+      "implement": {
+        "tasks_completed": 17,
+        "tasks_total": 17
+      }
+    }
   },
   "health": {
     "status": "healthy",
-    "last_check": "2026-01-15T05:50:00Z",
+    "last_check": "2026-01-15T05:00:00Z",
     "issues": []
   },
   "actions": {
@@ -51,13 +65,6 @@
         "status": "complete",
         "merged_at": "2026-01-15T05:00:00Z",
         "pr_number": 14
-      },
-      {
-        "phase": "0020",
-        "name": "core-types",
-        "status": "complete",
-        "merged_at": "2026-01-15T05:50:00Z",
-        "pr_number": 15
       }
     ]
   },
@@ -65,5 +72,5 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-15T05:50:00Z"
+  "last_updated": "2026-01-15T04:44:19Z"
 }
