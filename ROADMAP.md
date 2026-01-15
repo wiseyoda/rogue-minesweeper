@@ -28,7 +28,7 @@ Phases use **ABBC** format:
 | 0010                                 | project-setup            | ✅ Complete | Project scaffolded, builds, and deploys          |
 | 0020                                 | core-types               | ✅ Complete | All game types defined and tested                |
 | 0030                                 | grid-engine              | ✅ Complete | Minesweeper logic works in isolation             |
-| 0040                                 | **core-logic-poc**       | 🔄 In Progress | **USER GATE**: Playable grid in test page        |
+| 0040                                 | core-logic-poc           | ✅ Complete | **USER GATE**: Playable grid in test page        |
 | **Milestone 1: Game State & UI**     |                          |                |                                                  |
 | 1010                                 | zustand-stores           | ⬜ Not Started | State management with persistence                |
 | 1020                                 | game-board-ui            | ⬜ Not Started | Interactive tile grid renders                    |
