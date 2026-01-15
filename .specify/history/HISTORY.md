@@ -2,10 +2,45 @@
 
 > Archived phases that have been completed.
 
-**Last Updated**: 2026-01-14
+**Last Updated**: 2026-01-15
 
 ---
 
+# 2030 - Meta Progression (Completed 2026-01-15)
+
+**Goal**: Implement permanent upgrades that persist across runs using metaGold currency.
+
+**What Was Built**:
+
+- `src/data/permanentUpgrades.ts` - 5 upgrade definitions with cost/effect systems
+- `src/components/ui/UpgradeShopModal.tsx` - Upgrade purchase modal
+- `src/stores/metaStore.ts` - Upgrade registry with localStorage persistence
+- `src/stores/gameStore.ts` - Upgrade application at run start
+- `src/types/player.ts` - PlayerStats type with upgrade tracking
+- `specs/2030-meta-progression/` - Full specification and tasks
+
+**Upgrades Implemented**:
+
+| Upgrade | Effect | Max Level |
+|---------|--------|-----------|
+| Vitality | +1 max HP per level | 5 |
+| Fortune | +10% gold find per level | 5 |
+| Resilience | +1 starting shield per level | 2 |
+| First Click Safety | First monster flags instead of damages | 1 |
+| Preparation | Random buffs at run start | 3 |
+
+**Deferred Items**:
+
+- BL-001: First Click Safety game logic not implemented (High priority, target Phase 2031)
+- BL-002: UpgradeShopModal visual polish (Low priority, target Phase 6010)
+
+**Stats**:
+
+- Tasks: 76/76 complete
+- Tests: 349 passing
+- PR: #25
+
+---
 
 # 2020 - Floor Shop
 
