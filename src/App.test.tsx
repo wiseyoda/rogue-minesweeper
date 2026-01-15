@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import App from './App';
+import { useGameStore } from '@/stores';
 
 describe('App', () => {
+  beforeEach(() => {
+    // Reset store to default state before each test
+    useGameStore.getState().reset();
+  });
+
   it('renders the Dungeon Delver heading', () => {
     render(<App />);
     expect(screen.getByText('DUNGEON DELVER')).toBeInTheDocument();
@@ -18,11 +24,13 @@ describe('App', () => {
     expect(screen.getByText('Click any cell to start')).toBeInTheDocument();
   });
 
-  it('renders 64 grid cells (8x8)', () => {
+  it('renders grid cells based on gridConfig', () => {
     render(<App />);
+    const { gridConfig } = useGameStore.getState();
     const buttons = screen.getAllByRole('button');
-    // 64 grid cells + 1 reset button = 65 buttons
-    expect(buttons.length).toBe(65);
+    // grid cells + 1 reset button
+    const expectedCount = gridConfig.rows * gridConfig.cols + 1;
+    expect(buttons.length).toBe(expectedCount);
   });
 
   it('renders the New Game button', () => {
