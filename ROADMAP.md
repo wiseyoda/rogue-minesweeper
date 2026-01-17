@@ -42,7 +42,7 @@ Phases use **ABBC** format:
 | 2040                                 | meta-shop                | ✅ Complete | Shop polish + First Click Safety fix             |
 | 2050                                 | **progression-poc**      | ✅ Complete | **USER GATE**: Complete run loop works           |
 | **Milestone 3: Rune System**         |                          |                |                                                  |
-| 3010                                 | rune-framework           | 🔄 In Progress | Rune types, effects, and stacking                |
+| 3010                                 | rune-framework           | ✅ Complete | Rune types, effects, and stacking                |
 | 3020                                 | information-runes        | ⬜ Not Started | Runes that reveal/predict danger                 |
 | 3030                                 | defense-runes            | ⬜ Not Started | Runes for HP, shields, armor                     |
 | 3040                                 | economy-runes            | ⬜ Not Started | Runes for gold and loot                          |
