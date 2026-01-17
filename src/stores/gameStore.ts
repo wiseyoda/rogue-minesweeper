@@ -34,6 +34,7 @@ import {
   applyHighlightRunes,
   applyAutoFlag,
   getPassiveRuneModifiers,
+  checkUndyingHeal,
 } from '@/engine/runes';
 
 /** Maximum number of rune slots a player can have equipped. */
@@ -142,11 +143,13 @@ export const useGameStore = create<GameStore>()(
         let currentGrid = initializeGrid(floorConfig, { row: centerRow, col: centerCol });
         let totalRevealed = 0;
 
-        // Apply onFloorStart rune effects immediately (Scout's Eye, Treasure Sense)
+        // Apply onFloorStart rune effects immediately (Scout's Eye, Treasure Sense, Shield Bearer)
+        let shieldsFromRunes = 0;
         if (player.equippedRunes.length > 0) {
           const floorStartResult = applyOnFloorStartRunes(currentGrid, player.equippedRunes);
           currentGrid = floorStartResult.grid;
           totalRevealed += floorStartResult.tilesRevealed;
+          shieldsFromRunes = floorStartResult.shieldsGranted;
         }
 
         // Apply pending reveal tiles buff (from shop items)
@@ -212,6 +215,10 @@ export const useGameStore = create<GameStore>()(
           // Reset shields to starting amount (shields are temporary, don't carry over)
           const startingShields = useMetaStore.getState().playerStats.startingShields;
           state.player.shields = startingShields;
+          // Apply Shield Bearer rune shields
+          if (shieldsFromRunes > 0) {
+            state.player.shields += shieldsFromRunes;
+          }
           // Apply nextLevelBuffs to activeBuffs (T030)
           if (nextBuffs.goldMagnet) {
             state.player.activeBuffs.goldMagnet = true;
@@ -264,10 +271,26 @@ export const useGameStore = create<GameStore>()(
         const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
         const equippedRunesForGold = player.equippedRunes;
 
+        // Check Undying rune heal condition
+        const undyingResult = checkUndyingHeal(
+          player.equippedRunes,
+          player.undyingRevealCount,
+          totalRevealed
+        );
+
         set((state) => {
           state.grid = currentGrid;
           state.run.revealedCount += totalRevealed;
           state.run.flagsPlaced += autoFlagged;
+
+          // Update Undying reveal count
+          state.player.undyingRevealCount = undyingResult.newRevealCount;
+
+          // Apply Undying heal if triggered (only if below maxLives)
+          if (undyingResult.shouldHeal && state.player.lives < state.player.maxLives) {
+            state.player.lives += 1;
+          }
+
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
           // 2x gold if goldMagnet active, +goldFindBonus%, +rune modifiers
           const goldToAdd = result.hitMonster
@@ -586,6 +609,12 @@ export const useGameStore = create<GameStore>()(
 
         set((state) => {
           state.player.equippedRunes.push(runeId);
+
+          // Hardy rune: increase maxLives and current lives
+          if (runeId === 'hardy') {
+            state.player.maxLives += 1;
+            state.player.lives += 1;
+          }
         });
 
         return true;
@@ -604,8 +633,23 @@ export const useGameStore = create<GameStore>()(
         // Check if already equipped (for non-stackable runes)
         if (!rune.stackable && player.equippedRunes.includes(runeId)) return false;
 
+        // Track the old rune being replaced (for Hardy unequip handling)
+        const oldRuneId = player.equippedRunes[slotIndex];
+
         set((state) => {
+          // Handle Hardy unequip - reduce maxLives and clamp current lives
+          if (oldRuneId === 'hardy') {
+            state.player.maxLives = Math.max(1, state.player.maxLives - 1);
+            state.player.lives = Math.min(state.player.lives, state.player.maxLives);
+          }
+
           state.player.equippedRunes[slotIndex] = runeId;
+
+          // Handle Hardy equip via replacement
+          if (runeId === 'hardy') {
+            state.player.maxLives += 1;
+            state.player.lives += 1;
+          }
         });
 
         return true;

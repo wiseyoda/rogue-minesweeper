@@ -66,6 +66,10 @@ export interface RuneModifiers {
   autoFlag: boolean;
   /** Whether danger sense is active (shows extended danger numbers) */
   dangerSenseActive: boolean;
+  /** Percentage damage reduction from Iron Skin (0.0-1.0 range) */
+  damageReductionPercent: number;
+  /** Max lives bonus from Hardy runes */
+  maxLivesBonus: number;
 }
 
 /**
@@ -77,5 +81,7 @@ export function createDefaultRuneModifiers(): RuneModifiers {
     firstHitReduction: 0,
     autoFlag: false,
     dangerSenseActive: false,
+    damageReductionPercent: 0,
+    maxLivesBonus: 0,
   };
 }
