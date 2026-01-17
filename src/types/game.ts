@@ -67,6 +67,10 @@ export interface RunState {
   firstMonsterHit: boolean;
   /** True if solver-based reveal should be applied after first click */
   pendingRevealScroll?: boolean;
+  /** Available rune rewards for current shop visit (3 random runes) */
+  availableRuneRewards: string[];
+  /** Whether a rune has been selected this shop visit */
+  runeSelected: boolean;
 }
 
 /**
@@ -103,6 +107,8 @@ export function createInitialRunState(level: number = 1): RunState {
     rerollCount: 0,
     showShop: false,
     firstMonsterHit: false,
+    availableRuneRewards: [],
+    runeSelected: false,
   };
 }
 

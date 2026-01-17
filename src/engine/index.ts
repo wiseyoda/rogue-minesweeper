@@ -40,3 +40,12 @@ export {
 
 // Solver (dev tools)
 export { findCertainMoves, type SolverResult } from './solver';
+
+// Rune effects
+export {
+  applyOnFloorStartRunes,
+  applyOnRevealRunes,
+  applyOnDamageRunes,
+  getPassiveRuneModifiers,
+  type OnDamageResult,
+} from './runes';

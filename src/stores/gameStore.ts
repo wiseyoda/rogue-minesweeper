@@ -24,8 +24,18 @@ import {
   getShopItem,
   getRerollCost,
 } from '@/data/shopItems';
+import { getRandomRunes, getRune } from '@/data/runes';
 import { useMetaStore } from './metaStore';
 import { findCertainMoves } from '@/engine/solver';
+import {
+  applyOnFloorStartRunes,
+  applyOnRevealRunes,
+  applyOnDamageRunes,
+  getPassiveRuneModifiers,
+} from '@/engine/runes';
+
+/** Maximum number of rune slots a player can have equipped. */
+const MAX_RUNE_SLOTS = 3;
 
 /**
  * Available buffs for Preparation upgrade random selection.
@@ -60,13 +70,15 @@ function applyPreparationBuffs(count: number, player: { nextLevelBuffs: NextLeve
 }
 
 /**
- * Apply gold find bonus multiplier.
+ * Apply gold find bonus multiplier and rune modifiers.
  * @param baseGold Base gold amount
  * @param bonus Gold find bonus (0.1 = +10%)
+ * @param equippedRunes Array of equipped rune IDs
  * @returns Final gold amount (floored)
  */
-function applyGoldFind(baseGold: number, bonus: number): number {
-  return Math.floor(baseGold * (1 + bonus));
+function applyGoldFind(baseGold: number, bonus: number, equippedRunes: string[] = []): number {
+  const runeModifiers = getPassiveRuneModifiers(equippedRunes);
+  return Math.floor(baseGold * (1 + bonus) * runeModifiers.goldMultiplier);
 }
 
 /**
@@ -222,6 +234,7 @@ export const useGameStore = create<GameStore>()(
 
           // Get gold find bonus from metaStore
           const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+          const equippedRunesForGold = get().player.equippedRunes;
 
           set((state) => {
             state.grid = currentGrid;
@@ -229,10 +242,10 @@ export const useGameStore = create<GameStore>()(
             state.run.revealedCount += totalRevealed;
             state.run.pendingRevealTiles = undefined; // Clear the buff
             state.run.pendingRevealScroll = undefined; // Clear the solver reveal buff
-            // Award 1 gold per revealed safe tile (2x if goldMagnet active, +goldFindBonus%)
+            // Award 1 gold per revealed safe tile (2x if goldMagnet active, +goldFindBonus%, +rune modifiers)
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
             const baseGold = totalRevealed * goldMultiplier;
-            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
+            state.player.gold += applyGoldFind(baseGold, goldFindBonus, equippedRunesForGold);
           });
 
           // Check win condition after all reveals
@@ -259,19 +272,20 @@ export const useGameStore = create<GameStore>()(
 
         // Get gold find bonus from metaStore
         const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+        const equippedRunesForGold = player.equippedRunes;
 
         set((state) => {
           state.grid = result.grid;
           state.run.revealedCount += result.revealedPositions.length;
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
-          // 2x gold if goldMagnet active, +goldFindBonus%
+          // 2x gold if goldMagnet active, +goldFindBonus%, +rune modifiers
           const goldToAdd = result.hitMonster
             ? result.revealedPositions.length - 1
             : result.revealedPositions.length;
           if (goldToAdd > 0) {
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
             const baseGold = goldToAdd * goldMultiplier;
-            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
+            state.player.gold += applyGoldFind(baseGold, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -322,11 +336,35 @@ export const useGameStore = create<GameStore>()(
       },
 
       takeDamage: (amount: number) => {
-        set((state) => {
-          let remaining = amount;
+        const { player, run } = get();
 
-          // Track total damage for stats
+        // Apply onDamage rune effects
+        const isFirstDamageThisFloor = run.damageTakenThisLevel === 0;
+        const secondChanceAvailable = !player.secondChanceUsed;
+        const damageResult = applyOnDamageRunes(
+          amount,
+          player.equippedRunes,
+          isFirstDamageThisFloor,
+          secondChanceAvailable,
+          player.lives
+        );
+
+        set((state) => {
+          let remaining = damageResult.finalDamage;
+
+          // Track total damage for stats (use original amount for analytics)
           state.run.totalDamageTaken += amount;
+
+          // Track if second chance was used
+          if (damageResult.secondChanceUsed) {
+            state.player.secondChanceUsed = true;
+          }
+
+          // If damage was fully negated by runes, skip further processing
+          if (remaining <= 0) {
+            state.run.damageTakenThisLevel += amount;
+            return;
+          }
 
           // Absorb with shields first
           if (state.player.shields > 0) {
@@ -385,9 +423,15 @@ export const useGameStore = create<GameStore>()(
 
       generateShop: () => {
         const items = generateShopItems();
+        const { player } = get();
+        // Generate rune rewards, excluding already equipped
+        const runeRewards = getRandomRunes(3, player.equippedRunes);
+
         set((state) => {
           state.run.shopItems = items;
           state.run.purchasedIds = [];
+          state.run.availableRuneRewards = runeRewards.map((r) => r.id);
+          state.run.runeSelected = false;
         });
       },
 
@@ -466,16 +510,17 @@ export const useGameStore = create<GameStore>()(
         if (!target) return false;
 
         // Reveal just this one tile (mark as revealed, don't cascade)
+        const equippedRunesForGold = player.equippedRunes;
         set((state) => {
           state.player.peekScrolls -= 1;
           const cell = state.grid?.[target.row]?.[target.col];
           if (cell) {
             cell.isRevealed = true;
             state.run.revealedCount += 1;
-            // Award gold for revealed tile (with goldMagnet/goldFindBonus)
+            // Award gold for revealed tile (with goldMagnet/goldFindBonus/rune modifiers)
             const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus);
+            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -533,6 +578,94 @@ export const useGameStore = create<GameStore>()(
           flagged: result.monsterPositions.length,
           stuck: result.stuck,
         };
+      },
+
+      equipRune: (runeId: string) => {
+        const { player } = get();
+
+        // Validate rune exists
+        const rune = getRune(runeId);
+        if (!rune) return false;
+
+        // Check if already at max slots
+        if (player.equippedRunes.length >= MAX_RUNE_SLOTS) return false;
+
+        // Check if already equipped (for non-stackable runes)
+        if (!rune.stackable && player.equippedRunes.includes(runeId)) return false;
+
+        set((state) => {
+          state.player.equippedRunes.push(runeId);
+        });
+
+        return true;
+      },
+
+      replaceRune: (slotIndex: number, runeId: string) => {
+        const { player } = get();
+
+        // Validate slot index
+        if (slotIndex < 0 || slotIndex >= player.equippedRunes.length) return false;
+
+        // Validate rune exists
+        const rune = getRune(runeId);
+        if (!rune) return false;
+
+        // Check if already equipped (for non-stackable runes)
+        if (!rune.stackable && player.equippedRunes.includes(runeId)) return false;
+
+        set((state) => {
+          state.player.equippedRunes[slotIndex] = runeId;
+        });
+
+        return true;
+      },
+
+      generateRuneRewards: () => {
+        const { player } = get();
+        // Exclude already equipped runes (unless stackable)
+        const excludeIds = player.equippedRunes;
+        const rewards = getRandomRunes(3, excludeIds);
+
+        set((state) => {
+          state.run.availableRuneRewards = rewards.map((r) => r.id);
+          state.run.runeSelected = false;
+        });
+      },
+
+      selectRuneReward: (runeId: string) => {
+        const { run, player } = get();
+
+        // Can only select once per shop visit
+        if (run.runeSelected) return false;
+
+        // Validate rune is in available rewards
+        if (!run.availableRuneRewards.includes(runeId)) return false;
+
+        // Handle full rune slots - need to replace
+        if (player.equippedRunes.length >= MAX_RUNE_SLOTS) {
+          // For now, just mark as selected - UI will handle replacement flow
+          // The actual replacement happens via replaceRune action
+          set((state) => {
+            state.run.runeSelected = true;
+          });
+          return false; // Signal that replacement is needed
+        }
+
+        // Equip the rune
+        const equipped = get().equipRune(runeId);
+        if (equipped) {
+          set((state) => {
+            state.run.runeSelected = true;
+          });
+        }
+
+        return equipped;
+      },
+
+      clearRuneSelection: () => {
+        set((state) => {
+          state.run.runeSelected = false;
+        });
       },
     })),
     { name: 'GameStore' }

@@ -42,6 +42,12 @@
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
+    },
+    "steps": {
+      "implement": {
+        "tasks_completed": 7,
+        "tasks_total": 48
+      }
     }
   },
   "health": {
@@ -182,7 +188,7 @@
     "last_sync": null,
     "notifications": []
   },
-  "last_updated": "2026-01-17T14:50:25Z",
+  "last_updated": "2026-01-17T14:51:43Z",
   "stage": "plan",
   "next_action": "continue_plan"
 }

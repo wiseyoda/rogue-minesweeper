@@ -69,6 +69,16 @@ export interface GameStoreActions {
   usePeekScroll: () => boolean;
   /** Auto-solve one step using mathematical deduction (dev tool) */
   autoSolveStep: () => { revealed: number; flagged: number; stuck: boolean };
+  /** Equip a rune to player inventory (max 3 slots) */
+  equipRune: (runeId: string) => boolean;
+  /** Replace a rune at a specific slot index */
+  replaceRune: (slotIndex: number, runeId: string) => boolean;
+  /** Generate 3 random rune rewards for floor shop */
+  generateRuneRewards: () => void;
+  /** Select a rune reward from the shop (free, one per shop visit) */
+  selectRuneReward: (runeId: string) => boolean;
+  /** Clear rune selection for new shop visit */
+  clearRuneSelection: () => void;
 }
 
 /**

@@ -68,3 +68,14 @@ export {
   createDefaultGameStats,
   calculateLevelGridConfig,
 } from './game';
+
+// Rune types
+export type {
+  RuneCategory,
+  RuneRarity,
+  RuneTrigger,
+  RuneEffect,
+  RuneDefinition,
+  RuneModifiers,
+} from './rune';
+export { createDefaultRuneModifiers } from './rune';

@@ -54,6 +54,12 @@ const selectSetPhase = (state: ReturnType<typeof useGameStore.getState>) =>
   state.setPhase;
 const selectRunPhase = (state: ReturnType<typeof useGameStore.getState>) =>
   state.run.phase;
+const selectAvailableRuneRewards = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.availableRuneRewards;
+const selectRuneSelected = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.runeSelected;
+const selectSelectRuneReward = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.selectRuneReward;
 
 /**
  * Container that composes Panel, GameBoard, and modal overlays.
@@ -74,6 +80,8 @@ export const GameContainer = memo(function GameContainer({
   const rerollCount = useGameStore(selectRerollCount);
   const showShop = useGameStore(selectShowShop);
   const runPhase = useGameStore(selectRunPhase);
+  const availableRuneRewards = useGameStore(selectAvailableRuneRewards);
+  const runeSelected = useGameStore(selectRuneSelected);
 
   // Get actions
   const startNewRun = useGameStore(selectStartNewRun);
@@ -83,6 +91,7 @@ export const GameContainer = memo(function GameContainer({
   const rerollShop = useGameStore(selectRerollShop);
   const setShowShop = useGameStore(selectSetShowShop);
   const setPhase = useGameStore(selectSetPhase);
+  const selectRuneReward = useGameStore(selectSelectRuneReward);
 
   // Meta store actions
   const addMetaGold = useMetaStore((state) => state.addMetaGold);
@@ -115,6 +124,13 @@ export const GameContainer = memo(function GameContainer({
     setShowShop(false);
     startLevel(run.level + 1);
   }, [setShowShop, startLevel, run.level]);
+
+  const handleSelectRune = useCallback(
+    (runeId: string) => {
+      selectRuneReward(runeId);
+    },
+    [selectRuneReward]
+  );
 
   // Handler for GameOverModal Continue - transitions to upgrade shop
   const handleGameOverContinue = useCallback(() => {
@@ -168,6 +184,9 @@ export const GameContainer = memo(function GameContainer({
           onPurchase={handlePurchase}
           onReroll={handleReroll}
           onContinue={handleShopContinue}
+          availableRuneRewards={availableRuneRewards}
+          runeSelected={runeSelected}
+          onSelectRune={handleSelectRune}
         />
       )}
 
