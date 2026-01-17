@@ -105,14 +105,23 @@ export function findSafestTile(grid: Grid): { row: number; col: number } | null 
   return bestPos;
 }
 
+/** Prophecy rune proc chance (20%) */
+const PROPHECY_PROC_CHANCE = 0.2;
+
 /**
  * Apply prophecy highlight to the safest tile.
+ * Has a 20% chance to proc on each calculation.
  * @param grid The current grid
- * @returns New grid with prophecy highlight applied
+ * @returns New grid with prophecy highlight applied (if proc succeeds)
  */
 export function applyProphecyHighlight(grid: Grid): Grid {
   // First clear any existing prophecy highlights
   let newGrid = clearHighlights(grid, 'prophecy');
+
+  // 20% chance to activate
+  if (Math.random() >= PROPHECY_PROC_CHANCE) {
+    return newGrid;
+  }
 
   const safestPos = findSafestTile(newGrid);
   if (!safestPos) return newGrid;

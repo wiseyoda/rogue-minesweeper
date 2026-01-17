@@ -58,13 +58,14 @@ export const RUNES: RuneDefinition[] = [
   {
     id: 'prophecy',
     name: 'Prophecy',
-    description: 'Highlights the safest tile to click',
+    description: '20% chance to highlight the safest tile',
     category: 'information',
     rarity: 'rare',
     icon: '🌟',
     effect: {
       trigger: 'onFloorStart',
-      description: 'Mark safest tile',
+      description: '20% chance to mark safest tile',
+      magnitude: 0.2,
     },
     stackable: false,
     cost: 80,
