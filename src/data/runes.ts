@@ -39,7 +39,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.1,
     },
     stackable: true,
-    cost: 50,
+    cost: 65,
   },
   {
     id: 'danger-sense',
@@ -75,7 +75,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Omniscience',
     description: '15% chance per monster to reveal its location',
     category: 'information',
-    rarity: 'legendary',
+    rarity: 'rare',
     icon: '👁️‍🗨️',
     effect: {
       trigger: 'onFloorStart',
@@ -92,7 +92,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Stone Skin',
     description: 'First hit each floor reduced by 1',
     category: 'defense',
-    rarity: 'common',
+    rarity: 'uncommon',
     icon: '🪨',
     effect: {
       trigger: 'passive',
@@ -100,7 +100,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: true,
-    cost: 25,
+    cost: 40,
   },
   {
     id: 'lucky-charm',
@@ -124,7 +124,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Midas Touch',
     description: '+25% gold from all sources',
     category: 'economy',
-    rarity: 'common',
+    rarity: 'rare',
     icon: '✨',
     effect: {
       trigger: 'passive',
@@ -132,7 +132,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.25,
     },
     stackable: true,
-    cost: 35,
+    cost: 60,
   },
   {
     id: 'treasure-sense',
@@ -178,7 +178,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: false,
-    cost: 100,
+    cost: 125,
   },
 ];
 
