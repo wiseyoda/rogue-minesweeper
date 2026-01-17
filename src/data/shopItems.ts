@@ -59,11 +59,11 @@ export const SHOP_ITEMS: ShopItem[] = [
   {
     id: 'shield-orb',
     name: 'Shield Orb',
-    description: '+1 Shield (this floor only)',
+    description: '+1 Shield (next floor only)',
     cost: 40,
     rarity: 'common',
     apply: (state) => {
-      state.shields += 1;
+      state.nextLevelBuffs.shields = (state.nextLevelBuffs.shields ?? 0) + 1;
     },
   },
   {

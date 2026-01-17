@@ -107,11 +107,11 @@ describe('shopItems', () => {
       expect(state.lives).toBe(3);
     });
 
-    it('shield-orb should add 1 shield', () => {
+    it('shield-orb should add 1 shield to nextLevelBuffs', () => {
       const item = getShopItem('shield-orb');
       expect(item).toBeDefined();
       item!.apply(state, {} as never);
-      expect(state.shields).toBe(1);
+      expect(state.nextLevelBuffs.shields).toBe(1);
     });
 
     it('gold-magnet should set nextLevelBuffs.goldMagnet', () => {

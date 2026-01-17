@@ -98,8 +98,17 @@ describe('gameStore shop', () => {
       expect(useGameStore.getState().player.lives).toBe(2);
     });
 
-    it('should apply shield-orb effect', () => {
+    it('should apply shield-orb to nextLevelBuffs', () => {
       useGameStore.getState().purchaseItem('shield-orb');
+
+      expect(useGameStore.getState().player.nextLevelBuffs.shields).toBe(1);
+    });
+
+    it('should apply shield-orb shields at next level start', () => {
+      useGameStore.getState().purchaseItem('shield-orb');
+
+      // Start next level to apply the buff
+      useGameStore.getState().startLevel(2);
 
       expect(useGameStore.getState().player.shields).toBe(1);
     });

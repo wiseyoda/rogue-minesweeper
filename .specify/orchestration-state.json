@@ -42,6 +42,10 @@
       "tasks_completed": 0,
       "tasks_total": 0,
       "percentage": 0
+    },
+    "next_phase": {
+      "number": "3050",
+      "name": "rune-synergies"
     }
   },
   "health": {

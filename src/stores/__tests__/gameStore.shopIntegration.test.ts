@@ -120,6 +120,11 @@ describe('Shop Integration - Full Purchase Flow', () => {
 
     if (shieldOrb) {
       useGameStore.getState().purchaseItem('shield-orb');
+      // Shield is stored in nextLevelBuffs and applied at next level start
+      expect(useGameStore.getState().player.nextLevelBuffs.shields).toBe(1);
+
+      // Start next level to apply the shield buff
+      useGameStore.getState().startLevel(2);
       expect(useGameStore.getState().player.shields).toBe(1);
     }
   });
