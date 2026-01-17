@@ -53,6 +53,9 @@ export const useMetaStore = create<MetaStore>()(
 
             // Increment total runs
             state.stats.totalRuns = (state.stats.totalRuns ?? 0) + 1;
+
+            // Track total gold earned (lifetime)
+            state.stats.totalGoldEarned = (state.stats.totalGoldEarned ?? 0) + gold;
           });
         },
 

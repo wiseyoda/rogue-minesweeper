@@ -86,6 +86,16 @@ export const SHOP_ITEMS: ShopItem[] = [
       state.peekScrolls += 1;
     },
   },
+  {
+    id: 'reveal-scroll',
+    name: 'Reveal Scroll',
+    description: 'Reveal all logically safe tiles next floor',
+    cost: 150,
+    rarity: 'rare',
+    apply: (state) => {
+      state.nextLevelBuffs.revealScroll = true;
+    },
+  },
 ];
 
 /**

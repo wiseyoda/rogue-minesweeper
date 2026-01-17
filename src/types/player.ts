@@ -51,6 +51,8 @@ export interface NextLevelBuffs {
   shieldBattery?: boolean;
   /** Forcefield charges for next level */
   forcefield?: number;
+  /** If true, use solver to reveal all logically deducible safe tiles */
+  revealScroll?: boolean;
 }
 
 /**

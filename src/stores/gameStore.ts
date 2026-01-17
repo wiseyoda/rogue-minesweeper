@@ -155,6 +155,10 @@ export const useGameStore = create<GameStore>()(
           if (nextBuffs.revealTiles && nextBuffs.revealTiles > 0) {
             state.run.pendingRevealTiles = nextBuffs.revealTiles;
           }
+          // Store revealScroll flag for solver-based reveal after grid init
+          if (nextBuffs.revealScroll) {
+            state.run.pendingRevealScroll = true;
+          }
           // Clear nextLevelBuffs after applying (T031)
           state.player.nextLevelBuffs = {};
         });
@@ -205,6 +209,17 @@ export const useGameStore = create<GameStore>()(
             }
           }
 
+          // Apply solver-based reveal (from Reveal Scroll shop item)
+          const pendingRevealScroll = run.pendingRevealScroll ?? false;
+          if (pendingRevealScroll) {
+            const solverResult = findCertainMoves(currentGrid);
+            for (const pos of solverResult.safePositions) {
+              const revealResult = engineRevealCell(currentGrid, pos);
+              currentGrid = revealResult.grid;
+              totalRevealed += revealResult.revealedPositions.length;
+            }
+          }
+
           // Get gold find bonus from metaStore
           const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
 
@@ -213,6 +228,7 @@ export const useGameStore = create<GameStore>()(
             state.run.isFirstClick = false;
             state.run.revealedCount += totalRevealed;
             state.run.pendingRevealTiles = undefined; // Clear the buff
+            state.run.pendingRevealScroll = undefined; // Clear the solver reveal buff
             // Award 1 gold per revealed safe tile (2x if goldMagnet active, +goldFindBonus%)
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
             const baseGold = totalRevealed * goldMultiplier;
