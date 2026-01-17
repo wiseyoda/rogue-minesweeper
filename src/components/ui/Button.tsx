@@ -45,12 +45,11 @@ export function Button({
           ? 'linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%)'
           : 'linear-gradient(180deg, var(--stone-700) 0%, var(--stone-800) 100%)',
         color: isPrimary ? 'var(--void)' : 'var(--bone)',
-        border: isPrimary
-          ? '3px solid'
-          : '2px solid var(--stone-600)',
+        borderWidth: isPrimary ? '3px' : '2px',
+        borderStyle: 'solid',
         borderColor: isPrimary
           ? 'var(--gold-bright) var(--gold-shadow) var(--gold-shadow) var(--gold-bright)'
-          : undefined,
+          : 'var(--stone-600)',
         boxShadow: isPrimary ? primaryBoxShadow : secondaryBoxShadow,
         textShadow: isPrimary ? '1px 1px 0 var(--gold-shadow)' : 'none',
         ...style,

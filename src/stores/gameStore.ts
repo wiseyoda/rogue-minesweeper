@@ -24,8 +24,18 @@ import {
   getShopItem,
   getRerollCost,
 } from '@/data/shopItems';
+import { getRandomRunes, getRune } from '@/data/runes';
 import { useMetaStore } from './metaStore';
 import { findCertainMoves } from '@/engine/solver';
+import {
+  applyOnDamageRunes,
+  applyOnFloorStartRunes,
+  applyOnRevealRunes,
+  getPassiveRuneModifiers,
+} from '@/engine/runes';
+
+/** Maximum number of rune slots a player can have equipped. */
+const MAX_RUNE_SLOTS = 3;
 
 /**
  * Available buffs for Preparation upgrade random selection.
@@ -60,13 +70,15 @@ function applyPreparationBuffs(count: number, player: { nextLevelBuffs: NextLeve
 }
 
 /**
- * Apply gold find bonus multiplier.
+ * Apply gold find bonus multiplier and rune modifiers.
  * @param baseGold Base gold amount
  * @param bonus Gold find bonus (0.1 = +10%)
+ * @param equippedRunes Array of equipped rune IDs
  * @returns Final gold amount (floored)
  */
-function applyGoldFind(baseGold: number, bonus: number): number {
-  return Math.floor(baseGold * (1 + bonus));
+function applyGoldFind(baseGold: number, bonus: number, equippedRunes: string[] = []): number {
+  const runeModifiers = getPassiveRuneModifiers(equippedRunes);
+  return Math.floor(baseGold * (1 + bonus) * runeModifiers.goldMultiplier);
 }
 
 /**
@@ -121,15 +133,64 @@ export const useGameStore = create<GameStore>()(
         const isNewRun = level === 1;
         const { player } = get();
         const nextBuffs = player.nextLevelBuffs;
+
+        // Pre-initialize grid with safe center position
+        const centerRow = Math.floor(floorConfig.rows / 2);
+        const centerCol = Math.floor(floorConfig.cols / 2);
+        let currentGrid = initializeGrid(floorConfig, { row: centerRow, col: centerCol });
+        let totalRevealed = 0;
+
+        // Apply onFloorStart rune effects immediately (Scout's Eye, Treasure Sense)
+        if (player.equippedRunes.length > 0) {
+          const floorStartResult = applyOnFloorStartRunes(currentGrid, player.equippedRunes);
+          currentGrid = floorStartResult.grid;
+          totalRevealed += floorStartResult.tilesRevealed;
+        }
+
+        // Apply pending reveal tiles buff (from shop items)
+        const pendingReveal = nextBuffs.revealTiles ?? 0;
+        if (pendingReveal > 0) {
+          const unrevealedSafe: Array<{ row: number; col: number }> = [];
+          for (let r = 0; r < currentGrid.length; r++) {
+            const gridRow = currentGrid[r];
+            if (!gridRow) continue;
+            for (let c = 0; c < gridRow.length; c++) {
+              const cell = gridRow[c];
+              if (cell && !cell.isRevealed && !cell.isMonster) {
+                unrevealedSafe.push({ row: r, col: c });
+              }
+            }
+          }
+          const toReveal = Math.min(pendingReveal, unrevealedSafe.length);
+          const shuffled = [...unrevealedSafe].sort(() => Math.random() - 0.5);
+          for (let i = 0; i < toReveal; i++) {
+            const tilePos = shuffled[i];
+            if (!tilePos) break;
+            const revealResult = engineRevealCell(currentGrid, tilePos);
+            currentGrid = revealResult.grid;
+            totalRevealed += revealResult.revealedPositions.length;
+          }
+        }
+
+        // Apply solver-based reveal (from Reveal Scroll shop item)
+        if (nextBuffs.revealScroll) {
+          const solverResult = findCertainMoves(currentGrid);
+          for (const pos of solverResult.safePositions) {
+            const revealResult = engineRevealCell(currentGrid, pos);
+            currentGrid = revealResult.grid;
+            totalRevealed += revealResult.revealedPositions.length;
+          }
+        }
+
         set((state) => {
-          state.grid = null;
+          state.grid = currentGrid;
           state.gridConfig = floorConfig;
           state.run.level = level;
           state.run.phase = 'playing';
-          state.run.revealedCount = 0;
+          state.run.revealedCount = totalRevealed;
           state.run.flagsPlaced = 0;
           state.run.damageTakenThisLevel = 0;
-          state.run.isFirstClick = true;
+          state.run.isFirstClick = false; // Grid is always pre-initialized now
           // Clear shop state
           state.run.shopItems = [];
           state.run.purchasedIds = [];
@@ -151,127 +212,49 @@ export const useGameStore = create<GameStore>()(
           if (nextBuffs.shields && nextBuffs.shields > 0) {
             state.player.shields += nextBuffs.shields;
           }
-          // Store revealTiles count in run state to apply after grid init
-          if (nextBuffs.revealTiles && nextBuffs.revealTiles > 0) {
-            state.run.pendingRevealTiles = nextBuffs.revealTiles;
-          }
-          // Store revealScroll flag for solver-based reveal after grid init
-          if (nextBuffs.revealScroll) {
-            state.run.pendingRevealScroll = true;
-          }
           // Clear nextLevelBuffs after applying (T031)
           state.player.nextLevelBuffs = {};
         });
       },
 
       revealCell: (row: number, col: number) => {
-        const { grid, run, gridConfig } = get();
+        const { grid, run, player } = get();
         if (run.phase !== 'playing') return;
+        if (!grid) return;
 
         const position = { row, col };
-
-        // Handle first click - initialize grid with first-click safety
-        if (run.isFirstClick) {
-          const newGrid = initializeGrid(gridConfig, position);
-          const result = engineRevealCell(newGrid, position);
-          let currentGrid = result.grid;
-          let totalRevealed = result.revealedPositions.length;
-
-          // Apply pending reveal tiles buff (from Reveal Scroll)
-          const pendingReveal = run.pendingRevealTiles ?? 0;
-          if (pendingReveal > 0) {
-            // Find all unrevealed safe (non-monster) tiles
-            const unrevealedSafe: Array<{ row: number; col: number }> = [];
-            for (let r = 0; r < currentGrid.length; r++) {
-              const row = currentGrid[r];
-              if (!row) continue;
-              for (let c = 0; c < row.length; c++) {
-                const cell = row[c];
-                if (cell && !cell.isRevealed && !cell.isMonster) {
-                  unrevealedSafe.push({ row: r, col: c });
-                }
-              }
-            }
-
-            // Randomly reveal up to pendingReveal tiles
-            const toReveal = Math.min(pendingReveal, unrevealedSafe.length);
-            for (let i = 0; i < toReveal; i++) {
-              // Pick a random unrevealed safe tile
-              const randomIndex = Math.floor(Math.random() * unrevealedSafe.length);
-              const tilePos = unrevealedSafe[randomIndex];
-              if (!tilePos) break;
-              unrevealedSafe.splice(randomIndex, 1);
-
-              // Reveal it
-              const revealResult = engineRevealCell(currentGrid, tilePos);
-              currentGrid = revealResult.grid;
-              totalRevealed += revealResult.revealedPositions.length;
-            }
-          }
-
-          // Apply solver-based reveal (from Reveal Scroll shop item)
-          const pendingRevealScroll = run.pendingRevealScroll ?? false;
-          if (pendingRevealScroll) {
-            const solverResult = findCertainMoves(currentGrid);
-            for (const pos of solverResult.safePositions) {
-              const revealResult = engineRevealCell(currentGrid, pos);
-              currentGrid = revealResult.grid;
-              totalRevealed += revealResult.revealedPositions.length;
-            }
-          }
-
-          // Get gold find bonus from metaStore
-          const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
-
-          set((state) => {
-            state.grid = currentGrid;
-            state.run.isFirstClick = false;
-            state.run.revealedCount += totalRevealed;
-            state.run.pendingRevealTiles = undefined; // Clear the buff
-            state.run.pendingRevealScroll = undefined; // Clear the solver reveal buff
-            // Award 1 gold per revealed safe tile (2x if goldMagnet active, +goldFindBonus%)
-            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            const baseGold = totalRevealed * goldMultiplier;
-            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
-          });
-
-          // Check win condition after all reveals
-          const currentState = get();
-          const finalGrid = currentState.grid;
-          if (finalGrid) {
-            const totalCells = gridConfig.rows * gridConfig.cols;
-            const safeTotal = totalCells - gridConfig.monsterCount;
-            if (currentState.run.revealedCount >= safeTotal) {
-              get().setPhase('shopping');
-            }
-          }
-          return;
-        }
-
-        // Normal reveal
-        if (!grid) return;
 
         // Don't reveal flagged cells
         const cell = grid[row]?.[col];
         if (!cell || cell.isRevealed || cell.isFlagged) return;
 
         const result = engineRevealCell(grid, position);
+        let currentGrid = result.grid;
+        let totalRevealed = result.revealedPositions.length;
+
+        // Apply onReveal rune effects (Oracle's Sight - chance for bonus reveal)
+        if (!result.hitMonster && result.revealedPositions.length > 0) {
+          const revealRuneResult = applyOnRevealRunes(currentGrid, player.equippedRunes, position);
+          currentGrid = revealRuneResult.grid;
+          totalRevealed += revealRuneResult.bonusTilesRevealed;
+        }
 
         // Get gold find bonus from metaStore
         const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+        const equippedRunesForGold = player.equippedRunes;
 
         set((state) => {
-          state.grid = result.grid;
-          state.run.revealedCount += result.revealedPositions.length;
+          state.grid = currentGrid;
+          state.run.revealedCount += totalRevealed;
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
-          // 2x gold if goldMagnet active, +goldFindBonus%
+          // 2x gold if goldMagnet active, +goldFindBonus%, +rune modifiers
           const goldToAdd = result.hitMonster
             ? result.revealedPositions.length - 1
-            : result.revealedPositions.length;
+            : totalRevealed;
           if (goldToAdd > 0) {
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
             const baseGold = goldToAdd * goldMultiplier;
-            state.player.gold += applyGoldFind(baseGold, goldFindBonus);
+            state.player.gold += applyGoldFind(baseGold, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -322,11 +305,35 @@ export const useGameStore = create<GameStore>()(
       },
 
       takeDamage: (amount: number) => {
-        set((state) => {
-          let remaining = amount;
+        const { player, run } = get();
 
-          // Track total damage for stats
+        // Apply onDamage rune effects
+        const isFirstDamageThisFloor = run.damageTakenThisLevel === 0;
+        const secondChanceAvailable = !player.secondChanceUsed;
+        const damageResult = applyOnDamageRunes(
+          amount,
+          player.equippedRunes,
+          isFirstDamageThisFloor,
+          secondChanceAvailable,
+          player.lives
+        );
+
+        set((state) => {
+          let remaining = damageResult.finalDamage;
+
+          // Track total damage for stats (use original amount for analytics)
           state.run.totalDamageTaken += amount;
+
+          // Track if second chance was used
+          if (damageResult.secondChanceUsed) {
+            state.player.secondChanceUsed = true;
+          }
+
+          // If damage was fully negated by runes, skip further processing
+          if (remaining <= 0) {
+            state.run.damageTakenThisLevel += amount;
+            return;
+          }
 
           // Absorb with shields first
           if (state.player.shields > 0) {
@@ -385,9 +392,15 @@ export const useGameStore = create<GameStore>()(
 
       generateShop: () => {
         const items = generateShopItems();
+        const { player } = get();
+        // Generate rune rewards, excluding already equipped
+        const runeRewards = getRandomRunes(3, player.equippedRunes);
+
         set((state) => {
           state.run.shopItems = items;
           state.run.purchasedIds = [];
+          state.run.availableRuneRewards = runeRewards.map((r) => r.id);
+          state.run.runeSelected = false;
         });
       },
 
@@ -466,16 +479,17 @@ export const useGameStore = create<GameStore>()(
         if (!target) return false;
 
         // Reveal just this one tile (mark as revealed, don't cascade)
+        const equippedRunesForGold = player.equippedRunes;
         set((state) => {
           state.player.peekScrolls -= 1;
           const cell = state.grid?.[target.row]?.[target.col];
           if (cell) {
             cell.isRevealed = true;
             state.run.revealedCount += 1;
-            // Award gold for revealed tile (with goldMagnet/goldFindBonus)
+            // Award gold for revealed tile (with goldMagnet/goldFindBonus/rune modifiers)
             const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
             const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus);
+            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -533,6 +547,155 @@ export const useGameStore = create<GameStore>()(
           flagged: result.monsterPositions.length,
           stuck: result.stuck,
         };
+      },
+
+      equipRune: (runeId: string) => {
+        const { player } = get();
+
+        // Validate rune exists
+        const rune = getRune(runeId);
+        if (!rune) return false;
+
+        // Check if already at max slots
+        if (player.equippedRunes.length >= MAX_RUNE_SLOTS) return false;
+
+        // Check if already equipped (for non-stackable runes)
+        if (!rune.stackable && player.equippedRunes.includes(runeId)) return false;
+
+        set((state) => {
+          state.player.equippedRunes.push(runeId);
+        });
+
+        return true;
+      },
+
+      replaceRune: (slotIndex: number, runeId: string) => {
+        const { player } = get();
+
+        // Validate slot index
+        if (slotIndex < 0 || slotIndex >= player.equippedRunes.length) return false;
+
+        // Validate rune exists
+        const rune = getRune(runeId);
+        if (!rune) return false;
+
+        // Check if already equipped (for non-stackable runes)
+        if (!rune.stackable && player.equippedRunes.includes(runeId)) return false;
+
+        set((state) => {
+          state.player.equippedRunes[slotIndex] = runeId;
+        });
+
+        return true;
+      },
+
+      generateRuneRewards: () => {
+        const { player } = get();
+        // Exclude already equipped runes (unless stackable)
+        const excludeIds = player.equippedRunes;
+        const rewards = getRandomRunes(3, excludeIds);
+
+        set((state) => {
+          state.run.availableRuneRewards = rewards.map((r) => r.id);
+          state.run.runeSelected = false;
+        });
+      },
+
+      selectRuneReward: (runeId: string) => {
+        const { run, player } = get();
+
+        // Can only select once per shop visit
+        if (run.runeSelected) return false;
+
+        // Validate rune is in available rewards
+        if (!run.availableRuneRewards.includes(runeId)) return false;
+
+        // Get rune cost and check affordability
+        const rune = getRune(runeId);
+        if (!rune) return false;
+
+        // Handle full rune slots - initiate replacement flow
+        if (player.equippedRunes.length >= MAX_RUNE_SLOTS) {
+          // Calculate total cost: rune cost + removal fee (half of rune cost)
+          const removalFee = Math.floor(rune.cost / 2);
+          const totalCost = rune.cost + removalFee;
+
+          if (player.gold < totalCost) return false;
+
+          // Set pending replacement - UI will show slot selection
+          set((state) => {
+            state.run.pendingRuneReplacement = runeId;
+          });
+          return false; // Signal that slot selection is needed
+        }
+
+        // Normal purchase (not at max capacity)
+        if (player.gold < rune.cost) return false;
+
+        // Deduct gold and equip the rune
+        set((state) => {
+          state.player.gold -= rune.cost;
+        });
+
+        const equipped = get().equipRune(runeId);
+        if (equipped) {
+          set((state) => {
+            state.run.runeSelected = true;
+          });
+        } else {
+          // Refund if equip failed
+          set((state) => {
+            state.player.gold += rune.cost;
+          });
+        }
+
+        return equipped;
+      },
+
+      clearRuneSelection: () => {
+        set((state) => {
+          state.run.runeSelected = false;
+          state.run.pendingRuneReplacement = undefined;
+        });
+      },
+
+      confirmRuneReplacement: (slotIndex: number) => {
+        const { run, player } = get();
+        const pendingRuneId = run.pendingRuneReplacement;
+
+        if (!pendingRuneId) return false;
+        if (slotIndex < 0 || slotIndex >= player.equippedRunes.length) return false;
+
+        const rune = getRune(pendingRuneId);
+        if (!rune) return false;
+
+        // Calculate total cost: rune cost + removal fee (half of rune cost)
+        const removalFee = Math.floor(rune.cost / 2);
+        const totalCost = rune.cost + removalFee;
+
+        if (player.gold < totalCost) return false;
+
+        // Perform the replacement
+        set((state) => {
+          state.player.gold -= totalCost;
+          state.player.equippedRunes[slotIndex] = pendingRuneId;
+          state.run.runeSelected = true;
+          state.run.pendingRuneReplacement = undefined;
+        });
+
+        return true;
+      },
+
+      cancelRuneReplacement: () => {
+        set((state) => {
+          state.run.pendingRuneReplacement = undefined;
+        });
+      },
+
+      getRuneRemovalFee: (runeId: string) => {
+        const rune = getRune(runeId);
+        if (!rune) return 0;
+        return Math.floor(rune.cost / 2);
       },
     })),
     { name: 'GameStore' }

@@ -21,7 +21,7 @@ export function Sidebar() {
   const shields = useGameStore((state) => state.player.shields);
   const peekScrolls = useGameStore((state) => state.player.peekScrolls);
   const level = useGameStore((state) => state.run.level);
-  const activeBuffs = useGameStore((state) => state.player.activeBuffs);
+  const equippedRunes = useGameStore((state) => state.player.equippedRunes);
   const startNewRun = useGameStore((state) => state.startNewRun);
   const startLevel = useGameStore((state) => state.startLevel);
   const usePeekScroll = useGameStore((state) => state.usePeekScroll);
@@ -57,7 +57,7 @@ export function Sidebar() {
         shields={shields}
         floor={level}
       />
-      <RunesPanel buffs={activeBuffs} />
+      <RunesPanel equippedRunes={equippedRunes} />
       {peekScrolls > 0 && (
         <Panel>
           <div className="flex items-center justify-between">

@@ -73,7 +73,9 @@ const LevelIndicator = memo(function LevelIndicator({
             width: '80%',
             height: '4px',
             background: 'var(--stone-700)',
-            border: '1px solid var(--stone-500)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--stone-500)',
           }}
         >
           <div
@@ -99,7 +101,9 @@ const LevelIndicator = memo(function LevelIndicator({
             width: '10px',
             height: '10px',
             background: i < current ? 'var(--gold)' : 'var(--stone-700)',
-            border: '2px solid var(--stone-500)',
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderColor: 'var(--stone-500)',
           }}
         />
       ))}
@@ -145,7 +149,9 @@ const UpgradeCard = memo(function UpgradeCard({
         background: isMaxed
           ? 'linear-gradient(180deg, var(--stone-800) 0%, var(--stone-850) 100%)'
           : 'linear-gradient(180deg, var(--stone-700) 0%, var(--stone-800) 100%)',
-        border: isMaxed ? '2px solid var(--stone-600)' : '2px solid var(--stone-500)',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: isMaxed ? 'var(--stone-600)' : 'var(--stone-500)',
         opacity: isMaxed ? 0.5 : 1,
         cursor: canPurchase ? 'pointer' : 'default',
         minHeight: '160px',

@@ -74,6 +74,10 @@ export interface PlayerState {
   activeBuffs: ActiveBuffs;
   /** Buffs to apply at next level start */
   nextLevelBuffs: NextLevelBuffs;
+  /** Equipped rune IDs (max 3, persist for entire run) */
+  equippedRunes: string[];
+  /** Whether Second Chance rune has been used this run */
+  secondChanceUsed: boolean;
 }
 
 /**
@@ -107,6 +111,8 @@ export function createInitialPlayerState(stats: PlayerStats): PlayerState {
     peekScrolls: 0,
     activeBuffs: {},
     nextLevelBuffs: {},
+    equippedRunes: [],
+    secondChanceUsed: false,
   };
 }
 

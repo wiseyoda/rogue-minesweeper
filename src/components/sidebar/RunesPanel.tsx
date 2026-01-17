@@ -1,43 +1,19 @@
 /**
- * RunesPanel - Active buffs display
+ * RunesPanel - Equipped runes display
  *
- * Shows active buffs as rune cards.
+ * Shows equipped runes for the current run.
  * Source: .specify/reference/design-system/08-runes-panel.css
  */
 
 import { Panel } from '../ui/Panel';
-import type { ActiveBuffs } from '@/types/player';
+import { getRune } from '@/data/runes';
 
 interface RunesPanelProps {
-  buffs: ActiveBuffs;
+  equippedRunes: string[];
 }
 
-const BUFF_NAMES: Record<keyof ActiveBuffs, string> = {
-  extraLife: 'Extra Life',
-  goldenGoose: 'Golden Goose',
-  goldMagnet: 'Gold Magnet',
-  steadyHand: 'Steady Hand',
-  forcefield: 'Forcefield',
-  scrapMetal: 'Scrap Metal',
-  shieldBattery: 'Shield Battery',
-};
-
-const BUFF_ICONS: Record<keyof ActiveBuffs, string> = {
-  extraLife: '♥',
-  goldenGoose: '🪿',
-  goldMagnet: '🧲',
-  steadyHand: '✋',
-  forcefield: '🛡',
-  scrapMetal: '⚙',
-  shieldBattery: '🔋',
-};
-
-export function RunesPanel({ buffs }: RunesPanelProps) {
-  const activeBuffKeys = Object.entries(buffs)
-    .filter(([, value]) => value !== undefined && value !== false && value !== 0)
-    .map(([key]) => key as keyof ActiveBuffs);
-
-  const emptySlots = Math.max(0, 3 - activeBuffKeys.length);
+export function RunesPanel({ equippedRunes }: RunesPanelProps) {
+  const emptySlots = Math.max(0, 3 - equippedRunes.length);
 
   return (
     <Panel>
@@ -60,21 +36,21 @@ export function RunesPanel({ buffs }: RunesPanelProps) {
             textTransform: 'uppercase',
           }}
         >
-          Active Runes
+          Equipped Runes
         </span>
       </div>
 
       {/* Rune grid */}
       <div className="flex gap-2 flex-wrap">
-        {/* Active buffs */}
-        {activeBuffKeys.map((key) => {
-          const value = buffs[key];
-          const hasCount = typeof value === 'number' && value > 1;
+        {/* Equipped runes */}
+        {equippedRunes.map((runeId, index) => {
+          const rune = getRune(runeId);
+          if (!rune) return null;
 
           return (
             <div
-              key={key}
-              className="relative transition-all duration-200"
+              key={`${runeId}-${index}`}
+              className="relative transition-all duration-200 group"
               style={{
                 width: '48px',
                 height: '48px',
@@ -85,23 +61,52 @@ export function RunesPanel({ buffs }: RunesPanelProps) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                cursor: 'pointer',
               }}
-              title={BUFF_NAMES[key]}
+              title={`${rune.name}\n${rune.description}`}
             >
-              <span style={{ fontSize: '16px' }}>{BUFF_ICONS[key]}</span>
-              {hasCount && (
-                <span
+              <span style={{ fontSize: '20px' }}>{rune.icon}</span>
+
+              {/* Tooltip on hover */}
+              <div
+                className="absolute left-1/2 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                style={{
+                  transform: 'translateX(-50%)',
+                  zIndex: 100,
+                  minWidth: '120px',
+                }}
+              >
+                <div
                   style={{
-                    position: 'absolute',
-                    bottom: '2px',
-                    right: '4px',
-                    fontSize: '6px',
-                    color: 'var(--mystic-bright)',
+                    background: 'var(--stone-900)',
+                    border: '1px solid var(--mystic)',
+                    padding: '8px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
                   }}
                 >
-                  x{value}
-                </span>
-              )}
+                  <div
+                    style={{
+                      fontSize: '9px',
+                      fontWeight: 'bold',
+                      color: 'var(--bone)',
+                      marginBottom: '4px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    {rune.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '8px',
+                      color: 'var(--stone-400)',
+                      textAlign: 'center',
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {rune.description}
+                  </div>
+                </div>
+              </div>
             </div>
           );
         })}

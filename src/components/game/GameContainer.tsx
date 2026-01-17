@@ -54,6 +54,20 @@ const selectSetPhase = (state: ReturnType<typeof useGameStore.getState>) =>
   state.setPhase;
 const selectRunPhase = (state: ReturnType<typeof useGameStore.getState>) =>
   state.run.phase;
+const selectAvailableRuneRewards = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.availableRuneRewards;
+const selectRuneSelected = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.runeSelected;
+const selectSelectRuneReward = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.selectRuneReward;
+const selectEquippedRunes = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.player.equippedRunes;
+const selectPendingRuneReplacement = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.pendingRuneReplacement;
+const selectConfirmRuneReplacement = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.confirmRuneReplacement;
+const selectCancelRuneReplacement = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.cancelRuneReplacement;
 
 /**
  * Container that composes Panel, GameBoard, and modal overlays.
@@ -74,6 +88,10 @@ export const GameContainer = memo(function GameContainer({
   const rerollCount = useGameStore(selectRerollCount);
   const showShop = useGameStore(selectShowShop);
   const runPhase = useGameStore(selectRunPhase);
+  const availableRuneRewards = useGameStore(selectAvailableRuneRewards);
+  const runeSelected = useGameStore(selectRuneSelected);
+  const equippedRunes = useGameStore(selectEquippedRunes);
+  const pendingRuneReplacement = useGameStore(selectPendingRuneReplacement);
 
   // Get actions
   const startNewRun = useGameStore(selectStartNewRun);
@@ -83,6 +101,9 @@ export const GameContainer = memo(function GameContainer({
   const rerollShop = useGameStore(selectRerollShop);
   const setShowShop = useGameStore(selectSetShowShop);
   const setPhase = useGameStore(selectSetPhase);
+  const selectRuneReward = useGameStore(selectSelectRuneReward);
+  const confirmRuneReplacement = useGameStore(selectConfirmRuneReplacement);
+  const cancelRuneReplacement = useGameStore(selectCancelRuneReplacement);
 
   // Meta store actions
   const addMetaGold = useMetaStore((state) => state.addMetaGold);
@@ -115,6 +136,24 @@ export const GameContainer = memo(function GameContainer({
     setShowShop(false);
     startLevel(run.level + 1);
   }, [setShowShop, startLevel, run.level]);
+
+  const handleSelectRune = useCallback(
+    (runeId: string) => {
+      selectRuneReward(runeId);
+    },
+    [selectRuneReward]
+  );
+
+  const handleConfirmReplacement = useCallback(
+    (slotIndex: number) => {
+      confirmRuneReplacement(slotIndex);
+    },
+    [confirmRuneReplacement]
+  );
+
+  const handleCancelReplacement = useCallback(() => {
+    cancelRuneReplacement();
+  }, [cancelRuneReplacement]);
 
   // Handler for GameOverModal Continue - transitions to upgrade shop
   const handleGameOverContinue = useCallback(() => {
@@ -168,6 +207,13 @@ export const GameContainer = memo(function GameContainer({
           onPurchase={handlePurchase}
           onReroll={handleReroll}
           onContinue={handleShopContinue}
+          availableRuneRewards={availableRuneRewards}
+          runeSelected={runeSelected}
+          onSelectRune={handleSelectRune}
+          equippedRunes={equippedRunes}
+          pendingRuneReplacement={pendingRuneReplacement}
+          onConfirmReplacement={handleConfirmReplacement}
+          onCancelReplacement={handleCancelReplacement}
         />
       )}
 
