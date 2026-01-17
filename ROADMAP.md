@@ -40,7 +40,7 @@ Phases use **ABBC** format:
 | 2020                                 | floor-shop               | ✅ Complete | Between-floor shop UI and logic                  |
 | 2030                                 | meta-progression         | ✅ Complete | Permanent upgrades persist                       |
 | 2040                                 | meta-shop                | ✅ Complete | Shop polish + First Click Safety fix             |
-| 2050                                 | **progression-poc**      | 🔄 In Progress | **USER GATE**: Complete run loop works           |
+| 2050                                 | **progression-poc**      | ✅ Complete | **USER GATE**: Complete run loop works           |
 | **Milestone 3: Rune System**         |                          |                |                                                  |
 | 3010                                 | rune-framework           | ⬜ Not Started | Rune types, effects, and stacking                |
 | 3020                                 | information-runes        | ⬜ Not Started | Runes that reveal/predict danger                 |
