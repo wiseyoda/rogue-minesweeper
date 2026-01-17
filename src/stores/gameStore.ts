@@ -28,8 +28,6 @@ import { getRandomRunes, getRune } from '@/data/runes';
 import { useMetaStore } from './metaStore';
 import { findCertainMoves } from '@/engine/solver';
 import {
-  applyOnFloorStartRunes,
-  applyOnRevealRunes,
   applyOnDamageRunes,
   getPassiveRuneModifiers,
 } from '@/engine/runes';
@@ -177,7 +175,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       revealCell: (row: number, col: number) => {
-        const { grid, run, gridConfig } = get();
+        const { grid, run, gridConfig, player } = get();
         if (run.phase !== 'playing') return;
 
         const position = { row, col };

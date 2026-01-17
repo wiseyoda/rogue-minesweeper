@@ -7,7 +7,7 @@
 import type { Grid, RuneModifiers } from '@/types';
 import { getRune, countRune } from '@/data/runes';
 import { createDefaultRuneModifiers } from '@/types/rune';
-import { revealCell } from '@/engine/grid';
+import { revealCell } from '@/engine/reveal';
 
 /**
  * Apply onFloorStart rune effects.
