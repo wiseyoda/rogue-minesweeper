@@ -17,8 +17,12 @@ export interface RuneCardProps {
   isSelected: boolean;
   /** Whether rune selection is disabled (already selected one this visit) */
   isDisabled: boolean;
+  /** Whether player can afford this rune */
+  canAfford: boolean;
   /** Called when select button is clicked */
   onSelect: () => void;
+  /** Whether to show the replacement cost (rune cost + removal fee) */
+  showReplacementCost?: boolean;
 }
 
 /**
@@ -79,11 +83,17 @@ export const RuneCard = memo(function RuneCard({
   rune,
   isSelected,
   isDisabled,
+  canAfford,
   onSelect,
+  showReplacementCost = false,
 }: RuneCardProps) {
   const borderColor = getRarityColor(rune.rarity);
   const categoryColor = getCategoryColor(rune.category);
-  const disabled = isSelected || isDisabled;
+  const disabled = isSelected || isDisabled || !canAfford;
+
+  // Calculate displayed cost
+  const removalFee = showReplacementCost ? Math.floor(rune.cost / 2) : 0;
+  const displayCost = rune.cost + removalFee;
 
   return (
     <div
@@ -93,7 +103,7 @@ export const RuneCard = memo(function RuneCard({
           ? 'linear-gradient(180deg, var(--stone-800) 0%, var(--mystic-dark) 50%)'
           : 'linear-gradient(180deg, var(--stone-800) 0%, var(--stone-850) 100%)',
         border: `2px solid ${isSelected ? 'var(--mystic)' : borderColor}`,
-        padding: '16px',
+        padding: '12px',
         width: '200px',
         height: '180px',
         opacity: disabled && !isSelected ? 0.5 : 1,
@@ -104,6 +114,7 @@ export const RuneCard = memo(function RuneCard({
             : 'none',
         transform: 'scale(1)',
         cursor: disabled ? 'default' : 'pointer',
+        position: 'relative',
       }}
       onMouseEnter={(e) => {
         if (!disabled) {
@@ -131,7 +142,25 @@ export const RuneCard = memo(function RuneCard({
         }
       }}
     >
-      {/* Icon - fixed height area for alignment */}
+      {/* Category badge - top right corner */}
+      <span
+        style={{
+          position: 'absolute',
+          top: '6px',
+          right: '6px',
+          fontSize: '7px',
+          color: categoryColor,
+          padding: '2px 4px',
+          background: 'var(--stone-900)',
+          borderRadius: '2px',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+        }}
+      >
+        {rune.category.slice(0, 3)}
+      </span>
+
+      {/* Icon */}
       <div
         className="flex justify-center items-center"
         style={{
@@ -143,40 +172,28 @@ export const RuneCard = memo(function RuneCard({
         {rune.icon}
       </div>
 
-      {/* Rune Name with category badge */}
-      <div className="flex items-center justify-center gap-2 mb-2">
-        <h3
-          className="text-center"
-          style={{
-            fontSize: '11px',
-            color: 'var(--bone)',
-            fontWeight: 'bold',
-          }}
-        >
-          {rune.name}
-        </h3>
-        <span
-          style={{
-            fontSize: '8px',
-            color: categoryColor,
-            padding: '1px 4px',
-            background: 'var(--stone-900)',
-            borderRadius: '2px',
-            textTransform: 'uppercase',
-          }}
-        >
-          {rune.category.slice(0, 3)}
-        </span>
-      </div>
+      {/* Rune Name */}
+      <h3
+        className="text-center"
+        style={{
+          fontSize: '11px',
+          color: 'var(--bone)',
+          fontWeight: 'bold',
+          marginBottom: '6px',
+        }}
+      >
+        {rune.name}
+      </h3>
 
-      {/* Description - fixed height for alignment */}
+      {/* Description - fixed height with overflow handling */}
       <p
         className="text-center"
         style={{
           fontSize: '9px',
           color: 'var(--stone-400)',
-          lineHeight: 1.4,
-          minHeight: '32px',
+          lineHeight: 1.3,
+          height: '36px',
+          overflow: 'hidden',
         }}
       >
         {rune.description}
@@ -203,7 +220,17 @@ export const RuneCard = memo(function RuneCard({
           className="w-full"
           style={{ marginTop: 'auto' }}
         >
-          <span style={{ fontSize: '9px' }}>Select (Free)</span>
+          <span
+            style={{
+              fontSize: '9px',
+              color: !canAfford ? 'var(--blood)' : 'inherit',
+            }}
+          >
+            {displayCost}g
+            {showReplacementCost && (
+              <span style={{ fontSize: '7px', opacity: 0.7 }}> (+{removalFee})</span>
+            )}
+          </span>
         </Button>
       )}
     </div>

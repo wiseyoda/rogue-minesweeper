@@ -14,9 +14,9 @@ export const RUNES: RuneDefinition[] = [
   {
     id: 'scout-eye',
     name: "Scout's Eye",
-    description: 'Reveal 2 random safe tiles at floor start',
+    description: 'Reveal 2 safe tiles at floor start',
     category: 'information',
-    rarity: 'common',
+    rarity: 'uncommon',
     icon: '👁️',
     effect: {
       trigger: 'onFloorStart',
@@ -24,11 +24,12 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 2,
     },
     stackable: true,
+    cost: 50,
   },
   {
     id: 'oracle-sight',
     name: "Oracle's Sight",
-    description: '10% chance to reveal an adjacent safe tile when revealing',
+    description: '10% chance to reveal bonus tile',
     category: 'information',
     rarity: 'uncommon',
     icon: '🔮',
@@ -38,13 +39,14 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.1,
     },
     stackable: true,
+    cost: 50,
   },
 
   // === DEFENSE RUNES ===
   {
     id: 'stone-skin',
     name: 'Stone Skin',
-    description: 'First damage each floor is reduced by 1',
+    description: 'First hit each floor reduced by 1',
     category: 'defense',
     rarity: 'common',
     icon: '🪨',
@@ -54,11 +56,12 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: true,
+    cost: 25,
   },
   {
     id: 'lucky-charm',
     name: 'Lucky Charm',
-    description: '20% chance to negate damage completely',
+    description: '20% chance to negate damage',
     category: 'defense',
     rarity: 'uncommon',
     icon: '🍀',
@@ -68,6 +71,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.2,
     },
     stackable: false,
+    cost: 60,
   },
 
   // === ECONOMY RUNES ===
@@ -84,27 +88,29 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.25,
     },
     stackable: true,
+    cost: 35,
   },
   {
     id: 'treasure-sense',
     name: 'Treasure Sense',
-    description: 'Mark 1 high-value tile at floor start',
+    description: 'Reveal 1 safe tile at floor start',
     category: 'economy',
-    rarity: 'uncommon',
+    rarity: 'common',
     icon: '💎',
     effect: {
       trigger: 'onFloorStart',
-      description: 'Mark treasure tile',
+      description: 'Reveal 1 safe tile',
       magnitude: 1,
     },
     stackable: true,
+    cost: 30,
   },
 
   // === UTILITY RUNES ===
   {
     id: 'swift-feet',
     name: 'Swift Feet',
-    description: 'Auto-flag cells when a number is satisfied',
+    description: 'Auto-flag when number satisfied',
     category: 'utility',
     rarity: 'common',
     icon: '🏃',
@@ -113,11 +119,12 @@ export const RUNES: RuneDefinition[] = [
       description: 'Auto-flag satisfied numbers',
     },
     stackable: false,
+    cost: 30,
   },
   {
     id: 'second-chance',
     name: 'Second Chance',
-    description: 'Once per run, survive fatal damage with 1 HP',
+    description: 'Survive fatal damage once per run',
     category: 'utility',
     rarity: 'rare',
     icon: '💫',
@@ -127,6 +134,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: false,
+    cost: 100,
   },
 ];
 

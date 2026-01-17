@@ -79,6 +79,12 @@ export interface GameStoreActions {
   selectRuneReward: (runeId: string) => boolean;
   /** Clear rune selection for new shop visit */
   clearRuneSelection: () => void;
+  /** Confirm rune replacement when at max capacity (pays removal fee + rune cost) */
+  confirmRuneReplacement: (slotIndex: number) => boolean;
+  /** Cancel pending rune replacement */
+  cancelRuneReplacement: () => void;
+  /** Calculate the removal fee for a rune (half of new rune's cost) */
+  getRuneRemovalFee: (runeId: string) => number;
 }
 
 /**

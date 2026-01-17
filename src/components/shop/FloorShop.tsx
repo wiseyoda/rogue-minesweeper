@@ -57,6 +57,14 @@ export interface FloorShopProps {
   runeSelected?: boolean;
   /** Called when a rune is selected */
   onSelectRune?: (runeId: string) => void;
+  /** Player's currently equipped rune IDs */
+  equippedRunes?: string[];
+  /** Rune ID pending replacement (when at max capacity) */
+  pendingRuneReplacement?: string;
+  /** Called to confirm replacement of a specific slot */
+  onConfirmReplacement?: (slotIndex: number) => void;
+  /** Called to cancel the pending replacement */
+  onCancelReplacement?: () => void;
 }
 
 /**
@@ -74,14 +82,38 @@ export const FloorShop = memo(function FloorShop({
   availableRuneRewards = [],
   runeSelected = false,
   onSelectRune,
+  equippedRunes = [],
+  pendingRuneReplacement,
+  onConfirmReplacement,
+  onCancelReplacement,
 }: FloorShopProps) {
   const rerollCost = getRerollCost(rerollCount);
   const canAffordReroll = gold >= rerollCost;
+  const isAtMaxRunes = equippedRunes.length >= 3;
 
   // Convert rune IDs to definitions
   const runeRewards: RuneDefinition[] = availableRuneRewards
     .map((id) => getRune(id))
     .filter((r): r is RuneDefinition => r !== undefined);
+
+  // Get pending rune details for replacement UI
+  const pendingRune = pendingRuneReplacement ? getRune(pendingRuneReplacement) : null;
+  const removalFee = pendingRune ? Math.floor(pendingRune.cost / 2) : 0;
+  const totalReplacementCost = pendingRune ? pendingRune.cost + removalFee : 0;
+
+  // Get equipped rune definitions for replacement UI
+  const equippedRuneDefs = equippedRunes
+    .map((id) => getRune(id))
+    .filter((r): r is RuneDefinition => r !== undefined);
+
+  // Calculate affordability considering replacement costs
+  const canAffordRune = (rune: RuneDefinition): boolean => {
+    if (isAtMaxRunes) {
+      const fee = Math.floor(rune.cost / 2);
+      return gold >= rune.cost + fee;
+    }
+    return gold >= rune.cost;
+  };
 
   return (
     <div
@@ -135,27 +167,132 @@ export const FloorShop = memo(function FloorShop({
                 marginBottom: '12px',
               }}
             >
-              Rune Reward (Pick 1)
+              Runes For Sale
+              {isAtMaxRunes && !runeSelected && (
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: '8px',
+                    color: 'var(--stone-400)',
+                    marginTop: '4px',
+                    textTransform: 'none',
+                    letterSpacing: 'normal',
+                  }}
+                >
+                  (Max runes equipped - buying requires removal fee)
+                </span>
+              )}
             </div>
-            <div
-              className="grid"
-              style={{
-                gridTemplateColumns: 'repeat(auto-fit, 200px)',
-                justifyContent: 'center',
-                gap: '24px',
-                marginBottom: '24px',
-              }}
-            >
-              {runeRewards.map((rune) => (
-                <RuneCard
-                  key={rune.id}
-                  rune={rune}
-                  isSelected={false}
-                  isDisabled={runeSelected}
-                  onSelect={() => onSelectRune?.(rune.id)}
-                />
-              ))}
-            </div>
+
+            {/* Replacement Selection Panel */}
+            {pendingRune && (
+              <div
+                style={{
+                  background: 'linear-gradient(180deg, var(--mystic-dark) 0%, var(--stone-850) 100%)',
+                  borderWidth: '2px',
+                  borderStyle: 'solid',
+                  borderColor: 'var(--mystic)',
+                  padding: '16px',
+                  marginBottom: '16px',
+                }}
+              >
+                <div
+                  className="text-center"
+                  style={{
+                    fontSize: '11px',
+                    color: 'var(--bone)',
+                    marginBottom: '12px',
+                  }}
+                >
+                  Select a rune to replace with{' '}
+                  <span style={{ color: 'var(--mystic)' }}>{pendingRune.name}</span>
+                </div>
+
+                {/* Cost breakdown */}
+                <div
+                  className="text-center"
+                  style={{
+                    fontSize: '9px',
+                    color: 'var(--stone-400)',
+                    marginBottom: '16px',
+                  }}
+                >
+                  Cost: {pendingRune.cost}g (rune) + {removalFee}g (removal) ={' '}
+                  <span style={{ color: gold >= totalReplacementCost ? 'var(--gold)' : 'var(--blood)' }}>
+                    {totalReplacementCost}g total
+                  </span>
+                </div>
+
+                {/* Current runes to choose from */}
+                <div
+                  className="flex justify-center"
+                  style={{ gap: '12px', marginBottom: '12px' }}
+                >
+                  {equippedRuneDefs.map((rune, index) => (
+                    <button
+                      key={rune.id}
+                      onClick={() => onConfirmReplacement?.(index)}
+                      disabled={gold < totalReplacementCost}
+                      style={{
+                        background: 'linear-gradient(180deg, var(--stone-700) 0%, var(--stone-800) 100%)',
+                        borderWidth: '2px',
+                        borderStyle: 'solid',
+                        borderColor: 'var(--stone-500)',
+                        padding: '8px 12px',
+                        cursor: gold >= totalReplacementCost ? 'pointer' : 'not-allowed',
+                        opacity: gold >= totalReplacementCost ? 1 : 0.5,
+                        transition: 'all 0.15s',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (gold >= totalReplacementCost) {
+                          e.currentTarget.style.borderColor = 'var(--blood)';
+                          e.currentTarget.style.boxShadow = '0 0 8px var(--blood-dark)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--stone-500)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <div style={{ fontSize: '18px', marginBottom: '4px' }}>{rune.icon}</div>
+                      <div style={{ fontSize: '8px', color: 'var(--bone)' }}>{rune.name}</div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Cancel button */}
+                <div className="text-center">
+                  <Button variant="secondary" onClick={onCancelReplacement}>
+                    <span style={{ fontSize: '9px' }}>Cancel</span>
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Rune cards (hidden when replacement panel is shown) */}
+            {!pendingRune && (
+              <div
+                className="grid"
+                style={{
+                  gridTemplateColumns: 'repeat(auto-fit, 200px)',
+                  justifyContent: 'center',
+                  gap: '24px',
+                  marginBottom: '24px',
+                }}
+              >
+                {runeRewards.map((rune) => (
+                  <RuneCard
+                    key={rune.id}
+                    rune={rune}
+                    isSelected={false}
+                    isDisabled={runeSelected}
+                    canAfford={canAffordRune(rune)}
+                    onSelect={() => onSelectRune?.(rune.id)}
+                    showReplacementCost={isAtMaxRunes && !runeSelected}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Divider */}
             <div

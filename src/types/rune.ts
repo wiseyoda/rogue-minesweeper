@@ -50,6 +50,8 @@ export interface RuneDefinition {
   effect: RuneEffect;
   /** Whether duplicates stack */
   stackable: boolean;
+  /** Gold cost to purchase */
+  cost: number;
 }
 
 /**

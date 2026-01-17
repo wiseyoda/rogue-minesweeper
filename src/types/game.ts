@@ -71,6 +71,8 @@ export interface RunState {
   availableRuneRewards: string[];
   /** Whether a rune has been selected this shop visit */
   runeSelected: boolean;
+  /** Rune ID pending replacement (when at max capacity and player wants to buy a new rune) */
+  pendingRuneReplacement?: string;
 }
 
 /**

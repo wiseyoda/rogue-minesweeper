@@ -39,7 +39,9 @@ export function ResourceCard({
       className="flex flex-col items-center transition-all duration-200"
       style={{
         background: 'var(--stone-850)',
-        border: `2px solid ${borderColor}`,
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: borderColor,
         padding: '8px',
         minWidth: '60px',
       }}

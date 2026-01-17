@@ -63,7 +63,8 @@ function getTileStyles(
   const baseStyles: React.CSSProperties = {
     width: 'var(--tile)',
     height: 'var(--tile)',
-    border: 'none',
+    borderWidth: 0,
+    borderStyle: 'none',
     transition: 'transform var(--beat), box-shadow var(--beat)',
   };
 
