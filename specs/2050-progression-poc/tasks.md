@@ -42,4 +42,4 @@
 
 - [x] T021 [P1] Run TypeScript type check
 - [x] T022 [P1] Run ESLint
-- [ ] T023 [P2] Manual playtest of complete game loop
+- [x] T023 [P2] Manual playtest of complete game loop

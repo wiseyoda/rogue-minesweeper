@@ -1,132 +1,143 @@
 /**
- * RunStats - Display current run stats with personal best comparison.
+ * PlayerStats - Display player's permanent upgrades and meta progression.
  * @module components/ui/RunStats
+ *
+ * Compact horizontal layout for header area showing:
+ * - Meta gold (spendable currency)
+ * - Lifetime gold earned
+ * - Purchased upgrade icons with level indicators
  */
 
 import { memo } from 'react';
-import { useGameStore } from '@/stores/gameStore';
 import { useMetaStore } from '@/stores/metaStore';
 import { Panel } from './Panel';
+import {
+  FortuneIcon,
+  VitalityIcon,
+  ResilienceIcon,
+  PreparationIcon,
+  FirstClickSafetyIcon,
+} from '../icons';
+import { isLeveledUpgrade, isUnlockableUpgrade } from '@/types';
 
 /**
- * Comparison indicator arrow.
+ * Upgrade icon mapping.
  */
-function ComparisonArrow({ type }: { type: 'up' | 'down' | 'equal' }) {
-  if (type === 'up') {
-    return (
-      <span
-        style={{
-          color: 'var(--venom)',
-          fontSize: '10px',
-          marginLeft: '4px',
-        }}
-        title="New personal best!"
-      >
-        ▲
-      </span>
-    );
-  }
-  if (type === 'down') {
-    return (
-      <span
-        style={{
-          color: 'var(--stone-500)',
-          fontSize: '10px',
-          marginLeft: '4px',
-        }}
-      >
-        ▼
-      </span>
-    );
-  }
-  return (
-    <span
-      style={{
-        color: 'var(--gold)',
-        fontSize: '10px',
-        marginLeft: '4px',
-      }}
-      title="Tied with personal best"
-    >
-      ★
-    </span>
-  );
-}
+const UPGRADE_ICONS: Record<string, React.FC<{ size?: number }>> = {
+  fortune: FortuneIcon,
+  vitality: VitalityIcon,
+  resilience: ResilienceIcon,
+  preparation: PreparationIcon,
+  firstClickSafety: FirstClickSafetyIcon,
+};
 
-interface StatCompareProps {
-  label: string;
-  current: number;
-  best: number;
-}
-
-function StatCompare({ label, current, best }: StatCompareProps) {
-  const comparison = current > best ? 'up' : current === best ? 'equal' : 'down';
-  const isNewBest = current > best;
+/**
+ * Single upgrade badge with icon and level indicator.
+ */
+function UpgradeBadge({
+  upgradeId,
+  level,
+  name,
+}: {
+  upgradeId: string;
+  level: number;
+  name: string;
+}) {
+  const IconComponent = UPGRADE_ICONS[upgradeId];
+  if (!IconComponent) return null;
 
   return (
     <div
-      className="flex items-center justify-between"
-      style={{
-        padding: '4px 0',
-      }}
+      className="flex items-center"
+      style={{ position: 'relative' }}
+      title={`${name} x${level}`}
     >
-      <span
-        style={{
-          fontSize: '10px',
-          color: 'var(--stone-400)',
-        }}
-      >
-        {label}
-      </span>
-      <div className="flex items-center">
+      <IconComponent size={18} />
+      {level > 1 && (
         <span
           style={{
-            fontSize: '12px',
+            fontSize: '9px',
             fontWeight: 'bold',
-            color: isNewBest ? 'var(--venom)' : 'var(--bone)',
+            color: 'var(--gold-bright)',
+            marginLeft: '2px',
           }}
         >
-          {current.toLocaleString()}
+          x{level}
         </span>
-        <ComparisonArrow type={comparison} />
-      </div>
+      )}
     </div>
   );
 }
 
 /**
- * Compact run stats for sidebar.
- * Shows current level and gold with comparison to personal best.
+ * Compact player stats for header area.
+ * Shows meta gold, lifetime gold, and purchased upgrades.
  */
 export const RunStats = memo(function RunStats() {
-  const level = useGameStore((s) => s.run.level);
-  const gold = useGameStore((s) => s.player.gold);
-  const bestLevel = useMetaStore((s) => s.stats.highestLevelOverall);
-  const bestGold = useMetaStore((s) => s.stats.maxGoldRun);
+  const metaGold = useMetaStore((s) => s.metaGold);
+  const upgrades = useMetaStore((s) => s.upgrades);
+
+  // Get purchased upgrades (level > 0 or unlocked)
+  const purchasedUpgrades = Object.entries(upgrades).filter(([, upgrade]) => {
+    if (isLeveledUpgrade(upgrade)) return upgrade.level > 0;
+    if (isUnlockableUpgrade(upgrade)) return upgrade.unlocked;
+    return false;
+  });
+
+  const hasUpgrades = purchasedUpgrades.length > 0;
 
   return (
     <Panel>
       <div
-        style={{
-          fontSize: '10px',
-          color: 'var(--gold)',
-          marginBottom: '4px',
-          textAlign: 'center',
-        }}
+        className="flex items-center justify-center"
+        style={{ gap: '20px' }}
       >
-        RUN PROGRESS
-      </div>
-      <StatCompare label="Floor" current={level} best={bestLevel} />
-      <StatCompare label="Gold" current={gold} best={bestGold} />
-      <div
-        style={{
-          fontSize: '8px',
-          color: 'var(--stone-500)',
-          textAlign: 'center',
-          marginTop: '4px',
-        }}
-      >
-        Best: Floor {bestLevel} • {bestGold.toLocaleString()}g
+        {/* Gold (spendable on permanent upgrades) */}
+        <div className="flex items-center" style={{ gap: '6px' }}>
+          <span
+            style={{
+              fontSize: '10px',
+              color: 'var(--stone-400)',
+              textTransform: 'uppercase',
+            }}
+          >
+            Gold
+          </span>
+          <span
+            style={{
+              fontSize: '14px',
+              fontWeight: 'bold',
+              color: 'var(--gold)',
+            }}
+          >
+            {metaGold.toLocaleString()}
+          </span>
+        </div>
+
+        {/* Upgrades section (only show if has upgrades) */}
+        {hasUpgrades && (
+          <>
+            {/* Separator */}
+            <span style={{ color: 'var(--stone-600)' }}>•</span>
+
+            {/* Upgrade Icons */}
+            <div className="flex items-center" style={{ gap: '8px' }}>
+              {purchasedUpgrades.map(([id, upgrade]) => {
+                const level = isLeveledUpgrade(upgrade)
+                  ? upgrade.level
+                  : 1; // Unlockables count as level 1
+                return (
+                  <UpgradeBadge
+                    key={id}
+                    upgradeId={id}
+                    level={level}
+                    name={upgrade.name}
+                  />
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </Panel>
   );

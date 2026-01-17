@@ -3,7 +3,7 @@ import { useGameStore } from '@/stores';
 import { useMetaStore } from '@/stores/metaStore';
 import { GameContainer } from '@/components/game';
 import { Sidebar } from '@/components/sidebar';
-import { GameTitle } from '@/components/ui';
+import { GameTitle, RunStats } from '@/components/ui';
 import {
   BrickPattern,
   Vignette,
@@ -77,6 +77,11 @@ function App() {
         {/* Title */}
         <div style={{ marginBottom: '20px' }}>
           <GameTitle title="DUNGEON DELVER" subtitle="Roguelike Minesweeper" />
+        </div>
+
+        {/* Run Progress */}
+        <div style={{ marginBottom: '16px' }}>
+          <RunStats />
         </div>
 
         {/* Two-column layout */}

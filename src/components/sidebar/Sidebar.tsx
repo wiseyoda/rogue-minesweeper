@@ -10,7 +10,7 @@ import { DMPanel } from './DMPanel';
 import { VitalsPanel } from './VitalsPanel';
 import { RunesPanel } from './RunesPanel';
 import { ActionButton } from './ActionButton';
-import { Panel, RunStats, HighScores } from '../ui';
+import { Panel, HighScores } from '../ui';
 import { PeekScrollIcon, RobotIcon, FortuneIcon } from '../icons';
 
 export function Sidebar() {
@@ -57,7 +57,6 @@ export function Sidebar() {
         shields={shields}
         floor={level}
       />
-      <RunStats />
       <RunesPanel buffs={activeBuffs} />
       {peekScrolls > 0 && (
         <Panel>
