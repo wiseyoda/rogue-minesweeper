@@ -184,6 +184,60 @@ export function clearCellHighlight(grid: Grid, row: number, col: number): Grid {
 }
 
 /**
+ * Apply auto-flag logic for Swift Feet rune.
+ * Flags cells around revealed numbers that are "satisfied" -
+ * where the number equals the count of adjacent unrevealed/unflagged cells.
+ * @param grid The current grid
+ * @returns Object with updated grid and count of cells flagged
+ */
+export function applyAutoFlag(grid: Grid): { grid: Grid; cellsFlagged: number } {
+  let cellsFlagged = 0;
+  let newGrid = grid.map((row) => row.map((cell) => ({ ...cell })));
+
+  // Scan all revealed cells with numbers
+  for (let r = 0; r < newGrid.length; r++) {
+    const row = newGrid[r];
+    if (!row) continue;
+    for (let c = 0; c < row.length; c++) {
+      const cell = row[c];
+      if (!cell || !cell.isRevealed || cell.isMonster || cell.adjacentMonsters === 0) continue;
+
+      // Count adjacent unrevealed, unflagged cells
+      const adjacentUnrevealed: Array<{ row: number; col: number }> = [];
+      let adjacentFlagged = 0;
+
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const adjCell = newGrid[r + dr]?.[c + dc];
+          if (!adjCell) continue;
+          if (adjCell.isFlagged) {
+            adjacentFlagged++;
+          } else if (!adjCell.isRevealed) {
+            adjacentUnrevealed.push({ row: r + dr, col: c + dc });
+          }
+        }
+      }
+
+      // If number equals flagged + unrevealed, all unrevealed must be monsters
+      const remainingMonsters = cell.adjacentMonsters - adjacentFlagged;
+      if (remainingMonsters > 0 && remainingMonsters === adjacentUnrevealed.length) {
+        // Flag all unrevealed adjacent cells
+        for (const pos of adjacentUnrevealed) {
+          const targetCell = newGrid[pos.row]?.[pos.col];
+          if (targetCell && !targetCell.isFlagged) {
+            targetCell.isFlagged = true;
+            cellsFlagged++;
+          }
+        }
+      }
+    }
+  }
+
+  return { grid: newGrid, cellsFlagged };
+}
+
+/**
  * Calculate extended danger count for a cell (2 squares away).
  * Used by Danger Sense rune.
  * @param grid The current grid

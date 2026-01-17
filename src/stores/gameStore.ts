@@ -32,6 +32,7 @@ import {
   applyOnFloorStartRunes,
   applyOnRevealRunes,
   applyHighlightRunes,
+  applyAutoFlag,
   getPassiveRuneModifiers,
 } from '@/engine/runes';
 
@@ -250,6 +251,15 @@ export const useGameStore = create<GameStore>()(
           currentGrid = applyHighlightRunes(currentGrid, player.equippedRunes);
         }
 
+        // Apply Swift Feet auto-flag if equipped
+        const runeModifiers = getPassiveRuneModifiers(player.equippedRunes);
+        let autoFlagged = 0;
+        if (runeModifiers.autoFlag) {
+          const autoFlagResult = applyAutoFlag(currentGrid);
+          currentGrid = autoFlagResult.grid;
+          autoFlagged = autoFlagResult.cellsFlagged;
+        }
+
         // Get gold find bonus from metaStore
         const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
         const equippedRunesForGold = player.equippedRunes;
@@ -257,6 +267,7 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           state.grid = currentGrid;
           state.run.revealedCount += totalRevealed;
+          state.run.flagsPlaced += autoFlagged;
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
           // 2x gold if goldMagnet active, +goldFindBonus%, +rune modifiers
           const goldToAdd = result.hitMonster
