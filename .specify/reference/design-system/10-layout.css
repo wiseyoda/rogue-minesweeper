@@ -1,0 +1,239 @@
+/**
+ * LAYOUT STYLES
+ * Source: ui-mockup-definitive.html
+ *
+ * Two-column grid layout: game board (left) + sidebar (right).
+ * Responsive - collapses to single column on mobile.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TITLE CONTAINER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.title-container {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 22px;
+  letter-spacing: 6px;
+  color: var(--blood);
+  text-shadow:
+    0 0 20px var(--blood-dark),
+    3px 3px 0 var(--blood-void),
+    0 0 40px var(--blood-shadow);
+  animation: title-pulse 4s ease-in-out infinite;
+  position: relative;
+  display: inline-block;
+}
+
+/* Gem accents beside title */
+.title::before,
+.title::after {
+  content: '\25C6';  /* Diamond character */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--gold);
+  text-shadow: 0 0 10px var(--gold-dark);
+  animation: gem-sparkle 2s ease-in-out infinite;
+}
+
+.title::before { left: -32px; animation-delay: 0s; }
+.title::after { right: -32px; animation-delay: 1s; }
+
+@keyframes title-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.1); }
+}
+
+@keyframes gem-sparkle {
+  0%, 100% { opacity: 0.6; transform: translateY(-50%) scale(1); }
+  50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+}
+
+.subtitle {
+  font-size: 7px;
+  color: var(--stone-300);
+  letter-spacing: 4px;
+  margin-top: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GAME CONTAINER - Two-column grid
+   ═══════════════════════════════════════════════════════════════════════════ */
+.game-container {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Responsive: single column on narrow screens */
+@media (max-width: 860px) {
+  .game-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════════════════════ */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BOARD AREA - Center of game panel
+   ═══════════════════════════════════════════════════════════════════════════ */
+.board-area {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  position: relative;
+  background:
+    radial-gradient(ellipse at 50% 30%, var(--stone-700) 0%, var(--stone-850) 50%, var(--abyss) 100%);
+}
+
+/* Subtle grid pattern overlay */
+.board-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--stone-600) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HEADER BAR (inside game panel)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.header {
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--stone-900);
+  border-bottom: 2px solid var(--stone-700);
+}
+
+.floor-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.floor-badge {
+  background: var(--abyss);
+  border: 2px solid var(--stone-700);
+  padding: 6px 10px;
+  box-shadow: inset 2px 2px 0 var(--void);
+}
+
+.floor-label {
+  font-size: 5px;
+  color: var(--stone-400);
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+
+.floor-value {
+  font-size: 11px;
+  color: var(--gold);
+  text-shadow: 0 0 10px var(--gold-shadow);
+}
+
+.floor-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.floor-name {
+  font-size: 8px;
+  color: var(--bone);
+  letter-spacing: 1px;
+}
+
+.floor-env {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 5px;
+  color: var(--stone-300);
+}
+
+.env-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--mystic);
+  animation: env-pulse 2s ease-in-out infinite;
+}
+
+@keyframes env-pulse {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 4px var(--mystic); }
+  50% { opacity: 1; box-shadow: 0 0 10px var(--mystic-bright); }
+}
+
+/* Threat meter */
+.threat-section {
+  text-align: right;
+}
+
+.threat-label {
+  font-size: 5px;
+  color: var(--stone-400);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.threat-meter {
+  display: flex;
+  gap: 3px;
+  justify-content: flex-end;
+}
+
+.threat-seg {
+  width: 6px;
+  height: 14px;
+  background: var(--stone-700);
+  transition: all var(--beat);
+}
+
+.threat-seg.filled {
+  background: var(--blood);
+  box-shadow: 0 0 6px var(--blood-dark);
+}
+
+.threat-seg.filled.pulse {
+  animation: threat-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes threat-pulse {
+  0%, 100% { background: var(--blood); box-shadow: 0 0 6px var(--blood-dark); }
+  50% { background: var(--blood-bright); box-shadow: 0 0 12px var(--blood); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CREDITS
+   ═══════════════════════════════════════════════════════════════════════════ */
+.credits {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 5px;
+  color: var(--stone-500);
+  letter-spacing: 2px;
+}

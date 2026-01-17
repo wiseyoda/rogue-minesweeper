@@ -1,0 +1,148 @@
+{
+  "schema_version": "2.0",
+  "project": {
+    "id": "61256da3-a7c2-4eae-a0e0-2899d62684c7",
+    "name": "rogue-minesweeper",
+    "path": "/Users/ppatterson/dev/rogue-minesweeper",
+    "description": null,
+    "type": null,
+    "criticality": null,
+    "created_at": "2026-01-15T02:46:49Z",
+    "updated_at": "2026-01-15T18:19:29Z"
+  },
+  "config": {
+    "roadmap_path": "ROADMAP.md",
+    "memory_path": ".specify/memory/",
+    "specs_path": "specs/",
+    "scripts_path": "~/.claude/speckit-system/scripts/",
+    "templates_path": ".specify/templates/"
+  },
+  "interview": {
+    "status": "not_started",
+    "current_phase": 0,
+    "current_question": 0,
+    "decisions_count": 0,
+    "phases": {},
+    "started_at": null,
+    "completed_at": null
+  },
+  "orchestration": {
+    "phase": {
+      "number": "2010",
+      "name": "floor-progression",
+      "branch": "2010-floor-progression",
+      "status": "in_progress"
+    },
+    "step": {
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
+    },
+    "progress": {
+      "tasks_completed": 0,
+      "tasks_total": 0,
+      "percentage": 0
+    },
+    "steps": {
+      "implement": {
+        "tasks_completed": 22,
+        "tasks_total": 22
+      }
+    }
+  },
+  "health": {
+    "status": "ready",
+    "last_check": "2026-01-15T18:19:29Z",
+    "issues": []
+  },
+  "actions": {
+    "available": [],
+    "pending": [],
+    "history": [
+      {
+        "phase": "0010",
+        "name": "project-setup",
+        "status": "complete",
+        "merged_at": "2026-01-15T05:00:00Z",
+        "pr_number": 14
+      },
+      {
+        "phase": "0020",
+        "name": "core-types",
+        "status": "complete",
+        "merged_at": "2026-01-15T05:50:00Z",
+        "pr_number": 15
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "0030",
+        "phase_name": "grid-engine",
+        "branch": "0030-grid-engine",
+        "completed_at": "2026-01-15T05:07:16Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "0040",
+        "phase_name": "core-logic-poc",
+        "branch": "0040-core-logic-poc",
+        "completed_at": "2026-01-15T05:29:19Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "1010",
+        "phase_name": "zustand-stores",
+        "branch": "1010-zustand-stores",
+        "completed_at": "2026-01-15T05:49:19Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "1020",
+        "phase_name": "game-board-ui",
+        "branch": "1020-game-board-ui",
+        "completed_at": "2026-01-15T06:09:44Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "1030",
+        "phase_name": "hud-components",
+        "branch": "1030-hud-components",
+        "completed_at": "2026-01-15T13:32:39Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "1040",
+        "phase_name": "ui-integration-poc",
+        "branch": "1040-ui-integration-poc",
+        "completed_at": "2026-01-15T16:34:49Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      },
+      {
+        "type": "phase_completed",
+        "phase_number": "1041",
+        "phase_name": "design-system-integration",
+        "branch": "1041-design-system-integration",
+        "completed_at": "2026-01-15T18:19:29Z",
+        "tasks_completed": 0,
+        "tasks_total": 0
+      }
+    ]
+  },
+  "ui": {
+    "last_sync": null,
+    "notifications": []
+  },
+  "last_updated": "2026-01-15T18:40:19Z",
+  "stage": "verify",
+  "next_action": "user_verify"
+}

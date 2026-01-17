@@ -1,0 +1,70 @@
+/* Google Font - Press Start 2P (pixel art) - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@import 'tailwindcss';
+
+/* Design System Imports */
+@import './styles/tokens.css';
+@import './styles/animations.css';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESET - Clean slate
+   ═══════════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HTML - Pixel rendering mode
+   ═══════════════════════════════════════════════════════════════════════════ */
+html {
+  font-size: 16px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BODY - The dungeon foundation
+   ═══════════════════════════════════════════════════════════════════════════ */
+body {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 2;
+  color: var(--bone);
+  background: var(--void);
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  /* Custom crosshair cursor */
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="7" y="0" width="2" height="16" fill="%23d0a020"/><rect x="0" y="7" width="16" height="2" fill="%23d0a020"/><rect x="6" y="6" width="4" height="4" fill="%23ffe040"/></svg>') 8 8, crosshair;
+}
+
+/* Selection highlight */
+::selection {
+  background: var(--mystic-dark);
+  color: var(--mystic-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SCROLLBAR - Styled for dark theme
+   ═══════════════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone-600);
+  border: 2px solid var(--void);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dark);
+}

@@ -1,0 +1,98 @@
+/**
+ * DESIGN TOKENS
+ * Source: ui-mockup-definitive.html
+ *
+ * This file contains all CSS custom properties for the design system.
+ * These are the foundational values used throughout the UI.
+ */
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════════════
+     THE PALETTE - Colors of the deep
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* THE VOID - Where light fears to tread */
+  --void: #05050a;
+  --abyss: #0a0a12;
+  --deep: #10101a;
+
+  /* THE STONE - Ancient dungeon walls (expanded scale) */
+  --stone-950: #0c0c14;
+  --stone-900: #12121c;
+  --stone-850: #18182a;
+  --stone-800: #1e1e30;
+  --stone-700: #2a2a40;
+  --stone-600: #3a3a52;
+  --stone-500: #4a4a66;
+  --stone-400: #5e5e7a;
+  --stone-300: #7a7a96;
+  --stone-200: #9a9ab2;
+
+  /* THE BONE - What remains of the fallen */
+  --bone-dark: #9a9280;
+  --bone: #c4b8a0;
+  --bone-light: #e8dcc4;
+  --bone-bright: #f8f0e0;
+
+  /* THE BLOOD - Life and death made visible */
+  --blood-void: #1a0404;
+  --blood-shadow: #400808;
+  --blood-dark: #801010;
+  --blood: #cc2020;
+  --blood-bright: #ff4040;
+  --blood-glow: #ff8080;
+
+  /* THE GOLD - Fortune favors the bold */
+  --gold-void: #1a1000;
+  --gold-shadow: #402800;
+  --gold-dark: #806000;
+  --gold: #d0a020;
+  --gold-bright: #ffe040;
+  --gold-glow: #fff8c0;
+
+  /* THE MYSTIC - Our signature, our soul */
+  --mystic-void: #0a0418;
+  --mystic-shadow: #1a0840;
+  --mystic-dark: #401080;
+  --mystic: #7030b0;
+  --mystic-bright: #a060e0;
+  --mystic-glow: #d0a0ff;
+
+  /* THE VENOM - Hope renewed (health/healing) */
+  --venom-dark: #104010;
+  --venom: #20a020;
+  --venom-bright: #40ff40;
+
+  /* THE ICE - Shields against the dark */
+  --ice-dark: #103040;
+  --ice: #2090b0;
+  --ice-bright: #40d0f0;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     NUMBER COLORS - The sacred count (adjacent monsters)
+     ═══════════════════════════════════════════════════════════════════════ */
+  --num-1: #4090e0;  /* Blue */
+  --num-2: #40b040;  /* Green */
+  --num-3: #e04040;  /* Red */
+  --num-4: #a040d0;  /* Purple */
+  --num-5: #c02020;  /* Dark Red */
+  --num-6: #40b0b0;  /* Cyan */
+  --num-7: #606060;  /* Gray */
+  --num-8: #303030;  /* Dark Gray */
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TIMING - The rhythm of the dungeon
+     ═══════════════════════════════════════════════════════════════════════ */
+  --tick: 50ms;     /* Instant feedback */
+  --beat: 100ms;    /* Quick transitions */
+  --breath: 200ms;  /* Standard animations */
+  --pulse: 400ms;   /* Attention-getting */
+  --wave: 800ms;    /* Slow, ambient */
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SCALE - Pixel-perfect measurements
+     ═══════════════════════════════════════════════════════════════════════ */
+  --tile: 40px;
+  --gap: 2px;
+  --unit: 4px;
+}

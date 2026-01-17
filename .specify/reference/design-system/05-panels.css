@@ -1,0 +1,66 @@
+/**
+ * PANEL STYLES
+ * Source: ui-mockup-definitive.html
+ *
+ * Reusable panel component with animated corner accents.
+ * Used for game board container, vitals panel, runes panel.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE PANEL - Frames of stone and shadow
+   ═══════════════════════════════════════════════════════════════════════════ */
+.panel {
+  background: linear-gradient(135deg, var(--stone-800) 0%, var(--stone-850) 100%);
+  border: 3px solid var(--stone-600);
+  position: relative;
+  box-shadow:
+    inset 2px 2px 0 var(--stone-500),
+    inset -2px -2px 0 var(--abyss),
+    0 8px 0 var(--void),
+    0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CORNER ACCENTS - Animated gold brackets
+   ═══════════════════════════════════════════════════════════════════════════ */
+.corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transition: all var(--breath) ease;
+}
+
+.corner-tl {
+  top: -3px;
+  left: -3px;
+  border-top: 3px solid var(--gold-dark);
+  border-left: 3px solid var(--gold-dark);
+}
+
+.corner-tr {
+  top: -3px;
+  right: -3px;
+  border-top: 3px solid var(--gold-dark);
+  border-right: 3px solid var(--gold-dark);
+}
+
+.corner-bl {
+  bottom: -3px;
+  left: -3px;
+  border-bottom: 3px solid var(--gold-dark);
+  border-left: 3px solid var(--gold-dark);
+}
+
+.corner-br {
+  bottom: -3px;
+  right: -3px;
+  border-bottom: 3px solid var(--gold-dark);
+  border-right: 3px solid var(--gold-dark);
+}
+
+/* Expand corners on hover */
+.panel:hover .corner {
+  width: 12px;
+  height: 12px;
+  border-color: var(--gold);
+}

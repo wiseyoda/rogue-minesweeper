@@ -1,0 +1,76 @@
+{
+  "schema_version": "2.0",
+  "project": {
+    "id": "61256da3-a7c2-4eae-a0e0-2899d62684c7",
+    "name": "rogue-minesweeper",
+    "path": "/Users/ppatterson/dev/rogue-minesweeper",
+    "description": null,
+    "type": null,
+    "criticality": null,
+    "created_at": "2026-01-15T02:46:49Z",
+    "updated_at": "2026-01-15T02:46:49Z"
+  },
+  "config": {
+    "roadmap_path": "ROADMAP.md",
+    "memory_path": ".specify/memory/",
+    "specs_path": "specs/",
+    "scripts_path": "~/.claude/speckit-system/scripts/",
+    "templates_path": ".specify/templates/"
+  },
+  "interview": {
+    "status": "not_started",
+    "current_phase": 0,
+    "current_question": 0,
+    "decisions_count": 0,
+    "phases": {},
+    "started_at": null,
+    "completed_at": null
+  },
+  "orchestration": {
+    "phase": {
+      "number": "0020",
+      "name": "core-types",
+      "branch": "0020-core-types",
+      "status": "complete"
+    },
+    "step": {
+      "current": "verify",
+      "index": "8",
+      "status": "in_progress"
+    },
+    "progress": {
+      "tasks_completed": 0,
+      "tasks_total": 0,
+      "percentage": 0
+    },
+    "steps": {
+      "implement": {
+        "tasks_completed": 17,
+        "tasks_total": 17
+      }
+    }
+  },
+  "health": {
+    "status": "healthy",
+    "last_check": "2026-01-15T05:00:00Z",
+    "issues": []
+  },
+  "actions": {
+    "available": [],
+    "pending": [],
+    "history": [
+      {
+        "phase": "0010",
+        "name": "project-setup",
+        "status": "complete",
+        "merged_at": "2026-01-15T05:00:00Z",
+        "pr_number": 14
+      }
+    ]
+  },
+  "ui": {
+    "last_sync": null,
+    "notifications": []
+  },
+  "last_updated": "2026-01-15T04:44:19Z"
+}

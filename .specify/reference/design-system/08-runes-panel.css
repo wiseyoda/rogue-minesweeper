@@ -1,0 +1,163 @@
+/**
+ * RUNES PANEL
+ * Source: ui-mockup-definitive.html
+ *
+ * Active runes/buffs display with card-based layout.
+ * Power earned, not given.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNES CONTAINER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.runes-panel {
+  padding: 12px;
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNES HEADER
+   ═══════════════════════════════════════════════════════════════════════════ */
+.runes-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--stone-700);
+}
+
+.runes-diamond {
+  width: 6px;
+  height: 6px;
+  background: var(--mystic);
+  transform: rotate(45deg);
+}
+
+.runes-title {
+  font-size: 6px;
+  color: var(--stone-200);
+  letter-spacing: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNE LIST
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rune-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNE CARD - Individual rune/buff
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rune-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--stone-850);
+  border: 2px solid var(--stone-700);
+  cursor: pointer;
+  transition: all var(--beat);
+}
+
+.rune-card:hover {
+  background: var(--stone-800);
+  border-color: var(--stone-600);
+}
+
+/* Active rune state */
+.rune-card.active {
+  border-color: var(--mystic-dark);
+  box-shadow: 0 0 10px var(--mystic-shadow);
+}
+
+.rune-card.active:hover {
+  border-color: var(--mystic);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNE ICON
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rune-icon {
+  width: 28px;
+  height: 28px;
+  background: var(--abyss);
+  border: 2px solid var(--stone-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--beat);
+}
+
+.rune-card.active .rune-icon {
+  background: var(--mystic-shadow);
+  border-color: var(--mystic-dark);
+  box-shadow: 0 0 8px var(--mystic-shadow);
+}
+
+.rune-card:hover .rune-icon {
+  transform: scale(1.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RUNE INFO
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rune-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rune-name {
+  font-size: 7px;
+  color: var(--bone);
+  margin-bottom: 2px;
+  transition: color var(--beat);
+}
+
+.rune-card.active .rune-name {
+  color: var(--mystic-bright);
+}
+
+.rune-desc {
+  font-size: 5px;
+  color: var(--stone-300);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY RUNE SLOT
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rune-slot-empty {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border: 2px dashed var(--stone-700);
+  opacity: 0.5;
+  transition: all var(--beat);
+  cursor: pointer;
+}
+
+.rune-slot-empty:hover {
+  opacity: 0.8;
+  border-color: var(--stone-600);
+}
+
+.rune-slot-empty .rune-icon {
+  border-style: dashed;
+  background: transparent;
+}
+
+.rune-slot-empty .plus {
+  color: var(--stone-500);
+  font-size: 14px;
+}
+
+.rune-slot-empty .empty-text {
+  font-size: 6px;
+  color: var(--stone-500);
+  font-style: italic;
+}
