@@ -39,7 +39,51 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.1,
     },
     stackable: true,
-    cost: 50,
+    cost: 65,
+  },
+  {
+    id: 'danger-sense',
+    name: 'Danger Sense',
+    description: 'See danger numbers for tiles 2 squares away',
+    category: 'information',
+    rarity: 'common',
+    icon: '⚠️',
+    effect: {
+      trigger: 'passive',
+      description: 'Extended danger vision',
+    },
+    stackable: false,
+    cost: 30,
+  },
+  {
+    id: 'prophecy',
+    name: 'Prophecy',
+    description: '20% chance to highlight the safest tile',
+    category: 'information',
+    rarity: 'rare',
+    icon: '🌟',
+    effect: {
+      trigger: 'onFloorStart',
+      description: '20% chance to mark safest tile',
+      magnitude: 0.2,
+    },
+    stackable: false,
+    cost: 80,
+  },
+  {
+    id: 'omniscience',
+    name: 'Omniscience',
+    description: '15% chance per monster to reveal its location',
+    category: 'information',
+    rarity: 'rare',
+    icon: '👁️‍🗨️',
+    effect: {
+      trigger: 'onFloorStart',
+      description: '15% chance to mark each monster',
+      magnitude: 0.15,
+    },
+    stackable: false,
+    cost: 150,
   },
 
   // === DEFENSE RUNES ===
@@ -48,7 +92,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Stone Skin',
     description: 'First hit each floor reduced by 1',
     category: 'defense',
-    rarity: 'common',
+    rarity: 'uncommon',
     icon: '🪨',
     effect: {
       trigger: 'passive',
@@ -56,7 +100,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: true,
-    cost: 25,
+    cost: 40,
   },
   {
     id: 'lucky-charm',
@@ -80,7 +124,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Midas Touch',
     description: '+25% gold from all sources',
     category: 'economy',
-    rarity: 'common',
+    rarity: 'rare',
     icon: '✨',
     effect: {
       trigger: 'passive',
@@ -88,7 +132,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 0.25,
     },
     stackable: true,
-    cost: 35,
+    cost: 60,
   },
   {
     id: 'treasure-sense',
@@ -134,7 +178,7 @@ export const RUNES: RuneDefinition[] = [
       magnitude: 1,
     },
     stackable: false,
-    cost: 100,
+    cost: 125,
   },
 ];
 

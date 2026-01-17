@@ -64,6 +64,8 @@ export interface RuneModifiers {
   firstHitReduction: number;
   /** Whether auto-flagging is enabled */
   autoFlag: boolean;
+  /** Whether danger sense is active (shows extended danger numbers) */
+  dangerSenseActive: boolean;
 }
 
 /**
@@ -74,5 +76,6 @@ export function createDefaultRuneModifiers(): RuneModifiers {
     goldMultiplier: 1.0,
     firstHitReduction: 0,
     autoFlag: false,
+    dangerSenseActive: false,
   };
 }
