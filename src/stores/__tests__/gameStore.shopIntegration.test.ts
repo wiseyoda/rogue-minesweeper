@@ -146,9 +146,9 @@ describe('Shop Integration - Full Purchase Flow', () => {
     }
   });
 
-  it('should set revealTiles buff for next level on reveal-scroll purchase', () => {
+  it('should set revealScroll buff for next level on reveal-scroll purchase', () => {
     useGameStore.setState((state) => {
-      state.player.gold = 100;
+      state.player.gold = 200; // reveal-scroll costs 150
       state.run.phase = 'shopping';
     });
 
@@ -159,12 +159,11 @@ describe('Shop Integration - Full Purchase Flow', () => {
 
     if (revealScroll) {
       useGameStore.getState().purchaseItem('reveal-scroll');
-      expect(useGameStore.getState().player.nextLevelBuffs.revealTiles).toBe(5);
+      expect(useGameStore.getState().player.nextLevelBuffs.revealScroll).toBe(true);
 
-      // After starting next level, should be stored in pendingRevealTiles
+      // After starting next level, revealScroll buff should be cleared
       useGameStore.getState().startLevel(2);
-      expect(useGameStore.getState().run.pendingRevealTiles).toBe(5);
-      expect(useGameStore.getState().player.nextLevelBuffs.revealTiles).toBeUndefined();
+      expect(useGameStore.getState().player.nextLevelBuffs.revealScroll).toBeUndefined();
     }
   });
 

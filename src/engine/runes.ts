@@ -198,7 +198,7 @@ export function clearCellHighlight(grid: Grid, row: number, col: number): Grid {
  */
 export function applyAutoFlag(grid: Grid): { grid: Grid; cellsFlagged: number } {
   let cellsFlagged = 0;
-  let newGrid = grid.map((row) => row.map((cell) => ({ ...cell })));
+  const newGrid = grid.map((row) => row.map((cell) => ({ ...cell })));
 
   // Scan all revealed cells with numbers
   for (let r = 0; r < newGrid.length; r++) {
@@ -275,14 +275,21 @@ export function getExtendedDangerCount(grid: Grid, row: number, col: number): nu
  * Called at the beginning of each floor after grid initialization.
  * @param grid The current grid
  * @param equippedRunes Array of equipped rune IDs
- * @returns Object with updated grid and count of tiles revealed
+ * @returns Object with updated grid, tiles revealed, and shields granted
  */
 export function applyOnFloorStartRunes(
   grid: Grid,
   equippedRunes: string[]
-): { grid: Grid; tilesRevealed: number } {
+): { grid: Grid; tilesRevealed: number; shieldsGranted: number } {
   let currentGrid = grid;
   let tilesRevealed = 0;
+  let shieldsGranted = 0;
+
+  // Shield Bearer: +1 shield per rune at floor start (stackable)
+  const shieldBearerCount = countRune(equippedRunes, 'shield-bearer');
+  if (shieldBearerCount > 0) {
+    shieldsGranted = shieldBearerCount;
+  }
 
   // Scout's Eye: Reveal 2 random safe tiles per rune (stackable)
   const scoutEyeCount = countRune(equippedRunes, 'scout-eye');
@@ -342,7 +349,45 @@ export function applyOnFloorStartRunes(
     }
   }
 
-  return { grid: currentGrid, tilesRevealed };
+  return { grid: currentGrid, tilesRevealed, shieldsGranted };
+}
+
+/**
+ * Result of Undying rune check.
+ */
+export interface UndyingResult {
+  /** New reveal count after this reveal */
+  newRevealCount: number;
+  /** Whether a heal should be triggered */
+  shouldHeal: boolean;
+}
+
+/**
+ * Check Undying rune heal condition.
+ * Called after a tile is revealed to track the counter.
+ * @param equippedRunes Array of equipped rune IDs
+ * @param currentRevealCount Current undying reveal counter
+ * @param tilesRevealed Number of tiles revealed in this action
+ * @returns Undying result with new count and heal flag
+ */
+export function checkUndyingHeal(
+  equippedRunes: string[],
+  currentRevealCount: number,
+  tilesRevealed: number
+): UndyingResult {
+  const hasUndying = equippedRunes.includes('undying');
+
+  if (!hasUndying) {
+    return { newRevealCount: 0, shouldHeal: false };
+  }
+
+  const newCount = currentRevealCount + tilesRevealed;
+  const shouldHeal = newCount >= 50;
+
+  return {
+    newRevealCount: shouldHeal ? newCount - 50 : newCount,
+    shouldHeal,
+  };
 }
 
 /**
@@ -441,6 +486,11 @@ export function applyOnDamageRunes(
     }
   }
 
+  // Iron Skin: 25% damage reduction (minimum 1 damage, non-stackable)
+  if (finalDamage > 0 && equippedRunes.includes('iron-skin')) {
+    finalDamage = Math.max(1, Math.floor(finalDamage * 0.75));
+  }
+
   // Lucky Charm: 20% chance to negate damage completely (non-stackable)
   if (finalDamage > 0 && equippedRunes.includes('lucky-charm')) {
     if (Math.random() < 0.2) {
@@ -490,6 +540,11 @@ export function getPassiveRuneModifiers(equippedRunes: string[]): RuneModifiers 
       case 'danger-sense':
         // Extended danger vision (non-stackable)
         modifiers.dangerSenseActive = true;
+        break;
+
+      case 'hardy':
+        // +1 max lives (stackable)
+        modifiers.maxLivesBonus += 1;
         break;
     }
   }

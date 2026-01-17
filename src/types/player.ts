@@ -78,6 +78,8 @@ export interface PlayerState {
   equippedRunes: string[];
   /** Whether Second Chance rune has been used this run */
   secondChanceUsed: boolean;
+  /** Tracks reveals for Undying rune (persists across floors, resets on heal) */
+  undyingRevealCount: number;
 }
 
 /**
@@ -113,6 +115,7 @@ export function createInitialPlayerState(stats: PlayerStats): PlayerState {
     nextLevelBuffs: {},
     equippedRunes: [],
     secondChanceUsed: false,
+    undyingRevealCount: 0,
   };
 }
 
