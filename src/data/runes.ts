@@ -75,7 +75,7 @@ export const RUNES: RuneDefinition[] = [
     name: 'Omniscience',
     description: '15% chance per monster to reveal its location',
     category: 'information',
-    rarity: 'rare',
+    rarity: 'legendary',
     icon: '👁️‍🗨️',
     effect: {
       trigger: 'onFloorStart',
