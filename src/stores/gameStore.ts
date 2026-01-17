@@ -31,6 +31,7 @@ import {
   applyOnDamageRunes,
   applyOnFloorStartRunes,
   applyOnRevealRunes,
+  applyHighlightRunes,
   getPassiveRuneModifiers,
 } from '@/engine/runes';
 
@@ -182,6 +183,11 @@ export const useGameStore = create<GameStore>()(
           }
         }
 
+        // Apply highlight runes (Omniscience marks monsters, Prophecy marks safest tile)
+        if (player.equippedRunes.length > 0) {
+          currentGrid = applyHighlightRunes(currentGrid, player.equippedRunes);
+        }
+
         set((state) => {
           state.grid = currentGrid;
           state.gridConfig = floorConfig;
@@ -237,6 +243,11 @@ export const useGameStore = create<GameStore>()(
           const revealRuneResult = applyOnRevealRunes(currentGrid, player.equippedRunes, position);
           currentGrid = revealRuneResult.grid;
           totalRevealed += revealRuneResult.bonusTilesRevealed;
+        }
+
+        // Update highlight runes after reveal (Prophecy recalculates safest tile)
+        if (player.equippedRunes.length > 0) {
+          currentGrid = applyHighlightRunes(currentGrid, player.equippedRunes);
         }
 
         // Get gold find bonus from metaStore

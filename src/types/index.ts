@@ -12,7 +12,7 @@
  */
 
 // Cell types
-export type { Cell, CellPosition } from './cell';
+export type { Cell, CellPosition, HighlightType } from './cell';
 export { createEmptyCell } from './cell';
 
 // Grid types

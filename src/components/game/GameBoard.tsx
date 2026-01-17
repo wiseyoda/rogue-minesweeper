@@ -8,6 +8,7 @@ import type { Cell } from '@/types';
 import { useGameStore } from '@/stores';
 import { Tile } from './Tile';
 import { useLongPress } from '@/hooks/useLongPress';
+import { getPassiveRuneModifiers, getExtendedDangerCount } from '@/engine/runes';
 
 /**
  * Props for GameBoard component.
@@ -41,10 +42,18 @@ export function GameBoard({ className = '' }: GameBoardProps) {
   const gridConfig = useGameStore((state) => state.gridConfig);
   const gameOver = useGameStore((state) => state.gameOver);
   const runPhase = useGameStore((state) => state.run.phase);
+  const equippedRunes = useGameStore((state) => state.player.equippedRunes);
 
   // Get actions from store
   const revealCell = useGameStore((state) => state.revealCell);
   const toggleFlag = useGameStore((state) => state.toggleFlag);
+
+  // Check if danger sense is active
+  const runeModifiers = useMemo(
+    () => getPassiveRuneModifiers(equippedRunes),
+    [equippedRunes]
+  );
+  const dangerSenseActive = runeModifiers.dangerSenseActive;
 
   // Determine if interactions are disabled
   const isDisabled = gameOver || runPhase === 'gameOver';
@@ -89,18 +98,27 @@ export function GameBoard({ className = '' }: GameBoardProps) {
       onContextMenu={(e) => e.preventDefault()}
     >
       {displayGrid.map((row, rowIndex) =>
-        row.map((cell, colIndex) => (
-          <TileWithLongPress
-            key={`${rowIndex}-${colIndex}`}
-            cell={cell}
-            row={rowIndex}
-            col={colIndex}
-            disabled={isDisabled}
-            gameOver={gameOver}
-            onReveal={createClickHandler(rowIndex, colIndex)}
-            onFlag={createRightClickHandler(rowIndex, colIndex)}
-          />
-        ))
+        row.map((cell, colIndex) => {
+          // Calculate extended danger count if danger sense is active
+          const extendedCount =
+            dangerSenseActive && grid && cell.isRevealed && !cell.isMonster
+              ? getExtendedDangerCount(grid, rowIndex, colIndex)
+              : undefined;
+
+          return (
+            <TileWithLongPress
+              key={`${rowIndex}-${colIndex}`}
+              cell={cell}
+              row={rowIndex}
+              col={colIndex}
+              disabled={isDisabled}
+              gameOver={gameOver}
+              onReveal={createClickHandler(rowIndex, colIndex)}
+              onFlag={createRightClickHandler(rowIndex, colIndex)}
+              extendedDangerCount={extendedCount}
+            />
+          );
+        })
       )}
     </div>
   );
@@ -117,6 +135,7 @@ interface TileWithLongPressProps {
   gameOver: boolean;
   onReveal: () => void;
   onFlag: () => void;
+  extendedDangerCount?: number;
 }
 
 /**
@@ -128,6 +147,7 @@ function TileWithLongPress({
   gameOver,
   onReveal,
   onFlag,
+  extendedDangerCount,
 }: TileWithLongPressProps) {
   const longPressHandlers = useLongPress({
     onLongPress: onFlag,
@@ -144,6 +164,7 @@ function TileWithLongPress({
         onLongPress={onFlag}
         disabled={disabled}
         gameOver={gameOver}
+        extendedDangerCount={extendedDangerCount}
       />
     </div>
   );

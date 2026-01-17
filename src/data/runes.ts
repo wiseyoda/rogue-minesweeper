@@ -41,6 +41,48 @@ export const RUNES: RuneDefinition[] = [
     stackable: true,
     cost: 50,
   },
+  {
+    id: 'danger-sense',
+    name: 'Danger Sense',
+    description: 'See danger numbers for tiles 2 squares away',
+    category: 'information',
+    rarity: 'common',
+    icon: '⚠️',
+    effect: {
+      trigger: 'passive',
+      description: 'Extended danger vision',
+    },
+    stackable: false,
+    cost: 30,
+  },
+  {
+    id: 'prophecy',
+    name: 'Prophecy',
+    description: 'Highlights the safest tile to click',
+    category: 'information',
+    rarity: 'rare',
+    icon: '🌟',
+    effect: {
+      trigger: 'onFloorStart',
+      description: 'Mark safest tile',
+    },
+    stackable: false,
+    cost: 80,
+  },
+  {
+    id: 'omniscience',
+    name: 'Omniscience',
+    description: 'See all monster locations (not revealed)',
+    category: 'information',
+    rarity: 'legendary',
+    icon: '👁️‍🗨️',
+    effect: {
+      trigger: 'onFloorStart',
+      description: 'Reveal all monsters',
+    },
+    stackable: false,
+    cost: 150,
+  },
 
   // === DEFENSE RUNES ===
   {

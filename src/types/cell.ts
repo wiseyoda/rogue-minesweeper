@@ -4,6 +4,11 @@
  */
 
 /**
+ * Types of visual highlights that can be applied to cells by runes.
+ */
+export type HighlightType = 'prophecy' | 'omniscience' | null;
+
+/**
  * A single cell in the dungeon grid.
  * Represents the state of one tile that the player can interact with.
  */
@@ -20,6 +25,8 @@ export interface Cell {
   isExit: boolean;
   /** Number of adjacent cells containing monsters (0-8) */
   adjacentMonsters: number;
+  /** Optional visual highlight from rune effects */
+  highlightType?: HighlightType;
 }
 
 /**
