@@ -1,11 +1,11 @@
+/* Google Font - Press Start 2P (pixel art) - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 @import 'tailwindcss';
 
 /* Design System Imports */
 @import './styles/tokens.css';
 @import './styles/animations.css';
-
-/* Google Font - Press Start 2P (pixel art) */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 /* ═══════════════════════════════════════════════════════════════════════════
    RESET - Clean slate

@@ -1,0 +1,183 @@
+{
+  "config": {
+    "runs": 1000,
+    "startingUpgrades": {
+      "vitality": 2,
+      "fortune": 0,
+      "preparation": 0,
+      "resilience": 1,
+      "firstClickSafety": true
+    },
+    "startingFloor": 1,
+    "seed": null,
+    "strategy": {
+      "itemWeights": {
+        "heal-potion": 1,
+        "max-hp-up": 1.2,
+        "shield-orb": 1,
+        "gold-magnet": 1.5,
+        "reveal-scroll": 0.8
+      },
+      "lowHpThreshold": 0.5,
+      "lowHpHealMultiplier": 5,
+      "noShieldMultiplier": 3,
+      "goldReserve": 20,
+      "upgradePriority": [
+        "vitality",
+        "resilience",
+        "fortune",
+        "firstClickSafety",
+        "preparation"
+      ]
+    },
+    "mode": "single",
+    "sessions": 100,
+    "runsPerSession": 20
+  },
+  "stats": {
+    "runCount": 1000,
+    "floorReached": {
+      "mean": 2.121,
+      "median": 2,
+      "min": 1,
+      "max": 5,
+      "p10": 2,
+      "p25": 2,
+      "p75": 2,
+      "p90": 3,
+      "stdDev": 0.5553008193763064
+    },
+    "deathsByFloor": {
+      "1": 87,
+      "2": 718,
+      "3": 183,
+      "4": 11,
+      "5": 1
+    },
+    "goldPerRun": {
+      "mean": 183.062,
+      "median": 166,
+      "min": 63,
+      "max": 734,
+      "stdDev": 79.36390965671985
+    },
+    "goldPerFloor": {
+      "1": {
+        "mean": 82.924,
+        "samples": 1000
+      },
+      "2": {
+        "mean": 87.11938663745893,
+        "samples": 913
+      },
+      "3": {
+        "mean": 95.95897435897436,
+        "samples": 195
+      },
+      "4": {
+        "mean": 137.83333333333334,
+        "samples": 12
+      },
+      "5": {
+        "mean": 232,
+        "samples": 1
+      }
+    },
+    "itemPurchaseRate": {
+      "shield-orb": 0.629,
+      "heal-potion": 0.759,
+      "max-hp-up": 0.109,
+      "reveal-scroll": 0.21,
+      "gold-magnet": 0.159
+    },
+    "itemPurchaseByFloor": {
+      "shield-orb": {
+        "1": 487,
+        "2": 130,
+        "3": 12
+      },
+      "heal-potion": {
+        "1": 596,
+        "2": 151,
+        "3": 11,
+        "4": 1
+      },
+      "max-hp-up": {
+        "1": 62,
+        "2": 41,
+        "3": 5,
+        "4": 1
+      },
+      "reveal-scroll": {
+        "1": 140,
+        "2": 64,
+        "3": 6
+      },
+      "gold-magnet": {
+        "1": 118,
+        "2": 37,
+        "3": 3,
+        "4": 1
+      }
+    },
+    "averageDamageBlocked": 2.629,
+    "averageDamageTaken": 5.77,
+    "survivalRateByFloor": {
+      "1": 1,
+      "2": 0.913,
+      "3": 0.195,
+      "4": 0.012,
+      "5": 0.001
+    }
+  },
+  "warnings": [
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Difficulty spike detected: Floor 3 has 71.8% survival drop from Floor 2",
+      "data": {
+        "floor": "3",
+        "prevFloor": "2",
+        "dropRate": 0.718
+      }
+    },
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Difficulty spike detected: Floor 4 has 18.3% survival drop from Floor 3",
+      "data": {
+        "floor": "4",
+        "prevFloor": "3",
+        "dropRate": 0.183
+      }
+    },
+    {
+      "severity": "critical",
+      "category": "progression",
+      "message": "Floor 4 has <10% survival rate - may be too difficult",
+      "data": {
+        "floor": 4,
+        "survivalRate": 0.012
+      }
+    },
+    {
+      "severity": "critical",
+      "category": "progression",
+      "message": "Floor 5 has <10% survival rate - may be too difficult",
+      "data": {
+        "floor": 5,
+        "survivalRate": 0.001
+      }
+    },
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Average run ends at floor 2.1 - game may be too difficult",
+      "data": {
+        "averageFloor": 2.121
+      }
+    }
+  ],
+  "timestamp": "2026-01-16T17:13:47.794Z",
+  "durationMs": 14
+}

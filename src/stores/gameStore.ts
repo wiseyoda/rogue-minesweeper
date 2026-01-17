@@ -22,9 +22,10 @@ import {
 import {
   generateShopItems,
   getShopItem,
-  REROLL_COST,
+  getRerollCost,
 } from '@/data/shopItems';
 import { useMetaStore } from './metaStore';
+import { findCertainMoves } from '@/engine/solver';
 
 /**
  * Available buffs for Preparation upgrade random selection.
@@ -132,6 +133,7 @@ export const useGameStore = create<GameStore>()(
           // Clear shop state
           state.run.shopItems = [];
           state.run.purchasedIds = [];
+          state.run.rerollCount = 0;
           state.run.showShop = false;
           // Only reset total damage on new run, not new level
           if (isNewRun) {
@@ -139,6 +141,9 @@ export const useGameStore = create<GameStore>()(
           }
           // Clear activeBuffs from previous level (single-level buffs expire)
           state.player.activeBuffs = {};
+          // Reset shields to starting amount (shields are temporary, don't carry over)
+          const startingShields = useMetaStore.getState().playerStats.startingShields;
+          state.player.shields = startingShields;
           // Apply nextLevelBuffs to activeBuffs (T030)
           if (nextBuffs.goldMagnet) {
             state.player.activeBuffs.goldMagnet = true;
@@ -174,9 +179,11 @@ export const useGameStore = create<GameStore>()(
             // Find all unrevealed safe (non-monster) tiles
             const unrevealedSafe: Array<{ row: number; col: number }> = [];
             for (let r = 0; r < currentGrid.length; r++) {
-              for (let c = 0; c < currentGrid[r].length; c++) {
-                const cell = currentGrid[r][c];
-                if (!cell.isRevealed && !cell.isMonster) {
+              const row = currentGrid[r];
+              if (!row) continue;
+              for (let c = 0; c < row.length; c++) {
+                const cell = row[c];
+                if (cell && !cell.isRevealed && !cell.isMonster) {
                   unrevealedSafe.push({ row: r, col: c });
                 }
               }
@@ -188,6 +195,7 @@ export const useGameStore = create<GameStore>()(
               // Pick a random unrevealed safe tile
               const randomIndex = Math.floor(Math.random() * unrevealedSafe.length);
               const tilePos = unrevealedSafe[randomIndex];
+              if (!tilePos) break;
               unrevealedSafe.splice(randomIndex, 1);
 
               // Reveal it
@@ -253,7 +261,20 @@ export const useGameStore = create<GameStore>()(
 
         // Handle monster hit
         if (result.hitMonster) {
-          get().takeDamage(1);
+          // Check first click safety upgrade
+          const { firstClickSafety } = useMetaStore.getState().playerStats;
+          const { firstMonsterHit } = get().run;
+
+          if (firstClickSafety && !firstMonsterHit) {
+            // First click safety triggers! Don't take damage, monster is revealed
+            set((state) => {
+              state.run.firstMonsterHit = true;
+            });
+            // Note: We don't return here, still check win condition below
+          } else {
+            // Normal damage
+            get().takeDamage(1);
+          }
         }
 
         // Handle win condition (only if not game over)
@@ -375,15 +396,17 @@ export const useGameStore = create<GameStore>()(
       },
 
       rerollShop: () => {
-        const { player } = get();
+        const { player, run } = get();
+        const rerollCost = getRerollCost(run.rerollCount);
 
         // Check if can afford reroll
-        if (player.gold < REROLL_COST) return false;
+        if (player.gold < rerollCost) return false;
 
-        // Deduct cost and regenerate
+        // Deduct cost, increment counter, and regenerate
         const newItems = generateShopItems();
         set((state) => {
-          state.player.gold -= REROLL_COST;
+          state.player.gold -= rerollCost;
+          state.run.rerollCount += 1;
           state.run.shopItems = newItems;
           // Keep purchasedIds - can't re-buy previously purchased items
         });
@@ -395,6 +418,105 @@ export const useGameStore = create<GameStore>()(
         set((state) => {
           state.run.showShop = show;
         });
+      },
+
+      usePeekScroll: () => {
+        const { grid, run, player } = get();
+
+        // Validate: must have scrolls, be playing, and have a grid
+        if (player.peekScrolls < 1) return false;
+        if (run.phase !== 'playing') return false;
+        if (!grid) return false;
+
+        // Find all unrevealed, non-flagged, non-monster (safe) tiles
+        const safeTiles: Array<{ row: number; col: number }> = [];
+        for (let r = 0; r < grid.length; r++) {
+          const gridRow = grid[r];
+          if (!gridRow) continue;
+          for (let c = 0; c < gridRow.length; c++) {
+            const cell = gridRow[c];
+            if (cell && !cell.isRevealed && !cell.isFlagged && !cell.isMonster) {
+              safeTiles.push({ row: r, col: c });
+            }
+          }
+        }
+
+        // No safe tiles to peek
+        if (safeTiles.length === 0) return false;
+
+        // Pick a random safe tile
+        const randomIndex = Math.floor(Math.random() * safeTiles.length);
+        const target = safeTiles[randomIndex];
+        if (!target) return false;
+
+        // Reveal just this one tile (mark as revealed, don't cascade)
+        set((state) => {
+          state.player.peekScrolls -= 1;
+          const cell = state.grid?.[target.row]?.[target.col];
+          if (cell) {
+            cell.isRevealed = true;
+            state.run.revealedCount += 1;
+            // Award gold for revealed tile (with goldMagnet/goldFindBonus)
+            const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
+            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
+            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus);
+          }
+        });
+
+        // Check win condition
+        const currentState = get();
+        const { gridConfig } = currentState;
+        const totalCells = gridConfig.rows * gridConfig.cols;
+        const safeTotal = totalCells - gridConfig.monsterCount;
+        if (currentState.run.revealedCount >= safeTotal && !currentState.gameOver) {
+          get().setPhase('shopping');
+        }
+
+        return true;
+      },
+
+      autoSolveStep: () => {
+        const initialState = get();
+        if (!initialState.grid || initialState.run.phase !== 'playing' || initialState.gameOver) {
+          return { revealed: 0, flagged: 0, stuck: true };
+        }
+
+        const result = findCertainMoves(initialState.grid);
+
+        // Flag all certain monsters (get fresh state each time to avoid stale references)
+        for (const pos of result.monsterPositions) {
+          const currentGrid = get().grid;
+          const cell = currentGrid?.[pos.row]?.[pos.col];
+          if (cell && !cell.isFlagged && !cell.isRevealed) {
+            get().toggleFlag(pos.row, pos.col);
+          }
+        }
+
+        // Reveal all certain safe cells (get fresh state each time)
+        for (const pos of result.safePositions) {
+          const currentGrid = get().grid;
+          const cell = currentGrid?.[pos.row]?.[pos.col];
+          if (cell && !cell.isRevealed && !cell.isFlagged) {
+            get().revealCell(pos.row, pos.col);
+          }
+        }
+
+        // Check win condition after all reveals (in case flood fill already revealed final cells)
+        const currentState = get();
+        if (!currentState.gameOver && currentState.run.phase === 'playing') {
+          const { gridConfig } = currentState;
+          const totalCells = gridConfig.rows * gridConfig.cols;
+          const safeTotal = totalCells - gridConfig.monsterCount;
+          if (currentState.run.revealedCount >= safeTotal) {
+            get().setPhase('shopping');
+          }
+        }
+
+        return {
+          revealed: result.safePositions.length,
+          flagged: result.monsterPositions.length,
+          stuck: result.stuck,
+        };
       },
     })),
     { name: 'GameStore' }

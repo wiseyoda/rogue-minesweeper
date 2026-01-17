@@ -7,14 +7,28 @@ import type { ShopItem, ItemRarity } from '@/types/item';
 import { RARITY_WEIGHTS } from '@/types/item';
 
 /**
- * Reroll cost in gold.
+ * Base reroll cost in gold.
  */
-export const REROLL_COST = 10;
+export const REROLL_BASE_COST = 50;
+
+/**
+ * Reroll cost increment per use (Balatro-style escalation).
+ */
+export const REROLL_INCREMENT = 25;
+
+/**
+ * Calculate reroll cost based on number of previous rerolls this shop visit.
+ * @param rerollCount Number of times shop has been rerolled this visit
+ * @returns Cost for the next reroll
+ */
+export function getRerollCost(rerollCount: number): number {
+  return REROLL_BASE_COST + rerollCount * REROLL_INCREMENT;
+}
 
 /**
  * Number of items to generate for the shop.
  */
-export const SHOP_ITEM_COUNT = 4;
+export const SHOP_ITEM_COUNT = 2;
 
 /**
  * All available shop items.
@@ -45,7 +59,7 @@ export const SHOP_ITEMS: ShopItem[] = [
   {
     id: 'shield-orb',
     name: 'Shield Orb',
-    description: '+1 Shield',
+    description: '+1 Shield (this floor only)',
     cost: 40,
     rarity: 'common',
     apply: (state) => {
@@ -57,20 +71,19 @@ export const SHOP_ITEMS: ShopItem[] = [
     name: 'Gold Magnet',
     description: '2x gold next floor',
     cost: 60,
-    rarity: 'uncommon',
+    rarity: 'rare',
     apply: (state) => {
       state.nextLevelBuffs.goldMagnet = true;
     },
   },
   {
-    id: 'reveal-scroll',
-    name: 'Reveal Scroll',
-    description: 'Reveal 5 safe tiles',
+    id: 'peek-scroll',
+    name: 'Peek Scroll',
+    description: '+1 Peek Scroll (peek at 1 tile)',
     cost: 50,
     rarity: 'uncommon',
     apply: (state) => {
-      state.nextLevelBuffs.revealTiles =
-        (state.nextLevelBuffs.revealTiles ?? 0) + 5;
+      state.peekScrolls += 1;
     },
   },
 ];
@@ -116,7 +129,7 @@ function selectWeightedItem(items: ShopItem[]): ShopItem {
   }
 
   // Fallback to first item (guaranteed to exist after safety check above)
-  return items[0];
+  return items[0] as ShopItem;
 }
 
 /**

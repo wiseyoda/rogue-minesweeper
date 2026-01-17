@@ -7,7 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FloorShop } from '../FloorShop';
 import type { ShopItem } from '@/types/item';
-import { REROLL_COST } from '@/data/shopItems';
+import { getRerollCost, REROLL_BASE_COST, REROLL_INCREMENT } from '@/data/shopItems';
 
 describe('FloorShop', () => {
   const mockItems: ShopItem[] = [
@@ -33,6 +33,7 @@ describe('FloorShop', () => {
     items: mockItems,
     gold: 100,
     purchasedIds: [] as string[],
+    rerollCount: 0,
     onPurchase: vi.fn(),
     onReroll: vi.fn(),
     onContinue: vi.fn(),
@@ -45,7 +46,8 @@ describe('FloorShop', () => {
 
   it('displays current gold amount', () => {
     render(<FloorShop {...defaultProps} gold={250} />);
-    expect(screen.getByText('Gold: 250')).toBeInTheDocument();
+    // Gold is displayed as just the number with a Coin icon
+    expect(screen.getByText('250')).toBeInTheDocument();
   });
 
   it('renders all shop items', () => {
@@ -57,7 +59,13 @@ describe('FloorShop', () => {
 
   it('renders reroll button with cost', () => {
     render(<FloorShop {...defaultProps} />);
-    expect(screen.getByText(`Reroll (${REROLL_COST}g)`)).toBeInTheDocument();
+    expect(screen.getByText(`Reroll (${REROLL_BASE_COST}g)`)).toBeInTheDocument();
+  });
+
+  it('shows escalating reroll cost after rerolls', () => {
+    render(<FloorShop {...defaultProps} rerollCount={2} />);
+    const expectedCost = REROLL_BASE_COST + 2 * REROLL_INCREMENT;
+    expect(screen.getByText(`Reroll (${expectedCost}g)`)).toBeInTheDocument();
   });
 
   it('renders continue button', () => {
@@ -79,7 +87,7 @@ describe('FloorShop', () => {
     const onReroll = vi.fn();
     render(<FloorShop {...defaultProps} onReroll={onReroll} />);
 
-    fireEvent.click(screen.getByText(`Reroll (${REROLL_COST}g)`));
+    fireEvent.click(screen.getByText(`Reroll (${REROLL_BASE_COST}g)`));
 
     expect(onReroll).toHaveBeenCalledTimes(1);
   });
@@ -94,18 +102,27 @@ describe('FloorShop', () => {
   });
 
   it('disables reroll button when cannot afford', () => {
-    render(<FloorShop {...defaultProps} gold={5} />);
+    render(<FloorShop {...defaultProps} gold={25} />);
 
-    // Reroll costs REROLL_COST (10g), so with 5g it should be disabled
-    const rerollButton = screen.getByText(`Reroll (${REROLL_COST}g)`).closest('button');
+    // Reroll costs REROLL_BASE_COST (50g), so with 25g it should be disabled
+    const rerollButton = screen.getByText(`Reroll (${REROLL_BASE_COST}g)`).closest('button');
     expect(rerollButton).toBeDisabled();
   });
 
   it('enables reroll button when can afford', () => {
     render(<FloorShop {...defaultProps} gold={100} />);
 
-    const rerollButton = screen.getByText(`Reroll (${REROLL_COST}g)`).closest('button');
+    const rerollButton = screen.getByText(`Reroll (${REROLL_BASE_COST}g)`).closest('button');
     expect(rerollButton).not.toBeDisabled();
+  });
+
+  it('disables reroll when escalated cost exceeds gold', () => {
+    // After 2 rerolls, cost is 50 + 2*25 = 100g
+    render(<FloorShop {...defaultProps} gold={75} rerollCount={2} />);
+
+    const expectedCost = REROLL_BASE_COST + 2 * REROLL_INCREMENT;
+    const rerollButton = screen.getByText(`Reroll (${expectedCost}g)`).closest('button');
+    expect(rerollButton).toBeDisabled();
   });
 
   it('marks purchased items correctly', () => {

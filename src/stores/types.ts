@@ -65,6 +65,10 @@ export interface GameStoreActions {
   rerollShop: () => boolean;
   /** Toggle shop modal visibility */
   setShowShop: (show: boolean) => void;
+  /** Use a peek scroll to reveal one random safe tile (returns true if successful) */
+  usePeekScroll: () => boolean;
+  /** Auto-solve one step using mathematical deduction (dev tool) */
+  autoSolveStep: () => { revealed: number; flagged: number; stuck: boolean };
 }
 
 /**

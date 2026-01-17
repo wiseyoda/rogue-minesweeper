@@ -37,3 +37,6 @@ export {
   type FloorConfig,
   type MonsterDamageConfig,
 } from './difficulty';
+
+// Solver (dev tools)
+export { findCertainMoves, type SolverResult } from './solver';

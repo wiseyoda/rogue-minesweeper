@@ -3,7 +3,7 @@
  * @module components/shop/ShopItemCard
  */
 
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import type { ShopItem, ItemRarity } from '@/types/item';
 import { Button } from '../ui';
 
@@ -13,6 +13,8 @@ import { Button } from '../ui';
 export interface ShopItemCardProps {
   /** The shop item to display */
   item: ShopItem;
+  /** Icon component to display (optional) */
+  icon?: ReactNode;
   /** Whether player can afford this item */
   canAfford: boolean;
   /** Whether this item has been purchased */
@@ -57,10 +59,11 @@ function getRarityGlow(rarity: ItemRarity = 'common'): string {
 
 /**
  * Individual item card in the floor shop.
- * Shows item name, description, cost, and purchase button.
+ * Shows item icon, name, description, cost, and purchase button.
  */
 export const ShopItemCard = memo(function ShopItemCard({
   item,
+  icon,
   canAfford,
   isPurchased,
   onPurchase,
@@ -76,14 +79,51 @@ export const ShopItemCard = memo(function ShopItemCard({
           ? 'var(--stone-900)'
           : 'linear-gradient(180deg, var(--stone-800) 0%, var(--stone-850) 100%)',
         border: `2px solid ${isPurchased ? 'var(--stone-700)' : borderColor}`,
-        padding: '12px',
-        minWidth: '140px',
+        padding: '16px',
+        width: '200px',
+        height: '180px',
         opacity: isPurchased ? 0.5 : 1,
         boxShadow: !isDisabled
           ? `0 0 12px ${getRarityGlow(item.rarity)}`
           : 'none',
+        transform: 'scale(1)',
+        cursor: isDisabled ? 'default' : 'pointer',
+      }}
+      onMouseEnter={(e) => {
+        if (!isDisabled) {
+          e.currentTarget.style.transform = 'scale(1.02)';
+          e.currentTarget.style.boxShadow = `0 0 20px ${getRarityGlow(item.rarity)}`;
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.boxShadow = !isDisabled
+          ? `0 0 12px ${getRarityGlow(item.rarity)}`
+          : 'none';
+      }}
+      onMouseDown={(e) => {
+        if (!isDisabled) {
+          e.currentTarget.style.transform = 'scale(0.98)';
+        }
+      }}
+      onMouseUp={(e) => {
+        if (!isDisabled) {
+          e.currentTarget.style.transform = 'scale(1.02)';
+        }
       }}
     >
+      {/* Icon - fixed height area for alignment */}
+      <div
+        className="flex justify-center items-center"
+        style={{
+          height: '32px',
+          marginBottom: '8px',
+          opacity: isPurchased ? 0.5 : 1,
+        }}
+      >
+        {icon}
+      </div>
+
       {/* Item Name */}
       <h3
         className="text-center mb-2"
@@ -96,13 +136,14 @@ export const ShopItemCard = memo(function ShopItemCard({
         {item.name}
       </h3>
 
-      {/* Description */}
+      {/* Description - fixed height for alignment */}
       <p
-        className="text-center mb-3 flex-1"
+        className="text-center"
         style={{
           fontSize: '9px',
           color: isPurchased ? 'var(--stone-600)' : 'var(--stone-400)',
           lineHeight: 1.4,
+          minHeight: '32px',
         }}
       >
         {item.description}
@@ -115,6 +156,7 @@ export const ShopItemCard = memo(function ShopItemCard({
           style={{
             fontSize: '9px',
             color: 'var(--stone-500)',
+            marginTop: 'auto',
           }}
         >
           Purchased
@@ -125,6 +167,7 @@ export const ShopItemCard = memo(function ShopItemCard({
           onClick={onPurchase}
           disabled={isDisabled}
           className="w-full"
+          style={{ marginTop: 'auto' }}
         >
           <span
             style={{

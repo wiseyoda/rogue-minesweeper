@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../gameStore';
-import { REROLL_COST, SHOP_ITEM_COUNT } from '@/data/shopItems';
+import { REROLL_BASE_COST, SHOP_ITEM_COUNT, getRerollCost } from '@/data/shopItems';
 
 describe('gameStore shop', () => {
   beforeEach(() => {
@@ -122,10 +122,10 @@ describe('gameStore shop', () => {
       );
     });
 
-    it('should apply reveal-scroll buff', () => {
-      useGameStore.getState().purchaseItem('reveal-scroll');
+    it('should apply peek-scroll to inventory', () => {
+      useGameStore.getState().purchaseItem('peek-scroll');
 
-      expect(useGameStore.getState().player.nextLevelBuffs.revealTiles).toBe(5);
+      expect(useGameStore.getState().player.peekScrolls).toBe(1);
     });
   });
 
@@ -137,12 +137,11 @@ describe('gameStore shop', () => {
 
     it('should deduct reroll cost', () => {
       const goldBefore = useGameStore.getState().player.gold;
+      const rerollCost = getRerollCost(0); // First reroll
 
       useGameStore.getState().rerollShop();
 
-      expect(useGameStore.getState().player.gold).toBe(
-        goldBefore - REROLL_COST
-      );
+      expect(useGameStore.getState().player.gold).toBe(goldBefore - rerollCost);
     });
 
     it('should generate new items', () => {
@@ -162,12 +161,26 @@ describe('gameStore shop', () => {
 
     it('should return false if not enough gold', () => {
       useGameStore.setState((state) => {
-        state.player.gold = REROLL_COST - 1;
+        state.player.gold = REROLL_BASE_COST - 1;
       });
 
       const result = useGameStore.getState().rerollShop();
 
       expect(result).toBe(false);
+    });
+
+    it('should track escalating reroll cost', () => {
+      useGameStore.getState().addGold(200); // Ensure enough for multiple rerolls
+
+      const goldBefore = useGameStore.getState().player.gold;
+      useGameStore.getState().rerollShop(); // First reroll (50g)
+      expect(useGameStore.getState().player.gold).toBe(goldBefore - 50);
+      expect(useGameStore.getState().run.rerollCount).toBe(1);
+
+      const goldAfterFirst = useGameStore.getState().player.gold;
+      useGameStore.getState().rerollShop(); // Second reroll (75g)
+      expect(useGameStore.getState().player.gold).toBe(goldAfterFirst - 75);
+      expect(useGameStore.getState().run.rerollCount).toBe(2);
     });
 
     it('should keep purchasedIds after reroll', () => {
@@ -191,6 +204,72 @@ describe('gameStore shop', () => {
       useGameStore.getState().setShowShop(false);
 
       expect(useGameStore.getState().run.showShop).toBe(false);
+    });
+  });
+
+  describe('usePeekScroll', () => {
+    beforeEach(() => {
+      // Initialize grid first by starting level and revealing a cell
+      useGameStore.getState().startLevel(1);
+      useGameStore.getState().revealCell(0, 0);
+    });
+
+    it('should return false if no scrolls', () => {
+      expect(useGameStore.getState().player.peekScrolls).toBe(0);
+      const result = useGameStore.getState().usePeekScroll();
+      expect(result).toBe(false);
+    });
+
+    it('should return false if not in playing phase', () => {
+      useGameStore.setState((state) => {
+        state.player.peekScrolls = 1;
+        state.run.phase = 'shopping';
+      });
+
+      const result = useGameStore.getState().usePeekScroll();
+      expect(result).toBe(false);
+      expect(useGameStore.getState().player.peekScrolls).toBe(1); // Not consumed
+    });
+
+    it('should decrement peekScrolls on use', () => {
+      useGameStore.setState((state) => {
+        state.player.peekScrolls = 3;
+      });
+
+      useGameStore.getState().usePeekScroll();
+
+      expect(useGameStore.getState().player.peekScrolls).toBe(2);
+    });
+
+    it('should increase revealedCount by 1', () => {
+      useGameStore.setState((state) => {
+        state.player.peekScrolls = 1;
+      });
+
+      const revealedBefore = useGameStore.getState().run.revealedCount;
+      useGameStore.getState().usePeekScroll();
+
+      expect(useGameStore.getState().run.revealedCount).toBe(revealedBefore + 1);
+    });
+
+    it('should award gold for revealed tile', () => {
+      useGameStore.setState((state) => {
+        state.player.peekScrolls = 1;
+        state.player.gold = 100;
+      });
+
+      useGameStore.getState().usePeekScroll();
+
+      expect(useGameStore.getState().player.gold).toBe(101); // +1 gold
+    });
+
+    it('should return true on successful use', () => {
+      useGameStore.setState((state) => {
+        state.player.peekScrolls = 1;
+      });
+
+      const result = useGameStore.getState().usePeekScroll();
+      expect(result).toBe(true);
     });
   });
 

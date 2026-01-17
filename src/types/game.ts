@@ -55,10 +55,14 @@ export interface RunState {
   shopItems: ShopItem[];
   /** IDs of items purchased this shop visit */
   purchasedIds: string[];
+  /** Number of times shop has been rerolled this visit */
+  rerollCount: number;
   /** Whether the shop modal is currently shown */
   showShop: boolean;
   /** Number of safe tiles to reveal at level start (from Reveal Scroll buff) */
   pendingRevealTiles?: number;
+  /** True if first monster hit hasn't been used yet (for firstClickSafety upgrade) */
+  firstMonsterHit: boolean;
 }
 
 /**
@@ -92,7 +96,9 @@ export function createInitialRunState(level: number = 1): RunState {
     totalDamageTaken: 0,
     shopItems: [],
     purchasedIds: [],
+    rerollCount: 0,
     showShop: false,
+    firstMonsterHit: false,
   };
 }
 
