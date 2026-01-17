@@ -3,50 +3,48 @@
 > Decisions captured during `/speckit.init` interview. These feed into memory document generation.
 
 ## Decision Index
-
-| ID   | Phase | Title                    | Confidence | Memory Doc Impact               |
-| ---- | ----- | ------------------------ | ---------- | ------------------------------- |
-| D-1  | 0     | Project Goal             | High       | constitution.md                 |
-| D-2  | 0     | Project Type             | Medium     | tech-stack.md                   |
-| D-3  | 0     | Target Audience          | High       | constitution.md                 |
-| D-4  | 0     | Team Composition         | High       | constitution.md                 |
-| D-5  | 0     | Iteration Style          | High       | constitution.md                 |
-| D-6  | 0     | Platform                 | High       | tech-stack.md                   |
-| D-7  | 0     | Framework                | High       | tech-stack.md                   |
-| D-8  | 0     | Visual Style             | High       | design-system.md                |
-| D-9  | 1     | Core Hook                | High       | constitution.md                 |
-| D-10 | 1     | Run Length               | High       | constitution.md                 |
-| D-11 | 1     | Core Mechanic            | High       | constitution.md                 |
-| D-12 | 1     | Meta Progression         | High       | constitution.md                 |
-| D-13 | 3     | Power-up System          | High       | constitution.md                 |
-| D-14 | 3     | Death Mechanic           | High       | constitution.md                 |
-| D-15 | 3     | Class System             | High       | constitution.md                 |
-| D-16 | 3     | Economy                  | High       | constitution.md                 |
-| D-17 | 5     | Persistence              | High       | tech-stack.md                   |
-| D-18 | 5     | Rendering                | High       | tech-stack.md                   |
-| D-19 | 5     | State Management         | High       | tech-stack.md                   |
-| D-20 | 5     | Deployment               | High       | tech-stack.md                   |
-| D-21 | 7     | Audio Strategy           | High       | design-system.md                |
-| D-22 | 7     | Input Methods            | High       | ux-patterns.md                  |
-| D-23 | 7     | Onboarding               | High       | ux-patterns.md                  |
-| D-24 | 7     | MVP Scope                | High       | constitution.md                 |
-| D-25 | Dream | Information as Power     | High       | constitution.md, game-design.md |
-| D-26 | Dream | Living Dungeon Narrative | High       | constitution.md                 |
-| D-27 | Dream | AI Dungeon Master        | High       | constitution.md, tech-stack.md  |
-| D-28 | Dream | DM Personality           | High       | game-design.md                  |
-| D-29 | Dream | Rune Synergy System      | High       | game-design.md                  |
-| D-30 | Dream | Synergy Discovery        | High       | game-design.md                  |
-| D-31 | Dream | Moving Monsters          | High       | game-design.md                  |
-| D-32 | Dream | Monster Stats            | High       | game-design.md                  |
-| D-33 | Dream | Passive-Only Abilities   | High       | constitution.md                 |
-| D-34 | Dream | Resource Tension         | High       | constitution.md                 |
-| D-35 | Dream | Endless Mastery Endgame  | High       | constitution.md                 |
-| D-36 | Dream | Seed Sharing             | High       | tech-stack.md                   |
-| D-37 | Dream | Elevator Pitch           | High       | constitution.md                 |
-| D-38 | Dream | Phased Development       | High       | constitution.md                 |
+| ID | Phase | Title | Confidence | Memory Doc Impact |
+|----|-------|-------|------------|-------------------|
+| D-1 | 0 | Project Goal | High | constitution.md |
+| D-2 | 0 | Project Type | Medium | tech-stack.md |
+| D-3 | 0 | Target Audience | High | constitution.md |
+| D-4 | 0 | Team Composition | High | constitution.md |
+| D-5 | 0 | Iteration Style | High | constitution.md |
+| D-6 | 0 | Platform | High | tech-stack.md |
+| D-7 | 0 | Framework | High | tech-stack.md |
+| D-8 | 0 | Visual Style | High | design-system.md |
+| D-9 | 1 | Core Hook | High | constitution.md |
+| D-10 | 1 | Run Length | High | constitution.md |
+| D-11 | 1 | Core Mechanic | High | constitution.md |
+| D-12 | 1 | Meta Progression | High | constitution.md |
+| D-13 | 3 | Power-up System | High | constitution.md |
+| D-14 | 3 | Death Mechanic | High | constitution.md |
+| D-15 | 3 | Class System | High | constitution.md |
+| D-16 | 3 | Economy | High | constitution.md |
+| D-17 | 5 | Persistence | High | tech-stack.md |
+| D-18 | 5 | Rendering | High | tech-stack.md |
+| D-19 | 5 | State Management | High | tech-stack.md |
+| D-20 | 5 | Deployment | High | tech-stack.md |
+| D-21 | 7 | Audio Strategy | High | design-system.md |
+| D-22 | 7 | Input Methods | High | ux-patterns.md |
+| D-23 | 7 | Onboarding | High | ux-patterns.md |
+| D-24 | 7 | MVP Scope | High | constitution.md |
+| D-25 | Dream | Information as Power | High | constitution.md, game-design.md |
+| D-26 | Dream | Living Dungeon Narrative | High | constitution.md |
+| D-27 | Dream | AI Dungeon Master | High | constitution.md, tech-stack.md |
+| D-28 | Dream | DM Personality | High | game-design.md |
+| D-29 | Dream | Rune Synergy System | High | game-design.md |
+| D-30 | Dream | Synergy Discovery | High | game-design.md |
+| D-31 | Dream | Moving Monsters | High | game-design.md |
+| D-32 | Dream | Monster Stats | High | game-design.md |
+| D-33 | Dream | Passive-Only Abilities | High | constitution.md |
+| D-34 | Dream | Resource Tension | High | constitution.md |
+| D-35 | Dream | Endless Mastery Endgame | High | constitution.md |
+| D-36 | Dream | Seed Sharing | High | tech-stack.md |
+| D-37 | Dream | Elevator Pitch | High | constitution.md |
+| D-38 | Dream | Phased Development | High | constitution.md |
 
 ## Progress
-
 - **Decisions Made**: 38
 - **Open Questions**: 0
 - **Contradictions**: 0
@@ -54,7 +52,6 @@
 ---
 
 #### D-1: Project Goal
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -65,7 +62,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-2: Project Type
-
 - **Phase**: 0: Discovery
 - **Status**: Tentative
 - **Confidence**: Medium
@@ -76,7 +72,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-3: Target Audience
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -87,7 +82,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-4: Team Composition
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -98,7 +92,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-5: Iteration Style
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -109,7 +102,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-6: Platform
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -120,7 +112,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-7: Framework
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -131,7 +122,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-8: Visual Style
-
 - **Phase**: 0: Discovery
 - **Status**: Decided
 - **Confidence**: High
@@ -142,7 +132,6 @@
 - **Memory Doc Impact**: design-system.md
 
 #### D-9: Core Hook
-
 - **Phase**: 1: Problem & Vision
 - **Status**: Decided
 - **Confidence**: High
@@ -153,7 +142,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-10: Run Length
-
 - **Phase**: 1: Problem & Vision
 - **Status**: Decided
 - **Confidence**: High
@@ -164,7 +152,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-11: Core Mechanic
-
 - **Phase**: 1: Problem & Vision
 - **Status**: Decided
 - **Confidence**: High
@@ -175,7 +162,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-12: Meta Progression
-
 - **Phase**: 1: Problem & Vision
 - **Status**: Decided
 - **Confidence**: High
@@ -186,7 +172,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-13: Power-up System
-
 - **Phase**: 3: Functional
 - **Status**: Decided
 - **Confidence**: High
@@ -197,7 +182,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-14: Death Mechanic
-
 - **Phase**: 3: Functional
 - **Status**: Decided
 - **Confidence**: High
@@ -208,7 +192,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-15: Class System
-
 - **Phase**: 3: Functional
 - **Status**: Decided
 - **Confidence**: High
@@ -219,7 +202,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-16: Economy
-
 - **Phase**: 3: Functional
 - **Status**: Decided
 - **Confidence**: High
@@ -230,7 +212,6 @@
 - **Memory Doc Impact**: constitution.md
 
 #### D-17: Persistence
-
 - **Phase**: 5: Architecture
 - **Status**: Decided
 - **Confidence**: High
@@ -241,7 +222,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-18: Rendering
-
 - **Phase**: 5: Architecture
 - **Status**: Decided
 - **Confidence**: High
@@ -252,7 +232,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-19: State Management
-
 - **Phase**: 5: Architecture
 - **Status**: Decided
 - **Confidence**: High
@@ -263,7 +242,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-20: Deployment
-
 - **Phase**: 5: Architecture
 - **Status**: Decided
 - **Confidence**: High
@@ -274,7 +252,6 @@
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-21: Audio Strategy
-
 - **Phase**: 7: UX
 - **Status**: Decided
 - **Confidence**: High
@@ -285,7 +262,6 @@
 - **Memory Doc Impact**: design-system.md
 
 #### D-22: Input Methods
-
 - **Phase**: 7: UX
 - **Status**: Decided
 - **Confidence**: High
@@ -296,7 +272,6 @@
 - **Memory Doc Impact**: ux-patterns.md
 
 #### D-23: Onboarding
-
 - **Phase**: 7: UX
 - **Status**: Decided
 - **Confidence**: High
@@ -307,7 +282,6 @@
 - **Memory Doc Impact**: ux-patterns.md
 
 #### D-24: MVP Scope
-
 - **Phase**: 7: UX
 - **Status**: Decided
 - **Confidence**: High
@@ -321,10 +295,9 @@
 
 ## Dreaming Session Decisions
 
-_The following decisions were made during a "dream big" brainstorming session to elevate the game from good to best-in-class._
+*The following decisions were made during a "dream big" brainstorming session to elevate the game from good to best-in-class.*
 
 #### D-25: Information as Power
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -335,7 +308,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md, game-design.md
 
 #### D-26: Living Dungeon Narrative
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -346,7 +318,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md
 
 #### D-27: AI Dungeon Master
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -357,7 +328,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md, tech-stack.md
 
 #### D-28: DM Personality
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -368,7 +338,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: game-design.md
 
 #### D-29: Rune Synergy System
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -379,7 +348,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: game-design.md
 
 #### D-30: Synergy Discovery
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -390,7 +358,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: game-design.md
 
 #### D-31: Moving Monsters
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -401,7 +368,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: game-design.md
 
 #### D-32: Monster Stats
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -412,7 +378,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: game-design.md
 
 #### D-33: Passive-Only Abilities
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -423,7 +388,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md
 
 #### D-34: Resource Tension
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -434,7 +398,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md
 
 #### D-35: Endless Mastery Endgame
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -445,7 +408,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md
 
 #### D-36: Seed Sharing
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -456,7 +418,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: tech-stack.md
 
 #### D-37: Elevator Pitch
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High
@@ -467,7 +428,6 @@ _The following decisions were made during a "dream big" brainstorming session to
 - **Memory Doc Impact**: constitution.md
 
 #### D-38: Phased Development
-
 - **Phase**: Dream
 - **Status**: Decided
 - **Confidence**: High

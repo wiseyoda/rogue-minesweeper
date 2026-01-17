@@ -1,5 +1,5 @@
 ---
-phase: '3050'
+phase: "3050"
 name: rune-synergies
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                         | Description         |
-| -------------------------------------------- | ------------------- |
-| `src/data/synergies.ts`                      | Synergy definitions |
-| `src/engine/synergies.ts`                    | Synergy detection   |
+| File | Description |
+|------|-------------|
+| `src/data/synergies.ts` | Synergy definitions |
+| `src/engine/synergies.ts` | Synergy detection |
 | `src/components/hud/SynergyNotification.tsx` | Combo discovered UI |
-| `src/engine/__tests__/synergies.test.ts`     | Synergy tests       |
+| `src/engine/__tests__/synergies.test.ts` | Synergy tests |
 
 ## Verification Gate
 
@@ -39,12 +39,12 @@ created: 2026-01-14
 
 ## Synergy Examples
 
-| Synergy         | Runes                        | Bonus                              |
-| --------------- | ---------------------------- | ---------------------------------- |
-| Hunter's Vision | Scout's Eye + Monster Lens   | See monster types at floor start   |
-| Greedy          | Lucky Coin + Treasure Hunter | +50% bonus loot                    |
-| Immortal        | Phoenix Feather + Undying    | Heal 2 HP on revival               |
-| Seer            | Prophecy + Omniscience       | See which tiles are traps (future) |
+| Synergy | Runes | Bonus |
+|---------|-------|-------|
+| Hunter's Vision | Scout's Eye + Monster Lens | See monster types at floor start |
+| Greedy | Lucky Coin + Treasure Hunter | +50% bonus loot |
+| Immortal | Phoenix Feather + Undying | Heal 2 HP on revival |
+| Seer | Prophecy + Omniscience | See which tiles are traps (future) |
 
 ## Notes
 

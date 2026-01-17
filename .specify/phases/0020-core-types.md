@@ -1,5 +1,5 @@
 ---
-phase: '0020'
+phase: "0020"
 name: core-types
 status: not_started
 created: 2026-01-14
@@ -23,16 +23,16 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                   | Description                                   |
-| ---------------------- | --------------------------------------------- |
-| `src/types/cell.ts`    | Cell state (revealed, flagged, monster, etc.) |
-| `src/types/grid.ts`    | Grid configuration and state                  |
-| `src/types/player.ts`  | HP, gold, shields, buffs                      |
-| `src/types/monster.ts` | Monster definitions                           |
-| `src/types/item.ts`    | Items, buffs, temporary effects               |
-| `src/types/shop.ts`    | Shop items and pricing                        |
-| `src/types/game.ts`    | Game session, run state                       |
-| `src/types/index.ts`   | Central export                                |
+| File | Description |
+|------|-------------|
+| `src/types/cell.ts` | Cell state (revealed, flagged, monster, etc.) |
+| `src/types/grid.ts` | Grid configuration and state |
+| `src/types/player.ts` | HP, gold, shields, buffs |
+| `src/types/monster.ts` | Monster definitions |
+| `src/types/item.ts` | Items, buffs, temporary effects |
+| `src/types/shop.ts` | Shop items and pricing |
+| `src/types/game.ts` | Game session, run state |
+| `src/types/index.ts` | Central export |
 
 ## Verification Gate
 

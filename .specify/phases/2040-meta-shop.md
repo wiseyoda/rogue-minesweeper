@@ -1,82 +1,58 @@
 ---
-phase: '2040'
+phase: "2040"
 name: meta-shop
 status: not_started
 created: 2026-01-14
-updated: 2026-01-15
 ---
 
-# 2040 - Shop Polish & First Click Safety
+# 2040 - Meta Shop
 
-**Goal**: Polish both shop UIs to match the main game's visual quality and implement the missing First Click Safety upgrade logic.
-
-## Context
-
-Phase 2030 already implemented the core upgrade shop functionality. This phase focuses on:
-1. **Visual polish** - Bring shops up to the design standard of the main game
-2. **BL-001 hotfix** - Implement missing First Click Safety game logic
-3. **Store refinement** - Ensure stores are clean and well-tested
+**Goal**: Build the end-of-run shop for permanent upgrades.
 
 ## Scope
 
-### Visual Polish (Primary Focus)
-- Floor Shop (`WinModal` / shop UI) visual upgrade to match mockup
-- Upgrade Shop (`UpgradeShopModal`) visual upgrade to match mockup
-- Add SVG icons for shop items and upgrades
-- Implement panel styling with animated corners
-- Apply stone/bone/gold color palette from design system
-- Add proper shadows, depth, and atmospheric effects
-- Purchase animations and feedback
-
-### BL-001: First Click Safety Implementation
-- Implement game logic in `gameStore.ts` to check `firstClickSafety` flag
-- When first monster hit: flag instead of damage (if upgrade purchased)
-- Track first monster hit per run (separate from first click)
-
-### Store Polish
-- Review and clean up gameStore shop integration
-- Ensure proper TypeScript types and documentation
-- Add any missing test coverage
+- Meta shop UI modal
+- Display available upgrades
+- Show current levels and costs
+- Purchase flow
+- Appears after death
+- New Run button
 
 ## Deliverables
 
 | File | Description |
-| ---- | ----------- |
-| `src/components/ui/FloorShopModal.tsx` | Polished floor shop modal |
-| `src/components/ui/UpgradeShopModal.tsx` | Updated: polished styling |
-| `src/components/ui/ShopItemCard.tsx` | Reusable shop item component |
-| `src/components/ui/UpgradeCard.tsx` | Reusable upgrade component |
-| `src/components/icons/ShopIcons.tsx` | SVG icons for shop items |
-| `src/stores/gameStore.ts` | Updated: firstClickSafety logic |
-| `src/stores/__tests__/gameStore.firstClickSafety.test.ts` | Tests for safety logic |
+|------|-------------|
+| `src/components/shop/MetaShop.tsx` | Meta shop modal |
+| `src/components/shop/UpgradeItem.tsx` | Upgrade display |
+| `src/components/shop/UpgradeGrid.tsx` | Grid layout |
+| `src/pages/GamePage.tsx` | Updated: meta shop flow |
 
 ## Verification Gate
 
-- [ ] Floor Shop matches mockup design quality
-- [ ] Upgrade Shop matches mockup design quality
-- [ ] SVG icons display for all items
-- [ ] Panel styling with animated corners
-- [ ] Purchase has visual feedback
-- [ ] First Click Safety upgrade actually works (flags first monster)
-- [ ] All 5 permanent upgrades function correctly
-- [ ] Tests pass for firstClickSafety
+- [ ] Meta shop appears after death
+- [ ] Shows remaining gold from run
+- [ ] Displays all permanent upgrades
+- [ ] Shows current level / max level
+- [ ] Can purchase upgrades
+- [ ] Gold persists for next run
+- [ ] New Run starts fresh run with upgrades applied
 
 ## Estimated Complexity
 
-**Medium** - UI polish + game logic fix.
+**Low** - Similar to floor shop, different items.
 
-## Design References
+## UI Flow
 
-See `.specify/reference/ui-mockup-definitive.html` for:
-- Panel styling (`.panel` class with corners)
-- Color palette (stone, bone, gold, mystic, blood)
-- Typography (Press Start 2P, 10px base)
-- Timing tokens (--tick, --beat, --breath, --pulse, --wave)
-- Shadow system (inset highlights, drop shadows)
+```
+Death → Show all monsters → 2s delay → Meta Shop Modal
+  ↓
+Spend gold on upgrades
+  ↓
+Click "New Run" → Start new run with upgrades
+```
 
 ## Notes
 
-- Keep functionality intact - this is polish only
-- Reference existing Panel component for consistency
-- Use CSS custom properties from design system
-- No new dependencies needed
+- Display run stats (floor reached, gold earned)
+- Show high score comparison
+- Consider "skip" option (save gold for later)

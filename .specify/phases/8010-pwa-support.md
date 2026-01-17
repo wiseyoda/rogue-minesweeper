@@ -1,5 +1,5 @@
 ---
-phase: '8010'
+phase: "8010"
 name: pwa-support
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                   | Description    |
-| ---------------------- | -------------- |
-| `public/manifest.json` | PWA manifest   |
-| `public/sw.js`         | Service worker |
-| `src/hooks/usePWA.ts`  | PWA hook       |
-| `public/icons/`        | App icons      |
+| File | Description |
+|------|-------------|
+| `public/manifest.json` | PWA manifest |
+| `public/sw.js` | Service worker |
+| `src/hooks/usePWA.ts` | PWA hook |
+| `public/icons/` | App icons |
 
 ## Verification Gate
 

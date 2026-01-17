@@ -1,5 +1,5 @@
 ---
-phase: '6020'
+phase: "6020"
 name: audio-system
 status: not_started
 created: 2026-01-14
@@ -19,13 +19,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                  | Description             |
-| ------------------------------------- | ----------------------- |
-| `src/audio/audioManager.ts`           | Audio manager           |
-| `src/audio/sounds.ts`                 | Sound definitions       |
-| `src/hooks/useAudio.ts`               | Audio hook              |
-| `src/components/ui/VolumeControl.tsx` | Volume slider           |
-| `src/stores/uiStore.ts`               | Updated: audio settings |
+| File | Description |
+|------|-------------|
+| `src/audio/audioManager.ts` | Audio manager |
+| `src/audio/sounds.ts` | Sound definitions |
+| `src/hooks/useAudio.ts` | Audio hook |
+| `src/components/ui/VolumeControl.tsx` | Volume slider |
+| `src/stores/uiStore.ts` | Updated: audio settings |
 
 ## Verification Gate
 
@@ -41,12 +41,12 @@ created: 2026-01-14
 
 ## Audio Categories
 
-| Category | Volume | Examples             |
-| -------- | ------ | -------------------- |
-| SFX      | 1.0    | Clicks, damage, loot |
-| Music    | 0.5    | Background loops     |
-| UI       | 0.8    | Button clicks, menus |
-| DM       | 1.0    | DM voice (if any)    |
+| Category | Volume | Examples |
+|----------|--------|----------|
+| SFX | 1.0 | Clicks, damage, loot |
+| Music | 0.5 | Background loops |
+| UI | 0.8 | Button clicks, menus |
+| DM | 1.0 | DM voice (if any) |
 
 ## Notes
 

@@ -1,5 +1,5 @@
 ---
-phase: '1040'
+phase: "1040"
 name: ui-integration-poc
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ user_gate: true
 
 ## Deliverables
 
-| File                                    | Description          |
-| --------------------------------------- | -------------------- |
-| `src/pages/GamePage.tsx`                | Main game page       |
-| `src/components/game/GameContainer.tsx` | Game + HUD layout    |
-| `src/components/ui/NewGameButton.tsx`   | Reset game           |
-| `src/components/ui/GameOverModal.tsx`   | Death screen         |
-| `src/components/ui/WinModal.tsx`        | Floor cleared screen |
+| File | Description |
+|------|-------------|
+| `src/pages/GamePage.tsx` | Main game page |
+| `src/components/game/GameContainer.tsx` | Game + HUD layout |
+| `src/components/ui/NewGameButton.tsx` | Reset game |
+| `src/components/ui/GameOverModal.tsx` | Death screen |
+| `src/components/ui/WinModal.tsx` | Floor cleared screen |
 
 ## Verification Gate - USER GATE
 
@@ -49,11 +49,7 @@ User must manually verify complete game loop:
 
 ## Notes
 
-**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
-
 - This is the complete single-floor game
 - No shops or progression yet (next milestone)
 - Focus on tight, responsive gameplay feel
 - Must pass before proceeding to Milestone 2
-- Layout should match mockup: game board + sidebar (DM, Vitals, Runes)
-- Use mockup atmosphere layers (brick, vignette, particles, scanlines)

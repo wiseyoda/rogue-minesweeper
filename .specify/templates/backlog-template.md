@@ -15,11 +15,11 @@ description: 'Project-level backlog template - tracks items not assigned to spec
 
 ## Priority Legend
 
-| Priority | Meaning | Criteria                                     |
-| -------- | ------- | -------------------------------------------- |
-| **P1**   | High    | Core functionality, significant user value   |
-| **P2**   | Medium  | Nice-to-have, quality of life improvements   |
-| **P3**   | Low     | Future considerations, can wait indefinitely |
+| Priority | Meaning | Criteria |
+|----------|---------|----------|
+| **P1** | High | Core functionality, significant user value |
+| **P2** | Medium | Nice-to-have, quality of life improvements |
+| **P3** | Low | Future considerations, can wait indefinitely |
 
 ---
 
@@ -27,21 +27,21 @@ description: 'Project-level backlog template - tracks items not assigned to spec
 
 ### P1 - High Priority
 
-| Item     | Source       | Reason Deferred | Notes   |
-| -------- | ------------ | --------------- | ------- |
-| [ITEM_1] | Phase [NNNN] | [REASON]        | [NOTES] |
+| Item | Source | Reason Deferred | Notes |
+|------|--------|-----------------|-------|
+| [ITEM_1] | Phase [NNNN] | [REASON] | [NOTES] |
 
 ### P2 - Medium Priority
 
-| Item     | Source       | Reason Deferred | Notes   |
-| -------- | ------------ | --------------- | ------- |
-| [ITEM_2] | Phase [NNNN] | [REASON]        | [NOTES] |
+| Item | Source | Reason Deferred | Notes |
+|------|--------|-----------------|-------|
+| [ITEM_2] | Phase [NNNN] | [REASON] | [NOTES] |
 
 ### P3 - Low Priority
 
-| Item     | Source       | Reason Deferred | Notes   |
-| -------- | ------------ | --------------- | ------- |
-| [ITEM_3] | Phase [NNNN] | [REASON]        | [NOTES] |
+| Item | Source | Reason Deferred | Notes |
+|------|--------|-----------------|-------|
+| [ITEM_3] | Phase [NNNN] | [REASON] | [NOTES] |
 
 ---
 
@@ -59,7 +59,6 @@ description: 'Project-level backlog template - tracks items not assigned to spec
 [Explanation - e.g., "Not tied to any specific phase, depends on external factors"]
 
 **Prerequisites**:
-
 - [Prerequisite 1]
 - [Prerequisite 2]
 
@@ -84,7 +83,6 @@ When planning a new phase, review this backlog:
 ## Cross-References
 
 Items in this backlog originated from these phase deferrals:
-
 - `specs/[NNNN]-[name]/checklists/deferred.md` - [Brief description]
 - [Add more as items are added]
 
@@ -92,8 +90,8 @@ Items in this backlog originated from these phase deferrals:
 
 ## History
 
-| Date   | Action                    | Items Affected                  |
-| ------ | ------------------------- | ------------------------------- |
-| [DATE] | Created backlog           | Initial items from Phase [NNNN] |
-| [DATE] | Scheduled to Phase [NNNN] | [ITEM]                          |
-| [DATE] | Completed                 | [ITEM]                          |
+| Date | Action | Items Affected |
+|------|--------|----------------|
+| [DATE] | Created backlog | Initial items from Phase [NNNN] |
+| [DATE] | Scheduled to Phase [NNNN] | [ITEM] |
+| [DATE] | Completed | [ITEM] |

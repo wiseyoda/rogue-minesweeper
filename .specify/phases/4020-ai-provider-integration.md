@@ -1,5 +1,5 @@
 ---
-phase: '4020'
+phase: "4020"
 name: ai-provider-integration
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                  | Description                |
-| --------------------- | -------------------------- |
-| `src/ai/providers.ts` | Provider configuration     |
-| `src/ai/generate.ts`  | Generation wrapper         |
-| `src/ai/parser.ts`    | Response parsing           |
-| `src/ai/fallback.ts`  | Pre-written fallback lines |
-| `.env.example`        | API key configuration      |
+| File | Description |
+|------|-------------|
+| `src/ai/providers.ts` | Provider configuration |
+| `src/ai/generate.ts` | Generation wrapper |
+| `src/ai/parser.ts` | Response parsing |
+| `src/ai/fallback.ts` | Pre-written fallback lines |
+| `.env.example` | API key configuration |
 
 ## Verification Gate
 

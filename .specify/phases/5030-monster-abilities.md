@@ -1,5 +1,5 @@
 ---
-phase: '5030'
+phase: "5030"
 name: monster-abilities
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                    | Description        |
-| --------------------------------------- | ------------------ |
-| `src/engine/abilities.ts`               | Ability effects    |
-| `src/types/ability.ts`                  | Ability types      |
-| `src/data/monsters.ts`                  | Updated: abilities |
-| `src/components/game/AbilityEffect.tsx` | Visual effects     |
+| File | Description |
+|------|-------------|
+| `src/engine/abilities.ts` | Ability effects |
+| `src/types/ability.ts` | Ability types |
+| `src/data/monsters.ts` | Updated: abilities |
+| `src/components/game/AbilityEffect.tsx` | Visual effects |
 
 ## Verification Gate
 
@@ -40,13 +40,13 @@ created: 2026-01-14
 
 ## Monster Abilities
 
-| Monster  | Ability     | Effect                                  |
-| -------- | ----------- | --------------------------------------- |
-| Spider   | Web         | Player can only reveal 1 tile next turn |
-| Dragon   | Fire Breath | Reveals 3x3 area (damages if monster)   |
-| Ghost    | Phase       | Ignores unrevealed tile boundaries      |
-| Lich     | Summon      | Creates skeleton on death               |
-| Beholder | Eye Ray     | Random debuff                           |
+| Monster | Ability | Effect |
+|---------|---------|--------|
+| Spider | Web | Player can only reveal 1 tile next turn |
+| Dragon | Fire Breath | Reveals 3x3 area (damages if monster) |
+| Ghost | Phase | Ignores unrevealed tile boundaries |
+| Lich | Summon | Creates skeleton on death |
+| Beholder | Eye Ray | Random debuff |
 
 ## Notes
 

@@ -1,5 +1,5 @@
 ---
-phase: '6040'
+phase: "6040"
 name: music
 status: not_started
 created: 2026-01-14
@@ -18,11 +18,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                  | Description    |
-| --------------------- | -------------- |
-| `public/audio/music/` | Music files    |
-| `src/audio/music.ts`  | Music manager  |
-| Updated scenes        | Music triggers |
+| File | Description |
+|------|-------------|
+| `public/audio/music/` | Music files |
+| `src/audio/music.ts` | Music manager |
+| Updated scenes | Music triggers |
 
 ## Verification Gate
 
@@ -39,14 +39,14 @@ created: 2026-01-14
 
 ## Track List
 
-| Track   | Scene         | Mood        |
-| ------- | ------------- | ----------- |
-| title   | Title screen  | Mysterious  |
+| Track | Scene | Mood |
+|-------|-------|------|
+| title | Title screen | Mysterious |
 | explore | Normal floors | Adventurous |
-| boss    | Boss floors   | Intense     |
-| shop    | Shop screens  | Relaxed     |
-| victory | Floor clear   | Triumphant  |
-| defeat  | Game over     | Somber      |
+| boss | Boss floors | Intense |
+| shop | Shop screens | Relaxed |
+| victory | Floor clear | Triumphant |
+| defeat | Game over | Somber |
 
 ## Notes
 

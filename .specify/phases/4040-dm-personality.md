@@ -1,5 +1,5 @@
 ---
-phase: '4040'
+phase: "4040"
 name: dm-personality
 status: not_started
 created: 2026-01-14
@@ -19,13 +19,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                         | Description        |
-| ---------------------------- | ------------------ |
-| `src/ai/prompts/system.ts`   | Main system prompt |
-| `src/ai/prompts/examples.ts` | Few-shot examples  |
-| `src/ai/prompts/moods.ts`    | Mood variations    |
-| `src/ai/prompts/index.ts`    | Prompt exports     |
-| `docs/dm-personality.md`     | Tone documentation |
+| File | Description |
+|------|-------------|
+| `src/ai/prompts/system.ts` | Main system prompt |
+| `src/ai/prompts/examples.ts` | Few-shot examples |
+| `src/ai/prompts/moods.ts` | Mood variations |
+| `src/ai/prompts/index.ts` | Prompt exports |
+| `docs/dm-personality.md` | Tone documentation |
 
 ## Verification Gate
 
@@ -42,7 +42,6 @@ created: 2026-01-14
 ## Personality Guidelines
 
 **Core Traits**:
-
 - Sarcastic but not mean
 - Enjoys player failures (playfully)
 - Grudgingly respects good plays
@@ -50,7 +49,6 @@ created: 2026-01-14
 - Occasionally helpful (hints)
 
 **Tone Examples**:
-
 - Death: "Oh, what a shame. And you were doing so... adequately."
 - Good play: "Hmph. Lucky guess. Try that again."
 - Return: "Back so soon? I didn't even have time to miss you."

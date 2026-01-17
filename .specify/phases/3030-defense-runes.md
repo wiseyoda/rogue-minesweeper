@@ -1,5 +1,5 @@
 ---
-phase: '3030'
+phase: "3030"
 name: defense-runes
 status: not_started
 created: 2026-01-14
@@ -18,11 +18,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                        | Description              |
-| ------------------------------------------- | ------------------------ |
-| `src/data/runes/defenseRunes.ts`            | Defense rune definitions |
-| `src/engine/runes/defense.ts`               | Defense rune effects     |
-| `src/engine/__tests__/defenseRunes.test.ts` | Effect tests             |
+| File | Description |
+|------|-------------|
+| `src/data/runes/defenseRunes.ts` | Defense rune definitions |
+| `src/engine/runes/defense.ts` | Defense rune effects |
+| `src/engine/__tests__/defenseRunes.test.ts` | Effect tests |
 
 ## Verification Gate
 
@@ -37,13 +37,13 @@ created: 2026-01-14
 
 ## Rune Details
 
-| Rune            | Rarity    | Effect                   |
-| --------------- | --------- | ------------------------ |
-| Hardy           | Common    | +1 Max HP                |
-| Shield Bearer   | Common    | +1 Shield at floor start |
-| Iron Skin       | Uncommon  | 25% damage reduction     |
-| Phoenix Feather | Rare      | Survive lethal once      |
-| Undying         | Legendary | Heal 1 HP per 5 reveals  |
+| Rune | Rarity | Effect |
+|------|--------|--------|
+| Hardy | Common | +1 Max HP |
+| Shield Bearer | Common | +1 Shield at floor start |
+| Iron Skin | Uncommon | 25% damage reduction |
+| Phoenix Feather | Rare | Survive lethal once |
+| Undying | Legendary | Heal 1 HP per 5 reveals |
 
 ## Notes
 

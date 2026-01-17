@@ -54,16 +54,16 @@ description: 'UI/UX design document template for visual changes'
 
 ## Component Inventory
 
-| Component | Type                         | Purpose        | Notes              |
-| --------- | ---------------------------- | -------------- | ------------------ |
-| [name]    | [button/form/panel/card/etc] | [what it does] | [additional notes] |
+| Component | Type | Purpose | Notes |
+|-----------|------|---------|-------|
+| [name] | [button/form/panel/card/etc] | [what it does] | [additional notes] |
 
 ---
 
 ## Interactions
 
-| Action        | Trigger       | Result            |
-| ------------- | ------------- | ----------------- |
+| Action | Trigger | Result |
+|--------|---------|--------|
 | [description] | [user action] | [system response] |
 
 ---

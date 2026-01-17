@@ -1,5 +1,5 @@
 ---
-phase: '8040'
+phase: "8040"
 name: error-handling
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                               | Description          |
-| ---------------------------------- | -------------------- |
+| File | Description |
+|------|-------------|
 | `src/components/ErrorBoundary.tsx` | React error boundary |
-| `src/utils/errorHandler.ts`        | Error utilities      |
-| `src/hooks/useErrorRecovery.ts`    | Recovery hook        |
+| `src/utils/errorHandler.ts` | Error utilities |
+| `src/hooks/useErrorRecovery.ts` | Recovery hook |
 
 ## Verification Gate
 
@@ -39,13 +39,13 @@ created: 2026-01-14
 
 ## Error Scenarios
 
-| Scenario         | Handling               |
-| ---------------- | ---------------------- |
-| Component crash  | Error boundary + retry |
-| State corruption | Reset to last save     |
-| API failure      | Offline fallback       |
-| Audio failure    | Silent fallback        |
-| AI failure       | Pre-written lines      |
+| Scenario | Handling |
+|----------|----------|
+| Component crash | Error boundary + retry |
+| State corruption | Reset to last save |
+| API failure | Offline fallback |
+| Audio failure | Silent fallback |
+| AI failure | Pre-written lines |
 
 ## Notes
 

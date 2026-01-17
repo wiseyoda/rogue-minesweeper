@@ -1,5 +1,5 @@
 ---
-phase: '7020'
+phase: "7020"
 name: daily-challenges
 status: not_started
 created: 2026-01-14
@@ -19,11 +19,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                   | Description             |
-| -------------------------------------- | ----------------------- |
-| `src/engine/daily.ts`                  | Daily seed logic        |
-| `src/components/ui/DailyChallenge.tsx` | Challenge mode          |
-| `src/stores/metaStore.ts`              | Updated: daily tracking |
+| File | Description |
+|------|-------------|
+| `src/engine/daily.ts` | Daily seed logic |
+| `src/components/ui/DailyChallenge.tsx` | Challenge mode |
+| `src/stores/metaStore.ts` | Updated: daily tracking |
 
 ## Verification Gate
 
@@ -39,11 +39,11 @@ created: 2026-01-14
 
 ## Challenge Modes
 
-| Mode     | Reset | Rules                     |
-| -------- | ----- | ------------------------- |
-| Daily    | 24h   | No permanent upgrades     |
-| Weekly   | 7d    | All upgrades, longer seed |
-| Practice | Never | Any seed, no leaderboard  |
+| Mode | Reset | Rules |
+|------|-------|-------|
+| Daily | 24h | No permanent upgrades |
+| Weekly | 7d | All upgrades, longer seed |
+| Practice | Never | Any seed, no leaderboard |
 
 ## Notes
 

@@ -1,5 +1,5 @@
 ---
-phase: '1020'
+phase: "1020"
 name: game-board-ui
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                    | Description               |
-| --------------------------------------- | ------------------------- |
-| `src/components/game/GameBoard.tsx`     | Main board container      |
-| `src/components/game/Tile.tsx`          | Individual tile component |
-| `src/components/game/NumberDisplay.tsx` | Colored number (1-8)      |
-| `src/components/game/index.ts`          | Game component exports    |
-| `src/styles/game.css`                   | Game-specific styles      |
+| File | Description |
+|------|-------------|
+| `src/components/game/GameBoard.tsx` | Main board container |
+| `src/components/game/Tile.tsx` | Individual tile component |
+| `src/components/game/NumberDisplay.tsx` | Colored number (1-8) |
+| `src/components/game/index.ts` | Game component exports |
+| `src/styles/game.css` | Game-specific styles |
 
 ## Verification Gate
 
@@ -61,11 +61,6 @@ interface TileProps {
 
 ## Notes
 
-**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
-
 - Use CSS Grid for layout
 - Consider memo for Tile to prevent unnecessary re-renders
-- **40px tiles** with 2px gap (from mockup)
-- **No rounded corners** on tiles
-- Use mockup colors and number color scale (1-8)
-- **3D beveled appearance** with top-left light source
+- Add subtle hover effects for unrevealed tiles

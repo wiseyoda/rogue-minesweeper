@@ -1,5 +1,5 @@
 ---
-phase: '1030'
+phase: "1030"
 name: hud-components
 status: not_started
 created: 2026-01-14
@@ -21,16 +21,16 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                    | Description        |
-| --------------------------------------- | ------------------ |
-| `src/components/hud/HUD.tsx`            | Main HUD container |
-| `src/components/hud/HealthDisplay.tsx`  | HP hearts/bar      |
-| `src/components/hud/ShieldDisplay.tsx`  | Shield icons       |
-| `src/components/hud/GoldCounter.tsx`    | Gold amount        |
-| `src/components/hud/LevelIndicator.tsx` | Current floor      |
-| `src/components/hud/BuffBar.tsx`        | Active buff icons  |
-| `src/components/hud/MessageArea.tsx`    | Game messages      |
-| `src/components/hud/index.ts`           | HUD exports        |
+| File | Description |
+|------|-------------|
+| `src/components/hud/HUD.tsx` | Main HUD container |
+| `src/components/hud/HealthDisplay.tsx` | HP hearts/bar |
+| `src/components/hud/ShieldDisplay.tsx` | Shield icons |
+| `src/components/hud/GoldCounter.tsx` | Gold amount |
+| `src/components/hud/LevelIndicator.tsx` | Current floor |
+| `src/components/hud/BuffBar.tsx` | Active buff icons |
+| `src/components/hud/MessageArea.tsx` | Game messages |
+| `src/components/hud/index.ts` | HUD exports |
 
 ## Verification Gate
 
@@ -47,16 +47,18 @@ created: 2026-01-14
 
 ## Layout
 
-**See `.specify/reference/ui-mockup-definitive.html` for definitive visual design.**
-
-The mockup shows a sidebar layout with:
-- **Vitals Panel**: Segmented HP bar (not hearts), shield count, gold counter
-- **Runes Panel**: Active rune slots with mystic glow
-- **DM Panel**: Animated eye, mood indicator
+```
+┌────────────────────────────────────┐
+│  ♥ ♥ ♥  |  🛡  |  💰 150  |  L5   │
+├────────────────────────────────────┤
+│  [buff] [buff]                     │
+├────────────────────────────────────┤
+│  "Monster hit! 2 lives remaining"  │
+└────────────────────────────────────┘
+```
 
 ## Notes
 
-- **NO EMOJI** - Use SVG icons from mockup (see Icon Library section)
-- **HP bar is segmented** - Not heart icons
-- Reference mockup CSS custom properties for colors
-- Use timing tokens (`--tick`, `--beat`, etc.) for animations
+- Keep styling simple for now (polish in Milestone 6)
+- Use Tailwind utilities
+- Consider animation for value changes (later)

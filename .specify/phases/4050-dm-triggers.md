@@ -1,5 +1,5 @@
 ---
-phase: '4050'
+phase: "4050"
 name: dm-triggers
 status: not_started
 created: 2026-01-14
@@ -20,10 +20,10 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                         | Description                  |
-| ---------------------------- | ---------------------------- |
-| `src/ai/triggers.ts`         | Trigger definitions          |
-| `src/engine/dm-hooks.ts`     | Game loop hooks              |
+| File | Description |
+|------|-------------|
+| `src/ai/triggers.ts` | Trigger definitions |
+| `src/engine/dm-hooks.ts` | Game loop hooks |
 | `src/stores/dungeonStore.ts` | Updated: last spoke tracking |
 
 ## Verification Gate
@@ -41,14 +41,14 @@ created: 2026-01-14
 
 ## Trigger Points
 
-| Trigger       | Frequency            | Content                   |
-| ------------- | -------------------- | ------------------------- |
-| Floor Start   | Every floor          | Mood update + intro taunt |
-| Near Death    | Once per near-death  | Taunt or (rarely) hint    |
-| Death         | On death             | Death commentary          |
-| Boss Victory  | On boss kill         | Reaction                  |
-| Synergy Found | 30% chance           | Hint about synergy        |
-| Idle          | After 30s inactivity | Encouragement/mockery     |
+| Trigger | Frequency | Content |
+|---------|-----------|---------|
+| Floor Start | Every floor | Mood update + intro taunt |
+| Near Death | Once per near-death | Taunt or (rarely) hint |
+| Death | On death | Death commentary |
+| Boss Victory | On boss kill | Reaction |
+| Synergy Found | 30% chance | Hint about synergy |
+| Idle | After 30s inactivity | Encouragement/mockery |
 
 ## Notes
 

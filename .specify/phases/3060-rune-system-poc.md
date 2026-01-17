@@ -1,5 +1,5 @@
 ---
-phase: '3060'
+phase: "3060"
 name: rune-system-poc
 status: not_started
 created: 2026-01-14
@@ -20,11 +20,11 @@ user_gate: true
 
 ## Deliverables
 
-| File                      | Description        |
-| ------------------------- | ------------------ |
+| File | Description |
+|------|-------------|
 | `src/data/runes/index.ts` | All runes combined |
-| Updated shop              | Rune purchases     |
-| Updated tile drops        | Rune drops         |
+| Updated shop | Rune purchases |
+| Updated tile drops | Rune drops |
 
 ## Verification Gate - USER GATE
 
@@ -48,7 +48,6 @@ User must manually verify rune system:
 ## Success Criteria
 
 Builds should emerge:
-
 - "Information build": Stack reveal runes
 - "Tank build": Stack defense runes
 - "Gold rush build": Stack economy runes

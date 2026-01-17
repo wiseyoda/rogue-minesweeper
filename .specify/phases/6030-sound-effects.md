@@ -1,5 +1,5 @@
 ---
-phase: '6030'
+phase: "6030"
 name: sound-effects
 status: not_started
 created: 2026-01-14
@@ -20,11 +20,11 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                | Description        |
-| ------------------- | ------------------ |
+| File | Description |
+|------|-------------|
 | `public/audio/sfx/` | Sound effect files |
-| `src/audio/sfx.ts`  | SFX definitions    |
-| Updated components  | Sound triggers     |
+| `src/audio/sfx.ts` | SFX definitions |
+| Updated components | Sound triggers |
 
 ## Verification Gate
 
@@ -41,16 +41,16 @@ created: 2026-01-14
 
 ## Sound Effects List
 
-| Sound   | Trigger        | Style            |
-| ------- | -------------- | ---------------- |
-| click   | Tile reveal    | Soft 8-bit click |
-| reveal  | Number reveal  | Ascending blip   |
-| damage  | Take damage    | 8-bit hit        |
-| gold    | Collect gold   | Coin jingle      |
-| monster | Monster reveal | Low growl        |
-| victory | Floor clear    | Short fanfare    |
-| defeat  | Death          | Sad descending   |
-| shop    | Purchase       | Cash register    |
+| Sound | Trigger | Style |
+|-------|---------|-------|
+| click | Tile reveal | Soft 8-bit click |
+| reveal | Number reveal | Ascending blip |
+| damage | Take damage | 8-bit hit |
+| gold | Collect gold | Coin jingle |
+| monster | Monster reveal | Low growl |
+| victory | Floor clear | Short fanfare |
+| defeat | Death | Sad descending |
+| shop | Purchase | Cash register |
 
 ## Notes
 

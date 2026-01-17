@@ -1,5 +1,5 @@
 ---
-phase: '7010'
+phase: "7010"
 name: seed-system
 status: not_started
 created: 2026-01-14
@@ -18,12 +18,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                                | Description   |
-| ----------------------------------- | ------------- |
-| `src/engine/rng.ts`                 | Seeded RNG    |
-| `src/utils/seed.ts`                 | Seed encoding |
-| `src/components/ui/SeedDisplay.tsx` | Show seed     |
-| `src/components/ui/SeedInput.tsx`   | Enter seed    |
+| File | Description |
+|------|-------------|
+| `src/engine/rng.ts` | Seeded RNG |
+| `src/utils/seed.ts` | Seed encoding |
+| `src/components/ui/SeedDisplay.tsx` | Show seed |
+| `src/components/ui/SeedInput.tsx` | Enter seed |
 
 ## Verification Gate
 

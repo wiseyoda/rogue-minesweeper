@@ -139,13 +139,13 @@ Prioritize shipping playable builds over perfection.
 
 ## Development Phases
 
-| Phase | Focus     | Exit Criteria                                              |
-| ----- | --------- | ---------------------------------------------------------- |
-| **1** | Core Loop | Playable Minesweeper with HP, shops, meta-progression      |
-| **2** | Runes     | Synergy system with 10+ runes, information-based abilities |
-| **3** | AI DM     | Dynamic dungeon personality with 5+ mood states            |
-| **4** | Movement  | Turn-based monster tactics, 3+ boss encounters             |
-| **5** | Polish    | Full audio, seed sharing, daily challenges                 |
+| Phase | Focus | Exit Criteria |
+|-------|-------|---------------|
+| **1** | Core Loop | Playable Minesweeper with HP, shops, meta-progression |
+| **2** | Runes | Synergy system with 10+ runes, information-based abilities |
+| **3** | AI DM | Dynamic dungeon personality with 5+ mood states |
+| **4** | Movement | Turn-based monster tactics, 3+ boss encounters |
+| **5** | Polish | Full audio, seed sharing, daily challenges |
 
 Each phase MUST be playable and testable before proceeding to the next.
 
@@ -154,7 +154,6 @@ Each phase MUST be playable and testable before proceeding to the next.
 ## Game Systems Summary
 
 ### Core Loop
-
 1. Start run → Enter dungeon floor
 2. Reveal tiles (Minesweeper style) → Avoid/fight monsters, collect loot
 3. Clear floor → Visit shop → Advance to harder floor
@@ -162,15 +161,13 @@ Each phase MUST be playable and testable before proceeding to the next.
 5. Die → Spend gold on permanent upgrades → Start new run
 
 ### Progression Tiers
-
-| Tier      | Scope           | Source            |
-| --------- | --------------- | ----------------- |
-| Floor     | This floor only | Random tile drops |
-| Run       | Until death     | Shop purchases    |
-| Permanent | Forever         | End-of-run shop   |
+| Tier | Scope | Source |
+|------|-------|--------|
+| Floor | This floor only | Random tile drops |
+| Run | Until death | Shop purchases |
+| Permanent | Forever | End-of-run shop |
 
 ### Endgame
-
 - No "ending" - endless mastery
 - Leaderboards and seed sharing
 - The dungeon always wins eventually
@@ -232,7 +229,6 @@ When conflicts arise, Constitution principles take precedence.
 
 For day-to-day development guidance, code style details, and project-specific conventions,
 refer to:
-
 - [`tech-stack.md`](./tech-stack.md) - Technology decisions and architecture
 - [`game-design.md`](./game-design.md) - Detailed game mechanics
 - [`design-system.md`](./design-system.md) - Visual and audio guidelines
@@ -246,14 +242,14 @@ This constitution is derived from 38 decisions captured during project initializ
 
 ### Key Decision Sources
 
-| Principle                     | Source Decisions |
-| ----------------------------- | ---------------- |
-| I. Information Is Power       | D-25             |
-| II. The Dungeon Is Alive      | D-26, D-27, D-28 |
-| III. Emergent Complexity      | D-31             |
-| IV. Resource Tension          | D-34             |
-| V. Passive Mastery            | D-33             |
-| VI. Juice Is Holistic         | D-21             |
-| VII. Move Fast, Iterate Often | D-5, D-38        |
+| Principle | Source Decisions |
+|-----------|------------------|
+| I. Information Is Power | D-25 |
+| II. The Dungeon Is Alive | D-26, D-27, D-28 |
+| III. Emergent Complexity | D-31 |
+| IV. Resource Tension | D-34 |
+| V. Passive Mastery | D-33 |
+| VI. Juice Is Holistic | D-21 |
+| VII. Move Fast, Iterate Often | D-5, D-38 |
 
 Full decision log available at `.specify/discovery/decisions.md`.

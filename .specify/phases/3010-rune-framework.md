@@ -1,5 +1,5 @@
 ---
-phase: '3010'
+phase: "3010"
 name: rune-framework
 status: not_started
 created: 2026-01-14
@@ -20,13 +20,13 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                             | Description             |
-| -------------------------------- | ----------------------- |
-| `src/types/rune.ts`              | Rune type definitions   |
-| `src/engine/runes.ts`            | Rune effect processing  |
-| `src/data/runes.ts`              | Rune definitions        |
-| `src/stores/gameStore.ts`        | Updated: rune inventory |
-| `src/components/hud/RuneBar.tsx` | Equipped runes display  |
+| File | Description |
+|------|-------------|
+| `src/types/rune.ts` | Rune type definitions |
+| `src/engine/runes.ts` | Rune effect processing |
+| `src/data/runes.ts` | Rune definitions |
+| `src/stores/gameStore.ts` | Updated: rune inventory |
+| `src/components/hud/RuneBar.tsx` | Equipped runes display |
 
 ## Verification Gate
 

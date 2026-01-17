@@ -1,5 +1,5 @@
 ---
-phase: '4010'
+phase: "4010"
 name: ai-context-builder
 status: not_started
 created: 2026-01-14
@@ -19,12 +19,12 @@ created: 2026-01-14
 
 ## Deliverables
 
-| File                               | Description     |
-| ---------------------------------- | --------------- |
-| `src/ai/context.ts`                | Context builder |
-| `src/types/ai.ts`                  | AI types        |
-| `src/stores/dungeonStore.ts`       | DM state store  |
-| `src/ai/__tests__/context.test.ts` | Context tests   |
+| File | Description |
+|------|-------------|
+| `src/ai/context.ts` | Context builder |
+| `src/types/ai.ts` | AI types |
+| `src/stores/dungeonStore.ts` | DM state store |
+| `src/ai/__tests__/context.test.ts` | Context tests |
 
 ## Verification Gate
 

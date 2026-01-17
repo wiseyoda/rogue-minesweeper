@@ -1,5 +1,5 @@
 ---
-phase: '0040'
+phase: "0040"
 name: core-logic-poc
 status: not_started
 created: 2026-01-14
@@ -21,12 +21,12 @@ user_gate: true
 
 ## Deliverables
 
-| File                                | Description           |
-| ----------------------------------- | --------------------- |
-| `src/pages/PocPage.tsx`             | POC test page         |
+| File | Description |
+|------|-------------|
+| `src/pages/PocPage.tsx` | POC test page |
 | `src/components/poc/SimpleGrid.tsx` | Minimal grid renderer |
-| `src/styles/poc.css`                | Basic styling for POC |
-| `src/App.tsx`                       | Route to POC page     |
+| `src/styles/poc.css` | Basic styling for POC |
+| `src/App.tsx` | Route to POC page |
 
 ## Verification Gate - USER GATE
 

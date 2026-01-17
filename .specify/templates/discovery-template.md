@@ -25,8 +25,8 @@ description: 'Pre-specification discovery document for codebase context and scop
   Include file paths, function names, and brief descriptions.
 -->
 
-| Location      | Description           | Relevance                       |
-| ------------- | --------------------- | ------------------------------- |
+| Location | Description | Relevance |
+|----------|-------------|-----------|
 | `[file:line]` | [What this code does] | [How it relates to this change] |
 
 ### Existing Patterns & Conventions
@@ -68,8 +68,8 @@ description: 'Pre-specification discovery document for codebase context and scop
 speckit issue list --phase [NNNN]
 ```
 
-| Issue       | Description   | Priority          |
-| ----------- | ------------- | ----------------- |
+| Issue | Description | Priority |
+|-------|-------------|----------|
 | [ISSUE-XXX] | [Description] | [High/Medium/Low] |
 
 ### From Previous Phase Handoffs
@@ -102,7 +102,6 @@ speckit issue list --phase [NNNN]
 **Question**: [The specific question asked]
 
 **Options Presented**:
-
 - A (Recommended): [Option and why recommended]
 - B: [Alternative option]
 
@@ -119,7 +118,6 @@ speckit issue list --phase [NNNN]
 **Question**: [The question]
 
 **Options Presented**:
-
 - A (Recommended): [Option]
 - B: [Option]
 
@@ -140,7 +138,6 @@ speckit issue list --phase [NNNN]
 [Summary of integration approach]
 
 **Key constraints and requirements**:
-
 - [Constraint 1]
 - [Requirement 1]
 

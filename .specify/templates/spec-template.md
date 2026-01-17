@@ -21,15 +21,14 @@ description: 'Feature specification template'
 
 ### From Phase [NNNN] - [Phase Name]
 
-| ID     | Requirement                         | Original Context      | Status     |
-| ------ | ----------------------------------- | --------------------- | ---------- |
+| ID | Requirement | Original Context | Status |
+|----|-------------|------------------|--------|
 | IR-001 | [Inherited requirement description] | [Why it was deferred] | ⬜ Pending |
 | IR-002 | [Inherited requirement description] | [Why it was deferred] | ⬜ Pending |
 
 **Handoff Source**: `.specify/phases/[NNNN]-handoff.md`
 
 **Resolution**:
-
 - Items marked ✅ Incorporated are included in this spec's Requirements section
 - Items marked ❌ Rejected are documented in Non-Goals with rationale
 - Items marked ➡️ Re-deferred are moved to the next phase's handoff

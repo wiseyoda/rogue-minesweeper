@@ -13,28 +13,28 @@ description: 'Code review findings template - tracks systematic review findings 
 
 ## Summary
 
-| Category         | Findings | Approved | Deferred |
-| ---------------- | -------- | -------- | -------- |
-| Best Practices   | 0        | 0        | 0        |
-| Refactoring      | 0        | 0        | 0        |
-| Hardening        | 0        | 0        | 0        |
-| Missing Features | 0        | 0        | 0        |
-| Orphaned Code    | 0        | 0        | 0        |
-| Over-Engineering | 0        | 0        | 0        |
-| Outdated Docs    | 0        | 0        | 0        |
-| **Total**        | **0**    | **0**    | **0**    |
+| Category | Findings | Approved | Deferred |
+|----------|----------|----------|----------|
+| Best Practices | 0 | 0 | 0 |
+| Refactoring | 0 | 0 | 0 |
+| Hardening | 0 | 0 | 0 |
+| Missing Features | 0 | 0 | 0 |
+| Orphaned Code | 0 | 0 | 0 |
+| Over-Engineering | 0 | 0 | 0 |
+| Outdated Docs | 0 | 0 | 0 |
+| **Total** | **0** | **0** | **0** |
 
 ---
 
 ## Rating Scale Reference
 
-| Rating | Effort                 | Impact                  | Severity        |
-| ------ | ---------------------- | ----------------------- | --------------- |
-| 1      | Trivial (<30 min)      | Minimal improvement     | Suggestion      |
-| 2      | Small (30 min - 2 hr)  | Minor improvement       | Low priority    |
-| 3      | Moderate (2-8 hr)      | Moderate improvement    | Medium priority |
-| 4      | Significant (1-3 days) | Significant improvement | High priority   |
-| 5      | Major (>3 days)        | Critical improvement    | Blocking issue  |
+| Rating | Effort | Impact | Severity |
+|--------|--------|--------|----------|
+| 1 | Trivial (<30 min) | Minimal improvement | Suggestion |
+| 2 | Small (30 min - 2 hr) | Minor improvement | Low priority |
+| 3 | Moderate (2-8 hr) | Moderate improvement | Medium priority |
+| 4 | Significant (1-3 days) | Significant improvement | High priority |
+| 5 | Major (>3 days) | Critical improvement | Blocking issue |
 
 ---
 
@@ -42,9 +42,9 @@ description: 'Code review findings template - tracks systematic review findings 
 
 <!-- Findings approved for implementation in the review phase -->
 
-| ID   | Category   | File(s) | Effort | Impact | Severity | Finding   | Recommendation   |
-| ---- | ---------- | ------- | ------ | ------ | -------- | --------- | ---------------- |
-| [ID] | [CATEGORY] | [FILES] | [1-5]  | [1-5]  | [1-5]    | [FINDING] | [RECOMMENDATION] |
+| ID | Category | File(s) | Effort | Impact | Severity | Finding | Recommendation |
+|----|----------|---------|--------|--------|----------|---------|----------------|
+| [ID] | [CATEGORY] | [FILES] | [1-5] | [1-5] | [1-5] | [FINDING] | [RECOMMENDATION] |
 
 ---
 
@@ -52,9 +52,9 @@ description: 'Code review findings template - tracks systematic review findings 
 
 <!-- Findings deferred to backlog for future consideration -->
 
-| ID   | Category   | File(s) | Effort | Impact | Severity | Finding   | Recommendation   |
-| ---- | ---------- | ------- | ------ | ------ | -------- | --------- | ---------------- |
-| [ID] | [CATEGORY] | [FILES] | [1-5]  | [1-5]  | [1-5]    | [FINDING] | [RECOMMENDATION] |
+| ID | Category | File(s) | Effort | Impact | Severity | Finding | Recommendation |
+|----|----------|---------|--------|--------|----------|---------|----------------|
+| [ID] | [CATEGORY] | [FILES] | [1-5] | [1-5] | [1-5] | [FINDING] | [RECOMMENDATION] |
 
 ---
 
@@ -69,15 +69,15 @@ description: 'Code review findings template - tracks systematic review findings 
 
 ## Category Definitions
 
-| Code | Category         | Focus                                                             |
-| ---- | ---------------- | ----------------------------------------------------------------- |
-| BP   | Best Practices   | Coding standards violations, anti-patterns, inconsistencies       |
-| RF   | Refactoring      | Code duplication, complex functions, poor structure               |
-| HD   | Hardening        | Error handling gaps, input validation, security issues            |
-| MF   | Missing Features | TODOs, FIXMEs, stub functions, incomplete implementations         |
-| OC   | Orphaned Code    | Unused exports, dead code, unreferenced files                     |
-| OE   | Over-Engineering | Excessive abstraction, unused flexibility, premature optimization |
-| OD   | Outdated Docs    | Stale comments, README mismatches, incorrect examples             |
+| Code | Category | Focus |
+|------|----------|-------|
+| BP | Best Practices | Coding standards violations, anti-patterns, inconsistencies |
+| RF | Refactoring | Code duplication, complex functions, poor structure |
+| HD | Hardening | Error handling gaps, input validation, security issues |
+| MF | Missing Features | TODOs, FIXMEs, stub functions, incomplete implementations |
+| OC | Orphaned Code | Unused exports, dead code, unreferenced files |
+| OE | Over-Engineering | Excessive abstraction, unused flexibility, premature optimization |
+| OD | Outdated Docs | Stale comments, README mismatches, incorrect examples |
 
 ---
 
@@ -93,19 +93,16 @@ description: 'Code review findings template - tracks systematic review findings 
 ## How to Use This Document
 
 ### For Implementation
-
 1. Run `/speckit.orchestrate` to build spec/plan/tasks from approved findings
 2. Each approved finding becomes a requirement in the spec
 3. Related findings are grouped into implementation tasks
 
 ### For Future Reviews
-
 1. Check deferred items before next review
 2. Items may have been resolved or become more urgent
 3. Reference this document in subsequent reviews
 
 ### For Backlog Management
-
 1. Deferred items are added to ROADMAP.md backlog
 2. Run `/speckit.backlog` to triage deferred items into phases
 3. Items include the review date for tracking
