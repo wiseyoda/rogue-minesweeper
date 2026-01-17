@@ -73,13 +73,14 @@ export const RUNES: RuneDefinition[] = [
   {
     id: 'omniscience',
     name: 'Omniscience',
-    description: 'See all monster locations (not revealed)',
+    description: '15% chance per monster to reveal its location',
     category: 'information',
     rarity: 'legendary',
     icon: '👁️‍🗨️',
     effect: {
       trigger: 'onFloorStart',
-      description: 'Reveal all monsters',
+      description: '15% chance to mark each monster',
+      magnitude: 0.15,
     },
     stackable: false,
     cost: 150,

@@ -25,9 +25,12 @@ export function clearHighlights(grid: Grid, highlightType?: HighlightType): Grid
   );
 }
 
+/** Omniscience rune proc chance per monster (15%) */
+const OMNISCIENCE_PROC_CHANCE = 0.15;
+
 /**
- * Apply omniscience highlight to all monster cells.
- * Marks all monster locations with a subtle visual indicator.
+ * Apply omniscience highlight to monster cells.
+ * Each monster has a 15% chance to be marked with a subtle visual indicator.
  * @param grid The current grid
  * @returns New grid with omniscience highlights applied
  */
@@ -35,7 +38,10 @@ export function applyOmniscienceHighlights(grid: Grid): Grid {
   return grid.map((row) =>
     row.map((cell) => {
       if (cell.isMonster && !cell.isRevealed && !cell.isFlagged) {
-        return { ...cell, highlightType: 'omniscience' as HighlightType };
+        // 15% chance per monster to reveal
+        if (Math.random() < OMNISCIENCE_PROC_CHANCE) {
+          return { ...cell, highlightType: 'omniscience' as HighlightType };
+        }
       }
       return cell;
     })
