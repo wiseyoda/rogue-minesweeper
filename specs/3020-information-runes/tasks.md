@@ -50,15 +50,15 @@
 ## Polish Tasks
 
 - [x] T027 [P3] TypeScript compile check - no errors
-- [ ] T028 [P3] Test all three runes appear in shop
-- [ ] T029 [P3] Test prophecy highlight updates correctly
-- [ ] T030 [P3] Test omniscience marks all monsters
+- [x] T028 [P3] Test all three runes appear in shop
+- [x] T029 [P3] Test prophecy highlight updates correctly
+- [x] T030 [P3] Test omniscience marks all monsters
 
 ## Verification Checklist
 
-- [ ] V001: Danger Sense rune works (extended numbers visible)
-- [ ] V002: Prophecy rune works (safest tile highlighted green)
-- [ ] V003: Omniscience rune works (all monsters tinted red)
-- [ ] V004: Highlights clear appropriately on reveal/flag
-- [ ] V005: New runes integrate with shop and rune panel
-- [ ] V006: TypeScript compiles without errors
+- [x] V001: Danger Sense rune works (extended numbers visible)
+- [x] V002: Prophecy rune works (safest tile highlighted green)
+- [x] V003: Omniscience rune works (all monsters tinted red)
+- [x] V004: Highlights clear appropriately on reveal/flag
+- [x] V005: New runes integrate with shop and rune panel
+- [x] V006: TypeScript compiles without errors

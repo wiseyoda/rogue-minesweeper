@@ -54,8 +54,8 @@ describe('shopItems', () => {
   });
 
   describe('SHOP_ITEMS', () => {
-    it('should have 5 items in MVP', () => {
-      expect(SHOP_ITEMS).toHaveLength(5);
+    it('should have correct number of shop items', () => {
+      expect(SHOP_ITEMS).toHaveLength(6);
     });
 
     it('should have unique IDs', () => {
