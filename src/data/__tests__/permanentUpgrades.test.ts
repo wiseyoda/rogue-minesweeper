@@ -48,10 +48,10 @@ describe('permanentUpgrades', () => {
       expect(stats.maxLives).toBe(initialMaxLives + 1);
     });
 
-    it('should have maxLevel of 3', () => {
+    it('should have maxLevel of 7', () => {
       const upgrade = PERMANENT_UPGRADES.vitality;
       if (upgrade.type === 'leveled') {
-        expect(upgrade.maxLevel).toBe(3);
+        expect(upgrade.maxLevel).toBe(7);
       }
     });
   });
@@ -67,16 +67,16 @@ describe('permanentUpgrades', () => {
       expect(PERMANENT_UPGRADES.fortune.type).toBe('leveled');
     });
 
-    it('should increase goldFindBonus by 0.10 when applied', () => {
+    it('should increase goldFindBonus by 0.01 when applied', () => {
       const initialBonus = stats.goldFindBonus;
       PERMANENT_UPGRADES.fortune.apply(stats);
-      expect(stats.goldFindBonus).toBeCloseTo(initialBonus + 0.10);
+      expect(stats.goldFindBonus).toBeCloseTo(initialBonus + 0.01);
     });
 
-    it('should have maxLevel of 5', () => {
+    it('should have maxLevel of 100', () => {
       const upgrade = PERMANENT_UPGRADES.fortune;
       if (upgrade.type === 'leveled') {
-        expect(upgrade.maxLevel).toBe(5);
+        expect(upgrade.maxLevel).toBe(100);
       }
     });
   });
@@ -98,10 +98,10 @@ describe('permanentUpgrades', () => {
       expect(stats.preparationLevel).toBe(initialLevel + 1);
     });
 
-    it('should have maxLevel of 3', () => {
+    it('should have maxLevel of 5', () => {
       const upgrade = PERMANENT_UPGRADES.preparation;
       if (upgrade.type === 'leveled') {
-        expect(upgrade.maxLevel).toBe(3);
+        expect(upgrade.maxLevel).toBe(5);
       }
     });
   });
@@ -123,10 +123,10 @@ describe('permanentUpgrades', () => {
       expect(stats.startingShields).toBe(initialShields + 1);
     });
 
-    it('should have maxLevel of 2', () => {
+    it('should have maxLevel of 5', () => {
       const upgrade = PERMANENT_UPGRADES.resilience;
       if (upgrade.type === 'leveled') {
-        expect(upgrade.maxLevel).toBe(2);
+        expect(upgrade.maxLevel).toBe(5);
       }
     });
   });

@@ -222,7 +222,7 @@ describe('gameStore', () => {
   });
 
   describe('floor progression', () => {
-    it('should preserve shields across level transitions', () => {
+    it('should reset shields to starting value on level transition (shields are temporary)', () => {
       // Start level 1 with some shields
       useGameStore.getState().startLevel(1);
       useGameStore.getState().addShield(3);
@@ -233,8 +233,8 @@ describe('gameStore', () => {
       // Start level 2 (simulating floor completion)
       useGameStore.getState().startLevel(2);
 
-      // Shields should still be there
-      expect(useGameStore.getState().player.shields).toBe(3);
+      // Shields should reset to starting shields (0 without resilience upgrade)
+      expect(useGameStore.getState().player.shields).toBe(0);
     });
 
     it('should preserve gold across level transitions', () => {

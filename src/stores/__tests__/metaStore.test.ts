@@ -110,6 +110,54 @@ describe('metaStore', () => {
         expect(finalVitality.level).toBe(2);
       }
     });
+
+    it('should update upgrade definitions while preserving levels', () => {
+      // Initialize with some progress
+      useMetaStore.getState().initializeUpgrades();
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: {
+          ...state.upgrades,
+          fortune: {
+            ...state.upgrades.fortune,
+            level: 5,
+            name: 'OLD NAME',
+            description: 'OLD DESCRIPTION',
+          } as LeveledUpgrade,
+        },
+      }));
+
+      // Re-initialize - should update name/description but keep level
+      useMetaStore.getState().initializeUpgrades();
+
+      const fortune = useMetaStore.getState().upgrades.fortune as LeveledUpgrade;
+      expect(fortune.level).toBe(5); // Level preserved
+      expect(fortune.name).toBe('Fortune'); // Name updated from source
+      expect(fortune.description).toBe('+1% gold find'); // Description updated from source
+    });
+
+    it('should update unlockable upgrade definitions while preserving unlocked status', () => {
+      useMetaStore.getState().initializeUpgrades();
+      useMetaStore.setState((state) => ({
+        ...state,
+        upgrades: {
+          ...state.upgrades,
+          firstClickSafety: {
+            ...state.upgrades.firstClickSafety,
+            unlocked: true,
+            name: 'OLD NAME',
+            description: 'OLD DESCRIPTION',
+          } as UnlockableUpgrade,
+        },
+      }));
+
+      useMetaStore.getState().initializeUpgrades();
+
+      const upgrade = useMetaStore.getState().upgrades.firstClickSafety as UnlockableUpgrade;
+      expect(upgrade.unlocked).toBe(true); // Unlocked status preserved
+      expect(upgrade.name).toBe('Monster Ward'); // Name updated from source
+      expect(upgrade.description).toBe('First monster hit per run deals no damage'); // Description updated
+    });
   });
 
   describe('recordRunEnd', () => {
@@ -427,7 +475,7 @@ describe('metaStore', () => {
       useMetaStore.setState((state) => ({
         ...state,
         upgrades: createInitialUpgradeRegistry(),
-        metaGold: 1000,
+        metaGold: 10000, // Vitality costs 5000 at level 0
       }));
 
       // Purchase an upgrade (vitality)

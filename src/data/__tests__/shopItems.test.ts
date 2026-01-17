@@ -7,7 +7,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   SHOP_ITEMS,
   SHOP_ITEM_COUNT,
-  REROLL_COST,
+  REROLL_BASE_COST,
+  REROLL_INCREMENT,
+  getRerollCost,
   getShopItem,
   generateShopItems,
   groupItemsByRarity,
@@ -23,6 +25,7 @@ function createMockPlayerState(): PlayerState {
     maxLives: 3,
     shields: 0,
     gold: 100,
+    peekScrolls: 0,
     activeBuffs: {},
     nextLevelBuffs: {},
   };
@@ -30,12 +33,23 @@ function createMockPlayerState(): PlayerState {
 
 describe('shopItems', () => {
   describe('constants', () => {
-    it('should have correct reroll cost', () => {
-      expect(REROLL_COST).toBe(10);
+    it('should have correct reroll base cost', () => {
+      expect(REROLL_BASE_COST).toBe(50);
+    });
+
+    it('should have correct reroll increment', () => {
+      expect(REROLL_INCREMENT).toBe(25);
+    });
+
+    it('should calculate escalating reroll cost', () => {
+      expect(getRerollCost(0)).toBe(50);
+      expect(getRerollCost(1)).toBe(75);
+      expect(getRerollCost(2)).toBe(100);
+      expect(getRerollCost(3)).toBe(125);
     });
 
     it('should have correct shop item count', () => {
-      expect(SHOP_ITEM_COUNT).toBe(4);
+      expect(SHOP_ITEM_COUNT).toBe(2);
     });
   });
 
@@ -107,18 +121,18 @@ describe('shopItems', () => {
       expect(state.nextLevelBuffs.goldMagnet).toBe(true);
     });
 
-    it('reveal-scroll should set nextLevelBuffs.revealTiles', () => {
-      const item = getShopItem('reveal-scroll');
+    it('peek-scroll should add to peekScrolls inventory', () => {
+      const item = getShopItem('peek-scroll');
       expect(item).toBeDefined();
       item!.apply(state, {} as never);
-      expect(state.nextLevelBuffs.revealTiles).toBe(5);
+      expect(state.peekScrolls).toBe(1);
     });
 
-    it('reveal-scroll should stack with existing revealTiles', () => {
-      state.nextLevelBuffs.revealTiles = 3;
-      const item = getShopItem('reveal-scroll');
+    it('peek-scroll should stack in inventory', () => {
+      state.peekScrolls = 3;
+      const item = getShopItem('peek-scroll');
       item!.apply(state, {} as never);
-      expect(state.nextLevelBuffs.revealTiles).toBe(8);
+      expect(state.peekScrolls).toBe(4);
     });
   });
 
@@ -208,8 +222,8 @@ describe('shopItems', () => {
       expect(getShopItem('gold-magnet')?.cost).toBe(60);
     });
 
-    it('reveal-scroll costs 50g', () => {
-      expect(getShopItem('reveal-scroll')?.cost).toBe(50);
+    it('peek-scroll costs 50g', () => {
+      expect(getShopItem('peek-scroll')?.cost).toBe(50);
     });
   });
 });

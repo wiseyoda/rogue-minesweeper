@@ -38,6 +38,8 @@ const selectShopItems = (state: ReturnType<typeof useGameStore.getState>) =>
   state.run.shopItems;
 const selectPurchasedIds = (state: ReturnType<typeof useGameStore.getState>) =>
   state.run.purchasedIds;
+const selectRerollCount = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.rerollCount;
 const selectShowShop = (state: ReturnType<typeof useGameStore.getState>) =>
   state.run.showShop;
 const selectGenerateShop = (state: ReturnType<typeof useGameStore.getState>) =>
@@ -69,6 +71,7 @@ export const GameContainer = memo(function GameContainer({
   const monsterCount = useGameStore(selectMonsterCount);
   const shopItems = useGameStore(selectShopItems);
   const purchasedIds = useGameStore(selectPurchasedIds);
+  const rerollCount = useGameStore(selectRerollCount);
   const showShop = useGameStore(selectShowShop);
   const runPhase = useGameStore(selectRunPhase);
 
@@ -161,6 +164,7 @@ export const GameContainer = memo(function GameContainer({
           items={shopItems}
           gold={playerGold}
           purchasedIds={purchasedIds}
+          rerollCount={rerollCount}
           onPurchase={handlePurchase}
           onReroll={handleReroll}
           onContinue={handleShopContinue}

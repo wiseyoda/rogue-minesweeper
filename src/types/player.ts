@@ -51,6 +51,8 @@ export interface NextLevelBuffs {
   shieldBattery?: boolean;
   /** Forcefield charges for next level */
   forcefield?: number;
+  /** If true, use solver to reveal all logically deducible safe tiles */
+  revealScroll?: boolean;
 }
 
 /**
@@ -66,6 +68,8 @@ export interface PlayerState {
   shields: number;
   /** Current gold (currency for shops) */
   gold: number;
+  /** Number of peek scrolls in inventory (reveal one tile when used) */
+  peekScrolls: number;
   /** Buffs active during current level */
   activeBuffs: ActiveBuffs;
   /** Buffs to apply at next level start */
@@ -100,6 +104,7 @@ export function createInitialPlayerState(stats: PlayerStats): PlayerState {
     maxLives: stats.maxLives,
     shields: 0,
     gold: stats.startingGold,
+    peekScrolls: 0,
     activeBuffs: {},
     nextLevelBuffs: {},
   };

@@ -53,6 +53,9 @@ export const useMetaStore = create<MetaStore>()(
 
             // Increment total runs
             state.stats.totalRuns = (state.stats.totalRuns ?? 0) + 1;
+
+            // Track total gold earned (lifetime)
+            state.stats.totalGoldEarned = (state.stats.totalGoldEarned ?? 0) + gold;
           });
         },
 
@@ -133,12 +136,44 @@ export const useMetaStore = create<MetaStore>()(
 
         initializeUpgrades: () => {
           set((state) => {
-            // Merge with existing upgrades to preserve purchased state
+            // Merge fresh definitions with existing upgrades to preserve purchased state
+            // but update name, description, costs, etc. from source of truth
             const fresh = createInitialUpgradeRegistry();
             Object.keys(fresh).forEach((key) => {
               const freshUpgrade = fresh[key];
-              if (!state.upgrades[key] && freshUpgrade) {
+              const existingUpgrade = state.upgrades[key];
+
+              if (!freshUpgrade) return;
+
+              if (!existingUpgrade) {
+                // New upgrade - add it
                 state.upgrades[key] = freshUpgrade;
+              } else {
+                // Existing upgrade - update definition but preserve progress
+                if (isLeveledUpgrade(existingUpgrade) && isLeveledUpgrade(freshUpgrade)) {
+                  // Keep the level, update everything else
+                  const preservedLevel = existingUpgrade.level;
+                  state.upgrades[key] = {
+                    ...freshUpgrade,
+                    level: Math.min(preservedLevel, freshUpgrade.maxLevel),
+                  };
+                } else if (isUnlockableUpgrade(existingUpgrade) && isUnlockableUpgrade(freshUpgrade)) {
+                  // Keep the unlocked status, update everything else
+                  state.upgrades[key] = {
+                    ...freshUpgrade,
+                    unlocked: existingUpgrade.unlocked,
+                  };
+                } else {
+                  // Type changed - use fresh (shouldn't happen in practice)
+                  state.upgrades[key] = freshUpgrade;
+                }
+              }
+            });
+
+            // Remove any upgrades that no longer exist in definitions
+            Object.keys(state.upgrades).forEach((key) => {
+              if (!fresh[key]) {
+                delete state.upgrades[key];
               }
             });
           });

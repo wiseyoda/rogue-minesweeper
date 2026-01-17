@@ -33,8 +33,10 @@ export interface LeveledUpgrade extends BaseUpgrade {
   level: number;
   /** Maximum purchasable level */
   maxLevel: number;
-  /** Cost multiplier per level (e.g., 2 = double each level) */
+  /** Cost multiplier per level (e.g., 1.03 = 3% increase each level) */
   costIncrease: number;
+  /** Optional flat costs per level (overrides baseCost + costIncrease formula) */
+  flatCosts?: number[];
 }
 
 /**
@@ -82,6 +84,13 @@ export function isUnlockableUpgrade(
  */
 export function getUpgradeCost(upgrade: PermanentUpgrade): number {
   if (isLeveledUpgrade(upgrade)) {
+    // Use flat costs if defined, otherwise use formula
+    if (upgrade.flatCosts && upgrade.level < upgrade.flatCosts.length) {
+      const cost = upgrade.flatCosts[upgrade.level];
+      if (cost !== undefined) {
+        return cost;
+      }
+    }
     return Math.floor(
       upgrade.baseCost * Math.pow(upgrade.costIncrease, upgrade.level)
     );

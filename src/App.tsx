@@ -1,8 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { useGameStore } from '@/stores';
+import { useMetaStore } from '@/stores/metaStore';
 import { GameContainer } from '@/components/game';
 import { Sidebar } from '@/components/sidebar';
-import { GameTitle, Button } from '@/components/ui';
+import { GameTitle, RunStats } from '@/components/ui';
 import {
   BrickPattern,
   Vignette,
@@ -38,24 +39,20 @@ function App() {
   const gameOver = useGameStore((state) => state.gameOver);
 
   // Get actions
-  const startNewRun = useGameStore((state) => state.startNewRun);
   const startLevel = useGameStore((state) => state.startLevel);
 
-  // Initialize game on mount
+  // Initialize game on mount only
   useEffect(() => {
-    // If no game in progress, start level 1
-    if (run.phase === 'playing' && run.isFirstClick) {
+    // Sync upgrade definitions with persisted state (preserves progress, updates text/costs)
+    useMetaStore.getState().initializeUpgrades();
+
+    // Start level 1 on initial app load if grid doesn't exist yet
+    const { grid } = useGameStore.getState();
+    if (!grid && run.phase === 'playing') {
       startLevel(1);
     }
-  }, [run.phase, run.isFirstClick, startLevel]);
-
-  /**
-   * Reset the game to initial state.
-   */
-  function handleReset(): void {
-    startNewRun();
-    startLevel(1);
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Memoize message to prevent unnecessary re-renders
   const message = useMemo(
@@ -74,19 +71,25 @@ function App() {
 
       {/* Main content */}
       <div
-        className="relative min-h-screen flex flex-col items-center p-8"
-        style={{ zIndex: 10 }}
+        className="relative min-h-screen flex flex-col items-center"
+        style={{ zIndex: 10, padding: '16px' }}
       >
         {/* Title */}
-        <div className="mb-8">
+        <div style={{ marginBottom: '20px' }}>
           <GameTitle title="DUNGEON DELVER" subtitle="Roguelike Minesweeper" />
+        </div>
+
+        {/* Run Progress */}
+        <div style={{ marginBottom: '16px' }}>
+          <RunStats />
         </div>
 
         {/* Two-column layout */}
         <div
-          className="flex gap-8 items-start"
+          className="two-column-layout flex items-start"
           style={{
             flexDirection: 'row',
+            gap: '16px',
           }}
         >
           {/* Game Container - Board and Modals */}
@@ -98,18 +101,12 @@ function App() {
           <Sidebar />
         </div>
 
-        {/* Footer controls */}
-        <div className="mt-8 flex gap-4">
-          <Button variant="secondary" onClick={handleReset}>
-            New Game
-          </Button>
-        </div>
       </div>
 
       {/* Responsive styles */}
       <style>{`
         @media (max-width: 860px) {
-          .flex.gap-8 {
+          .two-column-layout {
             flex-direction: column !important;
             align-items: center;
           }

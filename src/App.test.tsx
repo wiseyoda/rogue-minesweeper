@@ -28,14 +28,9 @@ describe('App', () => {
   it('renders grid cells based on gridConfig', () => {
     render(<App />);
     const { gridConfig } = useGameStore.getState();
-    const buttons = screen.getAllByRole('button');
-    // grid cells + 1 reset button
-    const expectedCount = gridConfig.rows * gridConfig.cols + 1;
-    expect(buttons.length).toBe(expectedCount);
-  });
-
-  it('renders the New Game button', () => {
-    render(<App />);
-    expect(screen.getByText('New Game')).toBeInTheDocument();
+    // Grid cells have "Hidden tile" aria-label initially
+    const gridCells = screen.getAllByLabelText('Hidden tile');
+    const expectedCount = gridConfig.rows * gridConfig.cols;
+    expect(gridCells.length).toBe(expectedCount);
   });
 });

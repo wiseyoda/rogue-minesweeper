@@ -17,3 +17,8 @@ export { SegmentedBar } from './SegmentedBar';
 export { Button } from './Button';
 export { ResourceCard } from './ResourceCard';
 export { GameTitle } from './GameTitle';
+
+export { HighScores } from './HighScores';
+export type { HighScoresProps } from './HighScores';
+
+export { RunStats } from './RunStats';

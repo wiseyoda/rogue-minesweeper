@@ -29,7 +29,7 @@ export function VitalsPanel({
   return (
     <Panel>
       {/* Health section */}
-      <div className="mb-4">
+      <div style={{ marginBottom: '16px' }}>
         <div className="flex items-center gap-2 mb-2">
           <Heart size={12} />
           <span

@@ -3,11 +3,32 @@
  * @module components/shop/FloorShop
  */
 
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import type { ShopItem } from '@/types/item';
-import { Button } from '../ui';
+import { Button, Panel } from '../ui';
 import { ShopItemCard } from './ShopItemCard';
-import { REROLL_COST } from '@/data/shopItems';
+import { getRerollCost } from '@/data/shopItems';
+import {
+  HealPotionIcon,
+  MaxHPUpIcon,
+  ShieldOrbIcon,
+  GoldMagnetIcon,
+  RevealScrollIcon,
+  PeekScrollIcon,
+} from '../icons';
+import { Coin } from '../icons';
+
+/**
+ * Map shop item IDs to their icon components.
+ */
+const ITEM_ICONS: Record<string, ReactNode> = {
+  'heal-potion': <HealPotionIcon size={24} />,
+  'max-hp-up': <MaxHPUpIcon size={24} />,
+  'shield-orb': <ShieldOrbIcon size={24} />,
+  'gold-magnet': <GoldMagnetIcon size={24} />,
+  'reveal-scroll': <RevealScrollIcon size={24} />,
+  'peek-scroll': <PeekScrollIcon size={24} />,
+};
 
 /**
  * Props for FloorShop component.
@@ -19,6 +40,8 @@ export interface FloorShopProps {
   gold: number;
   /** IDs of items already purchased */
   purchasedIds: string[];
+  /** Number of times shop has been rerolled this visit */
+  rerollCount: number;
   /** Called when an item is purchased */
   onPurchase: (itemId: string) => void;
   /** Called when reroll button is clicked */
@@ -35,11 +58,13 @@ export const FloorShop = memo(function FloorShop({
   items,
   gold,
   purchasedIds,
+  rerollCount,
   onPurchase,
   onReroll,
   onContinue,
 }: FloorShopProps) {
-  const canAffordReroll = gold >= REROLL_COST;
+  const rerollCost = getRerollCost(rerollCount);
+  const canAffordReroll = gold >= rerollCost;
 
   return (
     <div
@@ -52,49 +77,49 @@ export const FloorShop = memo(function FloorShop({
       aria-modal="true"
       aria-labelledby="shop-title"
     >
-      <div
-        className="max-w-2xl w-full mx-4"
-        style={{
-          background:
-            'linear-gradient(180deg, var(--stone-800) 0%, var(--stone-900) 100%)',
-          border: '3px solid var(--gold)',
-          boxShadow:
-            '0 0 40px rgba(212, 175, 55, 0.3), inset 0 1px 0 var(--stone-700)',
-          padding: '24px',
-        }}
-      >
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h2
-            id="shop-title"
-            style={{
-              fontSize: '18px',
-              color: 'var(--gold)',
-              textShadow: '0 0 12px var(--gold-dark)',
-              marginBottom: '8px',
-            }}
-          >
-            FLOOR SHOP
-          </h2>
-          <div
-            style={{
-              fontSize: '12px',
-              color: 'var(--gold-bright)',
-            }}
-          >
-            Gold: {gold}
-          </div>
+      <Panel className="max-w-2xl w-full mx-4">
+        {/* Title */}
+        <h2
+          id="shop-title"
+          className="text-center"
+          style={{
+            fontSize: '18px',
+            color: 'var(--gold)',
+            textShadow: '0 0 12px var(--gold-dark)',
+            marginBottom: '8px',
+          }}
+        >
+          FLOOR SHOP
+        </h2>
+
+        {/* Gold Display */}
+        <div
+          className="flex items-center justify-center gap-2"
+          style={{
+            fontSize: '14px',
+            color: 'var(--gold-bright)',
+            marginBottom: '24px',
+          }}
+        >
+          <Coin size={16} />
+          <span>{gold}</span>
         </div>
 
         {/* Item Grid */}
         <div
-          className="flex justify-center gap-4 flex-wrap mb-6"
-          style={{ minHeight: '180px' }}
+          className="grid"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fit, 200px)',
+            justifyContent: 'center',
+            gap: '24px',
+            marginBottom: '24px',
+          }}
         >
           {items.map((item) => (
             <ShopItemCard
               key={item.id}
               item={item}
+              icon={ITEM_ICONS[item.id]}
               canAfford={gold >= item.cost}
               isPurchased={purchasedIds.includes(item.id)}
               onPurchase={() => onPurchase(item.id)}
@@ -103,7 +128,7 @@ export const FloorShop = memo(function FloorShop({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center" style={{ gap: '16px' }}>
           <Button
             variant="secondary"
             onClick={onReroll}
@@ -115,14 +140,14 @@ export const FloorShop = memo(function FloorShop({
                 fontSize: '10px',
               }}
             >
-              Reroll ({REROLL_COST}g)
+              Reroll ({rerollCost}g)
             </span>
           </Button>
           <Button variant="primary" onClick={onContinue}>
             <span style={{ fontSize: '10px' }}>Continue</span>
           </Button>
         </div>
-      </div>
+      </Panel>
     </div>
   );
 });

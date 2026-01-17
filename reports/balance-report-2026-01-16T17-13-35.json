@@ -1,0 +1,198 @@
+{
+  "config": {
+    "runs": 1000,
+    "startingUpgrades": {
+      "vitality": 0,
+      "fortune": 0,
+      "preparation": 0,
+      "resilience": 0,
+      "firstClickSafety": false
+    },
+    "startingFloor": 1,
+    "seed": null,
+    "strategy": {
+      "itemWeights": {
+        "heal-potion": 1,
+        "max-hp-up": 1.2,
+        "shield-orb": 1,
+        "gold-magnet": 1.5,
+        "reveal-scroll": 0.8
+      },
+      "lowHpThreshold": 0.5,
+      "lowHpHealMultiplier": 5,
+      "noShieldMultiplier": 3,
+      "goldReserve": 20,
+      "upgradePriority": [
+        "vitality",
+        "resilience",
+        "fortune",
+        "firstClickSafety",
+        "preparation"
+      ]
+    },
+    "mode": "single",
+    "sessions": 100,
+    "runsPerSession": 20
+  },
+  "stats": {
+    "runCount": 1000,
+    "floorReached": {
+      "mean": 1.185,
+      "median": 1,
+      "min": 1,
+      "max": 3,
+      "p10": 1,
+      "p25": 1,
+      "p75": 1,
+      "p90": 2,
+      "stdDev": 0.4108223460329291
+    },
+    "deathsByFloor": {
+      "1": 824,
+      "2": 167,
+      "3": 9
+    },
+    "goldPerRun": {
+      "mean": 75.456,
+      "median": 66,
+      "min": 11,
+      "max": 386,
+      "stdDev": 41.443359709367165
+    },
+    "goldPerFloor": {
+      "1": {
+        "mean": 63.396,
+        "samples": 1000
+      },
+      "2": {
+        "mean": 63.36931818181818,
+        "samples": 176
+      },
+      "3": {
+        "mean": 100.77777777777777,
+        "samples": 9
+      }
+    },
+    "itemPurchaseRate": {
+      "reveal-scroll": 0.036,
+      "heal-potion": 0.129,
+      "shield-orb": 0.097,
+      "gold-magnet": 0.02,
+      "max-hp-up": 0.012
+    },
+    "itemPurchaseByFloor": {
+      "reveal-scroll": {
+        "1": 33,
+        "2": 3
+      },
+      "heal-potion": {
+        "1": 123,
+        "2": 6
+      },
+      "shield-orb": {
+        "1": 94,
+        "2": 3
+      },
+      "gold-magnet": {
+        "1": 18,
+        "2": 2
+      },
+      "max-hp-up": {
+        "1": 9,
+        "2": 3
+      }
+    },
+    "averageDamageBlocked": 0.097,
+    "averageDamageTaken": 3.134,
+    "survivalRateByFloor": {
+      "1": 1,
+      "2": 0.176,
+      "3": 0.009
+    }
+  },
+  "warnings": [
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Difficulty spike detected: Floor 2 has 82.4% survival drop from Floor 1",
+      "data": {
+        "floor": "2",
+        "prevFloor": "1",
+        "dropRate": 0.8240000000000001
+      }
+    },
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Difficulty spike detected: Floor 3 has 16.7% survival drop from Floor 2",
+      "data": {
+        "floor": "3",
+        "prevFloor": "2",
+        "dropRate": 0.16699999999999998
+      }
+    },
+    {
+      "severity": "critical",
+      "category": "progression",
+      "message": "Floor 3 has <10% survival rate - may be too difficult",
+      "data": {
+        "floor": 3,
+        "survivalRate": 0.009
+      }
+    },
+    {
+      "severity": "info",
+      "category": "items",
+      "message": "reveal-scroll purchased only 3.6% of runs - may be overpriced or underpowered",
+      "data": {
+        "itemId": "reveal-scroll",
+        "purchaseRate": 0.036
+      }
+    },
+    {
+      "severity": "info",
+      "category": "items",
+      "message": "shield-orb purchased only 9.7% of runs - may be overpriced or underpowered",
+      "data": {
+        "itemId": "shield-orb",
+        "purchaseRate": 0.097
+      }
+    },
+    {
+      "severity": "info",
+      "category": "items",
+      "message": "gold-magnet purchased only 2.0% of runs - may be overpriced or underpowered",
+      "data": {
+        "itemId": "gold-magnet",
+        "purchaseRate": 0.02
+      }
+    },
+    {
+      "severity": "info",
+      "category": "items",
+      "message": "max-hp-up purchased only 1.2% of runs - may be overpriced or underpowered",
+      "data": {
+        "itemId": "max-hp-up",
+        "purchaseRate": 0.012
+      }
+    },
+    {
+      "severity": "warning",
+      "category": "progression",
+      "message": "Average run ends at floor 1.2 - game may be too difficult",
+      "data": {
+        "averageFloor": 1.185
+      }
+    },
+    {
+      "severity": "info",
+      "category": "economy",
+      "message": "Average gold per run is 75 - players may struggle to afford items",
+      "data": {
+        "averageGold": 75.456
+      }
+    }
+  ],
+  "timestamp": "2026-01-16T17:13:35.626Z",
+  "durationMs": 12
+}

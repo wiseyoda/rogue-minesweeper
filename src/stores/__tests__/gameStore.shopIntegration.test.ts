@@ -5,7 +5,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useGameStore } from '../gameStore';
-import { SHOP_ITEM_COUNT } from '@/data/shopItems';
+import { SHOP_ITEM_COUNT, REROLL_BASE_COST } from '@/data/shopItems';
 
 describe('Shop Integration - Full Purchase Flow', () => {
   beforeEach(() => {
@@ -177,10 +177,10 @@ describe('Shop Integration - Full Purchase Flow', () => {
     useGameStore.getState().generateShop();
     const goldBefore = useGameStore.getState().player.gold;
 
-    // Reroll
+    // Reroll (costs REROLL_BASE_COST = 50g)
     const result = useGameStore.getState().rerollShop();
     expect(result).toBe(true);
-    expect(useGameStore.getState().player.gold).toBe(goldBefore - 10);
+    expect(useGameStore.getState().player.gold).toBe(goldBefore - REROLL_BASE_COST);
     expect(useGameStore.getState().run.shopItems).toHaveLength(SHOP_ITEM_COUNT);
   });
 

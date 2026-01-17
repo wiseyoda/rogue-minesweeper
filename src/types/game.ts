@@ -26,10 +26,12 @@ export interface GameStats {
   highestLevelOverall: number;
   /** Maximum gold held in a single run */
   maxGoldRun: number;
-  /** Total number of runs played (optional, for analytics) */
-  totalRuns?: number;
+  /** Total number of runs played */
+  totalRuns: number;
   /** Total number of deaths (optional, for analytics) */
   totalDeaths?: number;
+  /** Total gold earned across all runs (lifetime) */
+  totalGoldEarned: number;
 }
 
 /**
@@ -55,10 +57,16 @@ export interface RunState {
   shopItems: ShopItem[];
   /** IDs of items purchased this shop visit */
   purchasedIds: string[];
+  /** Number of times shop has been rerolled this visit */
+  rerollCount: number;
   /** Whether the shop modal is currently shown */
   showShop: boolean;
   /** Number of safe tiles to reveal at level start (from Reveal Scroll buff) */
   pendingRevealTiles?: number;
+  /** True if first monster hit hasn't been used yet (for firstClickSafety upgrade) */
+  firstMonsterHit: boolean;
+  /** True if solver-based reveal should be applied after first click */
+  pendingRevealScroll?: boolean;
 }
 
 /**
@@ -92,7 +100,9 @@ export function createInitialRunState(level: number = 1): RunState {
     totalDamageTaken: 0,
     shopItems: [],
     purchasedIds: [],
+    rerollCount: 0,
     showShop: false,
+    firstMonsterHit: false,
   };
 }
 
@@ -105,6 +115,7 @@ export function createDefaultGameStats(): GameStats {
     maxGoldRun: 0,
     totalRuns: 0,
     totalDeaths: 0,
+    totalGoldEarned: 0,
   };
 }
 

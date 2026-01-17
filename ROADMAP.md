@@ -39,8 +39,8 @@ Phases use **ABBC** format:
 | 2010                                 | floor-progression        | ✅ Complete | Level advancement and scaling                    |
 | 2020                                 | floor-shop               | ✅ Complete | Between-floor shop UI and logic                  |
 | 2030                                 | meta-progression         | ✅ Complete | Permanent upgrades persist                       |
-| 2040                                 | meta-shop                | ⬜ Not Started | End-of-run upgrade shop                          |
-| 2050                                 | **progression-poc**      | ⬜ Not Started | **USER GATE**: Complete run loop works           |
+| 2040                                 | meta-shop                | ✅ Complete | Shop polish + First Click Safety fix             |
+| 2050                                 | **progression-poc**      | 🔄 In Progress | **USER GATE**: Complete run loop works           |
 | **Milestone 3: Rune System**         |                          |                |                                                  |
 | 3010                                 | rune-framework           | ⬜ Not Started | Rune types, effects, and stacking                |
 | 3020                                 | information-runes        | ⬜ Not Started | Runes that reveal/predict danger                 |
@@ -267,3 +267,4 @@ Items captured for future triage. Run `/speckit.backlog` to assign to phases.
 |------|-------------|----------|-------|
 | [Recommendation] Add more shop items for variety (healing, buffs, utility) | Added 2026-01-15 | - | |
 | [Deferred from 2020] T036: Add purchase confirmation animation - P3 polish item | Added 2026-01-15 | - | |
+| [Deferred from 2040] T005: Status message when First Click Safety triggers - requires status/toast system | Added 2026-01-15 | Low | |
