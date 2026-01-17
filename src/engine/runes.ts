@@ -514,6 +514,59 @@ export function applyOnDamageRunes(
  * @param equippedRunes Array of equipped rune IDs
  * @returns RuneModifiers object with all passive effects
  */
+/**
+ * Calculate final shop price with rune modifiers.
+ * Formula: base * (1 + priceIncrease) * (1 - discount)
+ * @param basePrice Original item/rune cost
+ * @param modifiers Rune modifiers with shopDiscount and shopPriceIncrease
+ * @returns Final price (minimum 1g)
+ */
+export function calculateShopPrice(basePrice: number, modifiers: RuneModifiers): number {
+  const increased = basePrice * (1 + modifiers.shopPriceIncrease);
+  const discounted = increased * (1 - modifiers.shopDiscount);
+  return Math.max(1, Math.floor(discounted));
+}
+
+/**
+ * Result of Treasure Hunter cache check.
+ */
+export interface TreasureCacheResult {
+  /** Whether the cache triggered */
+  triggered: boolean;
+  /** Gold amount awarded (0 if not triggered) */
+  goldAmount: number;
+}
+
+/**
+ * Check if Treasure Hunter triggers a gold cache.
+ * @param equippedRunes Array of equipped rune IDs
+ * @param floorBonus The floor completion bonus (level * 10)
+ * @returns Result with trigger status and gold amount
+ */
+export function checkTreasureCache(
+  equippedRunes: string[],
+  floorBonus: number
+): TreasureCacheResult {
+  const treasureCount = countRune(equippedRunes, 'treasure-hunter');
+  if (treasureCount === 0) {
+    return { triggered: false, goldAmount: 0 };
+  }
+
+  // 20% chance per rune (stackable)
+  const chance = 0.2 * treasureCount;
+  if (Math.random() >= chance) {
+    return { triggered: false, goldAmount: 0 };
+  }
+
+  // Gold = 10-25% of floor bonus (random within range)
+  const minPercent = 0.10;
+  const maxPercent = 0.25;
+  const percent = minPercent + Math.random() * (maxPercent - minPercent);
+  const goldAmount = Math.max(1, Math.floor(floorBonus * percent));
+
+  return { triggered: true, goldAmount };
+}
+
 export function getPassiveRuneModifiers(equippedRunes: string[]): RuneModifiers {
   const modifiers = createDefaultRuneModifiers();
 
@@ -545,6 +598,17 @@ export function getPassiveRuneModifiers(equippedRunes: string[]): RuneModifiers 
       case 'hardy':
         // +1 max lives (stackable)
         modifiers.maxLivesBonus += 1;
+        break;
+
+      case 'bargain-hunter':
+        // 10% shop discount (stackable)
+        modifiers.shopDiscount += 0.1;
+        break;
+
+      case 'golden-goose':
+        // +100% gold multiplier, +50% shop prices (non-stackable)
+        modifiers.goldMultiplier += 1.0;
+        modifiers.shopPriceIncrease = 0.5;
         break;
     }
   }

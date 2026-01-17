@@ -45,7 +45,7 @@ Phases use **ABBC** format:
 | 3010                                 | rune-framework           | ✅ Complete | Rune types, effects, and stacking                |
 | 3020                                 | information-runes        | ✅ Complete | Runes that reveal/predict danger                 |
 | 3030                                 | defense-runes            | ✅ Complete | Runes for HP, shields, armor                     |
-| 3040                                 | economy-runes            | ⬜ Not Started | Runes for gold and loot                          |
+| 3040                                 | economy-runes            | ✅ Complete | Runes for gold and loot                          |
 | 3050                                 | rune-synergies           | ⬜ Not Started | Combo detection and effects                      |
 | 3060                                 | **rune-system-poc**      | ⬜ Not Started | **USER GATE**: 10+ runes playable with synergies |
 | **Milestone 4: AI Dungeon Master**   |                          |                |                                                  |

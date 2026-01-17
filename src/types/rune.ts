@@ -70,6 +70,10 @@ export interface RuneModifiers {
   damageReductionPercent: number;
   /** Max lives bonus from Hardy runes */
   maxLivesBonus: number;
+  /** Shop discount percentage (0.0 = no discount, 0.1 = 10% off) */
+  shopDiscount: number;
+  /** Shop price increase percentage (0.0 = no increase, 0.5 = +50%) */
+  shopPriceIncrease: number;
 }
 
 /**
@@ -83,5 +87,7 @@ export function createDefaultRuneModifiers(): RuneModifiers {
     dangerSenseActive: false,
     damageReductionPercent: 0,
     maxLivesBonus: 0,
+    shopDiscount: 0,
+    shopPriceIncrease: 0,
   };
 }

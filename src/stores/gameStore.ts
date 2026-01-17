@@ -35,7 +35,10 @@ import {
   applyAutoFlag,
   getPassiveRuneModifiers,
   checkUndyingHeal,
+  calculateShopPrice,
+  checkTreasureCache,
 } from '@/engine/runes';
+import { countRune } from '@/data/runes';
 
 /** Maximum number of rune slots a player can have equipped. */
 const MAX_RUNE_SLOTS = 3;
@@ -293,13 +296,27 @@ export const useGameStore = create<GameStore>()(
 
           // Award 1 gold per revealed safe tile (subtract 1 if monster was hit)
           // 2x gold if goldMagnet active, +goldFindBonus%, +rune modifiers
-          const goldToAdd = result.hitMonster
+          // Lucky Coin: 10% chance per tile to double that tile's gold
+          const tilesToAward = result.hitMonster
             ? result.revealedPositions.length - 1
             : totalRevealed;
-          if (goldToAdd > 0) {
-            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            const baseGold = goldToAdd * goldMultiplier;
-            state.player.gold += applyGoldFind(baseGold, goldFindBonus, equippedRunesForGold);
+          if (tilesToAward > 0) {
+            const goldMagnetMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
+            const luckyCount = countRune(equippedRunesForGold, 'lucky-coin');
+            const luckyChance = 0.1 * luckyCount;
+
+            // Calculate gold per tile with Lucky Coin check
+            let totalGold = 0;
+            for (let i = 0; i < tilesToAward; i++) {
+              let tileGold = goldMagnetMultiplier;
+              // Lucky Coin: 10% chance per rune to double this tile's gold
+              if (luckyCount > 0 && Math.random() < luckyChance) {
+                tileGold *= 2;
+              }
+              totalGold += tileGold;
+            }
+
+            state.player.gold += applyGoldFind(totalGold, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -418,10 +435,19 @@ export const useGameStore = create<GameStore>()(
       setPhase: (phase: GamePhase) => {
         // Award floor completion bonus when transitioning to shopping
         if (phase === 'shopping') {
-          const { run } = get();
+          const { run, player } = get();
           const floorBonus = getFloorConfig(run.level).goldBonus;
+
+          // Treasure Hunter: 20% chance per rune for bonus gold cache
+          const treasureResult = checkTreasureCache(player.equippedRunes, floorBonus);
+
           set((state) => {
             state.player.gold += floorBonus;
+            // Add treasure cache bonus if triggered
+            if (treasureResult.triggered) {
+              state.player.gold += treasureResult.goldAmount;
+              // TODO: Display notification "Treasure Cache! +Xg"
+            }
             state.run.phase = phase;
           });
         } else {
@@ -455,12 +481,17 @@ export const useGameStore = create<GameStore>()(
 
         // Validate purchase
         if (!item) return false;
-        if (player.gold < item.cost) return false;
         if (run.purchasedIds.includes(itemId)) return false;
+
+        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
+        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        const finalPrice = calculateShopPrice(item.cost, modifiers);
+
+        if (player.gold < finalPrice) return false;
 
         // Apply purchase
         set((state) => {
-          state.player.gold -= item.cost;
+          state.player.gold -= finalPrice;
           state.run.purchasedIds.push(itemId);
           // Apply item effect directly to player state
           item.apply(state.player, createDefaultPlayerStats());
@@ -471,15 +502,19 @@ export const useGameStore = create<GameStore>()(
 
       rerollShop: () => {
         const { player, run } = get();
-        const rerollCost = getRerollCost(run.rerollCount);
+        const baseRerollCost = getRerollCost(run.rerollCount);
+
+        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
+        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        const finalRerollCost = calculateShopPrice(baseRerollCost, modifiers);
 
         // Check if can afford reroll
-        if (player.gold < rerollCost) return false;
+        if (player.gold < finalRerollCost) return false;
 
         // Deduct cost, increment counter, and regenerate
         const newItems = generateShopItems();
         set((state) => {
-          state.player.gold -= rerollCost;
+          state.player.gold -= finalRerollCost;
           state.run.rerollCount += 1;
           state.run.shopItems = newItems;
           // Keep purchasedIds - can't re-buy previously purchased items
@@ -532,9 +567,14 @@ export const useGameStore = create<GameStore>()(
             cell.isRevealed = true;
             state.run.revealedCount += 1;
             // Award gold for revealed tile (with goldMagnet/goldFindBonus/rune modifiers)
+            // Lucky Coin: 10% chance per rune to double gold
             const goldFindBonus = useMetaStore.getState().playerStats.goldFindBonus;
-            const goldMultiplier = state.player.activeBuffs.goldMagnet ? 2 : 1;
-            state.player.gold += applyGoldFind(1 * goldMultiplier, goldFindBonus, equippedRunesForGold);
+            let tileGold = state.player.activeBuffs.goldMagnet ? 2 : 1;
+            const luckyCount = countRune(equippedRunesForGold, 'lucky-coin');
+            if (luckyCount > 0 && Math.random() < 0.1 * luckyCount) {
+              tileGold *= 2;
+            }
+            state.player.gold += applyGoldFind(tileGold, goldFindBonus, equippedRunesForGold);
           }
         });
 
@@ -680,11 +720,14 @@ export const useGameStore = create<GameStore>()(
         const rune = getRune(runeId);
         if (!rune) return false;
 
+        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
+        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        const finalRuneCost = calculateShopPrice(rune.cost, modifiers);
+        const finalRemovalFee = calculateShopPrice(Math.floor(rune.cost / 2), modifiers);
+
         // Handle full rune slots - initiate replacement flow
         if (player.equippedRunes.length >= MAX_RUNE_SLOTS) {
-          // Calculate total cost: rune cost + removal fee (half of rune cost)
-          const removalFee = Math.floor(rune.cost / 2);
-          const totalCost = rune.cost + removalFee;
+          const totalCost = finalRuneCost + finalRemovalFee;
 
           if (player.gold < totalCost) return false;
 
@@ -696,11 +739,11 @@ export const useGameStore = create<GameStore>()(
         }
 
         // Normal purchase (not at max capacity)
-        if (player.gold < rune.cost) return false;
+        if (player.gold < finalRuneCost) return false;
 
         // Deduct gold and equip the rune
         set((state) => {
-          state.player.gold -= rune.cost;
+          state.player.gold -= finalRuneCost;
         });
 
         const equipped = get().equipRune(runeId);
@@ -711,7 +754,7 @@ export const useGameStore = create<GameStore>()(
         } else {
           // Refund if equip failed
           set((state) => {
-            state.player.gold += rune.cost;
+            state.player.gold += finalRuneCost;
           });
         }
 
@@ -735,9 +778,11 @@ export const useGameStore = create<GameStore>()(
         const rune = getRune(pendingRuneId);
         if (!rune) return false;
 
-        // Calculate total cost: rune cost + removal fee (half of rune cost)
-        const removalFee = Math.floor(rune.cost / 2);
-        const totalCost = rune.cost + removalFee;
+        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
+        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        const finalRuneCost = calculateShopPrice(rune.cost, modifiers);
+        const finalRemovalFee = calculateShopPrice(Math.floor(rune.cost / 2), modifiers);
+        const totalCost = finalRuneCost + finalRemovalFee;
 
         if (player.gold < totalCost) return false;
 
