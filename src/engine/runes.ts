@@ -28,6 +28,15 @@ export function clearHighlights(grid: Grid, highlightType?: HighlightType): Grid
 /** Omniscience rune proc chance per monster (15%) */
 const OMNISCIENCE_PROC_CHANCE = 0.15;
 
+/** Base chance for a tile reveal to drop a rune offer (3%). */
+export const TILE_RUNE_DROP_BASE_CHANCE = 0.03;
+/** Additional drop chance per floor above floor 1 (0.25%). */
+export const TILE_RUNE_DROP_PER_FLOOR_BONUS = 0.0025;
+/** Hard cap on tile-based rune drop chance (12%). */
+export const TILE_RUNE_DROP_MAX_CHANCE = 0.12;
+/** Maximum number of rune-drop events per floor. */
+export const TILE_RUNE_DROP_MAX_PER_FLOOR = 2;
+
 /**
  * Apply omniscience highlight to monster cells.
  * Each monster has a 15% chance to be marked with a subtle visual indicator.
@@ -46,6 +55,34 @@ export function applyOmniscienceHighlights(grid: Grid): Grid {
       return cell;
     })
   );
+}
+
+/**
+ * Calculate tile-based rune drop chance for the given floor.
+ * @param level Current floor number (1-indexed)
+ * @returns Effective drop chance in [0, TILE_RUNE_DROP_MAX_CHANCE]
+ */
+export function getTileRuneDropChance(level: number): number {
+  const floorBonus = Math.max(0, level - 1) * TILE_RUNE_DROP_PER_FLOOR_BONUS;
+  return Math.min(TILE_RUNE_DROP_MAX_CHANCE, TILE_RUNE_DROP_BASE_CHANCE + floorBonus);
+}
+
+/**
+ * Determine whether a safe tile reveal should produce a rune drop.
+ * @param level Current floor number
+ * @param currentDropCount Number of drops already produced this floor
+ * @param rng Optional random source for deterministic tests
+ */
+export function shouldDropRuneFromTile(
+  level: number,
+  currentDropCount: number,
+  rng: () => number = Math.random
+): boolean {
+  if (currentDropCount >= TILE_RUNE_DROP_MAX_PER_FLOOR) {
+    return false;
+  }
+
+  return rng() < getTileRuneDropChance(level);
 }
 
 /**

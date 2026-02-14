@@ -91,6 +91,10 @@ export interface RunState {
   discoveredSynergyIds: string[];
   /** Optional synergy discovery notification payload. */
   synergyNotification?: SynergyNotification;
+  /** Rune IDs dropped from tile reveals during the current floor. */
+  tileDroppedRuneIds: string[];
+  /** Number of rune-drop events triggered this floor. */
+  tileRuneDropCount: number;
 }
 
 /**
@@ -132,6 +136,8 @@ export function createInitialRunState(level: number = 1): RunState {
     activeSynergyIds: [],
     discoveredSynergyIds: [],
     synergyNotification: undefined,
+    tileDroppedRuneIds: [],
+    tileRuneDropCount: 0,
   };
 }
 

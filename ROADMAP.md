@@ -47,7 +47,7 @@ Phases use **ABBC** format:
 | 3030                                 | defense-runes            | ✅ Complete | Runes for HP, shields, armor                     |
 | 3040                                 | economy-runes            | ✅ Complete | Runes for gold and loot                          |
 | 3050 | rune-synergies | ✅ Complete | Combo detection and effects |
-| 3060                                 | **rune-system-poc**      | ⬜ Not Started | **USER GATE**: 10+ runes playable with synergies |
+| 3060 | **rune-system-poc** | ✅ Complete | **USER GATE**: 10+ runes playable with synergies |
 | **Milestone 4: AI Dungeon Master**   |                          |                |                                                  |
 | 4010                                 | ai-context-builder       | ⬜ Not Started | Build player history for AI                      |
 | 4020                                 | ai-provider-integration  | ⬜ Not Started | Vercel AI SDK with Gemini/Claude                 |

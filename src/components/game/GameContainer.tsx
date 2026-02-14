@@ -68,6 +68,8 @@ const selectConfirmRuneReplacement = (state: ReturnType<typeof useGameStore.getS
   state.confirmRuneReplacement;
 const selectCancelRuneReplacement = (state: ReturnType<typeof useGameStore.getState>) =>
   state.cancelRuneReplacement;
+const selectTileDroppedRuneIds = (state: ReturnType<typeof useGameStore.getState>) =>
+  state.run.tileDroppedRuneIds;
 
 /**
  * Container that composes Panel, GameBoard, and modal overlays.
@@ -92,6 +94,7 @@ export const GameContainer = memo(function GameContainer({
   const runeSelected = useGameStore(selectRuneSelected);
   const equippedRunes = useGameStore(selectEquippedRunes);
   const pendingRuneReplacement = useGameStore(selectPendingRuneReplacement);
+  const tileDroppedRuneIds = useGameStore(selectTileDroppedRuneIds);
 
   // Get actions
   const startNewRun = useGameStore(selectStartNewRun);
@@ -208,6 +211,7 @@ export const GameContainer = memo(function GameContainer({
           onReroll={handleReroll}
           onContinue={handleShopContinue}
           availableRuneRewards={availableRuneRewards}
+          droppedRuneRewards={tileDroppedRuneIds}
           runeSelected={runeSelected}
           onSelectRune={handleSelectRune}
           equippedRunes={equippedRunes}

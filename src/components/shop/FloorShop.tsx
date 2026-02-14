@@ -53,6 +53,8 @@ export interface FloorShopProps {
   onContinue: () => void;
   /** Available rune reward IDs for this shop visit */
   availableRuneRewards?: string[];
+  /** Rune IDs that specifically came from tile drops this floor */
+  droppedRuneRewards?: string[];
   /** Whether a rune has been selected this shop visit */
   runeSelected?: boolean;
   /** Called when a rune is selected */
@@ -80,6 +82,7 @@ export const FloorShop = memo(function FloorShop({
   onReroll,
   onContinue,
   availableRuneRewards = [],
+  droppedRuneRewards = [],
   runeSelected = false,
   onSelectRune,
   equippedRunes = [],
@@ -95,6 +98,7 @@ export const FloorShop = memo(function FloorShop({
   const runeRewards: RuneDefinition[] = availableRuneRewards
     .map((id) => getRune(id))
     .filter((r): r is RuneDefinition => r !== undefined);
+  const droppedRuneSet = new Set(droppedRuneRewards);
 
   // Get pending rune details for replacement UI
   const pendingRune = pendingRuneReplacement ? getRune(pendingRuneReplacement) : null;
@@ -168,6 +172,20 @@ export const FloorShop = memo(function FloorShop({
               }}
             >
               Runes For Sale
+              {droppedRuneRewards.length > 0 && (
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: '8px',
+                    color: 'var(--mystic-glow)',
+                    marginTop: '4px',
+                    textTransform: 'none',
+                    letterSpacing: 'normal',
+                  }}
+                >
+                  Bonus offers from tile drops: {droppedRuneRewards.length}
+                </span>
+              )}
               {isAtMaxRunes && !runeSelected && (
                 <span
                   style={{
@@ -289,6 +307,7 @@ export const FloorShop = memo(function FloorShop({
                     canAfford={canAffordRune(rune)}
                     onSelect={() => onSelectRune?.(rune.id)}
                     showReplacementCost={isAtMaxRunes && !runeSelected}
+                    isTileDropOffer={droppedRuneSet.has(rune.id)}
                   />
                 ))}
               </div>
