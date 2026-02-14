@@ -35,6 +35,19 @@ describe('gameStore shop', () => {
 
       expect(useGameStore.getState().run.purchasedIds).toHaveLength(0);
     });
+
+    it('should include dropped rune offers when present', () => {
+      useGameStore.setState((state) => {
+        state.run.tileDroppedRuneIds = ['lucky-coin', 'treasure-hunter'];
+      });
+
+      useGameStore.getState().generateShop();
+      const offers = useGameStore.getState().run.availableRuneRewards;
+
+      expect(offers).toContain('lucky-coin');
+      expect(offers).toContain('treasure-hunter');
+      expect(offers.length).toBeGreaterThanOrEqual(2);
+    });
   });
 
   describe('purchaseItem', () => {
@@ -344,6 +357,28 @@ describe('gameStore shop', () => {
 
       const fee = useGameStore.getState().getRuneRemovalFee('midas-touch'); // 60/2=30 -> floor(30 * 0.85)=25
       expect(fee).toBe(25);
+    });
+  });
+
+  describe('selectRuneReward with dropped offers', () => {
+    it('applies modifier-aware pricing when buying a dropped rune offer', () => {
+      useGameStore.setState((state) => {
+        state.player.gold = 100;
+        state.player.equippedRunes = ['bargain-hunter'];
+        state.run.activeSynergyIds = ['fortified-deal'];
+        state.run.tileDroppedRuneIds = ['lucky-coin'];
+      });
+
+      useGameStore.getState().generateShop();
+      expect(useGameStore.getState().run.availableRuneRewards).toContain('lucky-coin');
+
+      const goldBefore = useGameStore.getState().player.gold;
+      const purchased = useGameStore.getState().selectRuneReward('lucky-coin');
+
+      // 25g rune with 15% total discount = floor(21.25) = 21
+      expect(purchased).toBe(true);
+      expect(useGameStore.getState().player.gold).toBe(goldBefore - 21);
+      expect(useGameStore.getState().player.equippedRunes).toContain('lucky-coin');
     });
   });
 });

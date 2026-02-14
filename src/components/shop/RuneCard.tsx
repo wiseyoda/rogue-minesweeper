@@ -23,6 +23,8 @@ export interface RuneCardProps {
   onSelect: () => void;
   /** Whether to show the replacement cost (rune cost + removal fee) */
   showReplacementCost?: boolean;
+  /** Whether this offer came from a tile drop this floor */
+  isTileDropOffer?: boolean;
 }
 
 /**
@@ -86,6 +88,7 @@ export const RuneCard = memo(function RuneCard({
   canAfford,
   onSelect,
   showReplacementCost = false,
+  isTileDropOffer = false,
 }: RuneCardProps) {
   const borderColor = getRarityColor(rune.rarity);
   const categoryColor = getCategoryColor(rune.category);
@@ -159,6 +162,26 @@ export const RuneCard = memo(function RuneCard({
       >
         {rune.category.slice(0, 3)}
       </span>
+
+      {isTileDropOffer && (
+        <span
+          style={{
+            position: 'absolute',
+            top: '6px',
+            left: '6px',
+            fontSize: '7px',
+            color: 'var(--mystic-glow)',
+            padding: '2px 4px',
+            background: 'var(--stone-900)',
+            borderRadius: '2px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            border: '1px solid var(--mystic)',
+          }}
+        >
+          Drop
+        </span>
+      )}
 
       {/* Icon */}
       <div

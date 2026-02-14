@@ -303,6 +303,47 @@ export const RUNES: RuneDefinition[] = [
 ];
 
 /**
+ * Minimum rune count required for the rune system POC gate.
+ */
+export const MINIMUM_POC_RUNE_COUNT = 10;
+
+/**
+ * Categories expected to be represented for build diversity.
+ */
+export const RUNE_CATEGORIES_FOR_POC: RuneDefinition['category'][] = [
+  'information',
+  'defense',
+  'economy',
+  'utility',
+];
+
+export interface RuneCatalogSummary {
+  totalRunes: number;
+  byCategory: Record<RuneDefinition['category'], number>;
+}
+
+/**
+ * Summarize rune catalog coverage for balancing and gate checks.
+ */
+export function getRuneCatalogSummary(): RuneCatalogSummary {
+  const byCategory: Record<RuneDefinition['category'], number> = {
+    information: 0,
+    defense: 0,
+    economy: 0,
+    utility: 0,
+  };
+
+  for (const rune of RUNES) {
+    byCategory[rune.category] += 1;
+  }
+
+  return {
+    totalRunes: RUNES.length,
+    byCategory,
+  };
+}
+
+/**
  * Get a rune by its ID.
  */
 export function getRune(id: string): RuneDefinition | undefined {

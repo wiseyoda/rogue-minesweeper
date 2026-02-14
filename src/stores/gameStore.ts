@@ -40,6 +40,7 @@ import {
   checkTreasureCache,
   clearHighlights,
   findSafestTile,
+  shouldDropRuneFromTile,
 } from '@/engine/runes';
 import {
   findActiveSynergyIds,
@@ -92,6 +93,49 @@ function applyPreparationBuffs(count: number, player: { nextLevelBuffs: NextLeve
 function applyGoldFind(baseGold: number, bonus: number, equippedRunes: string[] = []): number {
   const runeModifiers = getPassiveRuneModifiers(equippedRunes);
   return Math.floor(baseGold * (1 + bonus) * runeModifiers.goldMultiplier);
+}
+
+interface TileRuneDropResult {
+  droppedRuneIds: string[];
+  dropCount: number;
+}
+
+/**
+ * Roll rune drops for a batch of safe tile reveals.
+ */
+function rollTileRuneDrops(
+  level: number,
+  revealCount: number,
+  equippedRunes: string[],
+  currentDroppedRuneIds: string[],
+  currentDropCount: number
+): TileRuneDropResult {
+  if (revealCount <= 0) {
+    return {
+      droppedRuneIds: currentDroppedRuneIds,
+      dropCount: currentDropCount,
+    };
+  }
+
+  const droppedRuneIds = [...currentDroppedRuneIds];
+  let dropCount = currentDropCount;
+
+  for (let i = 0; i < revealCount; i++) {
+    if (!shouldDropRuneFromTile(level, dropCount)) {
+      continue;
+    }
+
+    const excluded = [...equippedRunes, ...droppedRuneIds];
+    const [droppedRune] = getRandomRunes(1, excluded);
+    if (!droppedRune) {
+      break;
+    }
+
+    droppedRuneIds.push(droppedRune.id);
+    dropCount += 1;
+  }
+
+  return { droppedRuneIds, dropCount };
 }
 
 /**
@@ -335,6 +379,8 @@ export const useGameStore = create<GameStore>()(
           state.run.activeSynergyIds = synergyState.activeSynergyIds;
           state.run.discoveredSynergyIds = synergyState.discoveredSynergyIds;
           state.run.synergyNotification = synergyState.synergyNotification;
+          state.run.tileDroppedRuneIds = [];
+          state.run.tileRuneDropCount = 0;
           // Only reset total damage on new run, not new level
           if (isNewRun) {
             state.run.totalDamageTaken = 0;
@@ -447,6 +493,16 @@ export const useGameStore = create<GameStore>()(
             }
 
             state.player.gold += applyGoldFind(totalGold, goldFindBonus, equippedRunesForGold);
+
+            const dropResult = rollTileRuneDrops(
+              state.run.level,
+              tilesToAward,
+              equippedRunesForGold,
+              state.run.tileDroppedRuneIds,
+              state.run.tileRuneDropCount
+            );
+            state.run.tileDroppedRuneIds = dropResult.droppedRuneIds;
+            state.run.tileRuneDropCount = dropResult.dropCount;
           }
         });
 
@@ -610,14 +666,19 @@ export const useGameStore = create<GameStore>()(
 
       generateShop: () => {
         const items = generateShopItems();
-        const { player } = get();
-        // Generate rune rewards, excluding already equipped
-        const runeRewards = getRandomRunes(3, player.equippedRunes);
+        const { player, run } = get();
+        const droppedRuneIds = [...run.tileDroppedRuneIds];
+        // Generate baseline rune rewards, excluding equipped + dropped runes.
+        const baselineRuneRewards = getRandomRunes(3, [
+          ...player.equippedRunes,
+          ...droppedRuneIds,
+        ]).map((r) => r.id);
+        const runeRewards = [...droppedRuneIds, ...baselineRuneRewards];
 
         set((state) => {
           state.run.shopItems = items;
           state.run.purchasedIds = [];
-          state.run.availableRuneRewards = runeRewards.map((r) => r.id);
+          state.run.availableRuneRewards = runeRewards;
           state.run.runeSelected = false;
         });
       },
@@ -722,6 +783,16 @@ export const useGameStore = create<GameStore>()(
               tileGold *= 2;
             }
             state.player.gold += applyGoldFind(tileGold, goldFindBonus, equippedRunesForGold);
+
+            const dropResult = rollTileRuneDrops(
+              state.run.level,
+              1,
+              equippedRunesForGold,
+              state.run.tileDroppedRuneIds,
+              state.run.tileRuneDropCount
+            );
+            state.run.tileDroppedRuneIds = dropResult.droppedRuneIds;
+            state.run.tileRuneDropCount = dropResult.dropCount;
           }
         });
 

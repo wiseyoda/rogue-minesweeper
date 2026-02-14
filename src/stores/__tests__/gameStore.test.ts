@@ -97,6 +97,22 @@ describe('gameStore', () => {
       expect(useGameStore.getState().run.discoveredSynergyIds).toContain('greedy');
       expect(useGameStore.getState().run.synergyNotification).toBeUndefined();
     });
+
+    it('should still discover synergies when prior floor had tile rune drops', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['lucky-coin', 'treasure-hunter'];
+        state.run.tileDroppedRuneIds = ['bargain-hunter'];
+        state.run.tileRuneDropCount = 1;
+      });
+
+      useGameStore.getState().startLevel(1);
+
+      const state = useGameStore.getState();
+      expect(state.run.activeSynergyIds).toContain('greedy');
+      expect(state.run.synergyNotification?.id).toBe('greedy');
+      expect(state.run.tileDroppedRuneIds).toHaveLength(0);
+      expect(state.run.tileRuneDropCount).toBe(0);
+    });
   });
 
   describe('revealCell', () => {
@@ -338,6 +354,24 @@ describe('gameStore', () => {
 
       useGameStore.getState().dismissSynergyNotification();
       expect(useGameStore.getState().run.synergyNotification).toBeUndefined();
+    });
+  });
+
+  describe('dropped rune purchase synergy compatibility', () => {
+    it('should trigger synergy discovery when a dropped rune is purchased', () => {
+      useGameStore.setState((state) => {
+        state.player.gold = 200;
+        state.player.equippedRunes = ['shield-bearer'];
+        state.run.discoveredSynergyIds = [];
+        state.run.tileDroppedRuneIds = ['bargain-hunter'];
+      });
+
+      useGameStore.getState().generateShop();
+      const purchased = useGameStore.getState().selectRuneReward('bargain-hunter');
+
+      expect(purchased).toBe(true);
+      expect(useGameStore.getState().run.activeSynergyIds).toContain('fortified-deal');
+      expect(useGameStore.getState().run.synergyNotification?.id).toBe('fortified-deal');
     });
   });
 });

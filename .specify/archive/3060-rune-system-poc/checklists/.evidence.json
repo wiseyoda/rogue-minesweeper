@@ -1,0 +1,341 @@
+{
+  "version": "1.0",
+  "featureDir": "/Users/ppatterson/dev/rogue-minesweeper/specs/3060-rune-system-poc",
+  "items": {
+    "V-001": {
+      "itemId": "V-001",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-002": {
+      "itemId": "V-002",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-003": {
+      "itemId": "V-003",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-004": {
+      "itemId": "V-004",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-005": {
+      "itemId": "V-005",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-010": {
+      "itemId": "V-010",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-011": {
+      "itemId": "V-011",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-012": {
+      "itemId": "V-012",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-020": {
+      "itemId": "V-020",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-021": {
+      "itemId": "V-021",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-022",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-022": {
+      "itemId": "V-022",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-030",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-030": {
+      "itemId": "V-030",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-031",
+        "V-032"
+      ]
+    },
+    "V-031": {
+      "itemId": "V-031",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-032"
+      ]
+    },
+    "V-032": {
+      "itemId": "V-032",
+      "timestamp": "2026-02-14T20:04:24.656Z",
+      "evidence": "Verified via new rune-drop tests, updated shop/synergy regression tests, and full pnpm test/lint/typecheck run on 2026-02-14.",
+      "sharedWith": [
+        "V-001",
+        "V-002",
+        "V-003",
+        "V-004",
+        "V-005",
+        "V-010",
+        "V-011",
+        "V-012",
+        "V-020",
+        "V-021",
+        "V-022",
+        "V-030",
+        "V-031"
+      ]
+    },
+    "V-013": {
+      "itemId": "V-013",
+      "timestamp": "2026-02-14T21:05:32.151Z",
+      "evidence": "User confirmed manual USER GATE playtesting and build diversity checks on 2026-02-14.",
+      "sharedWith": [
+        "V-050",
+        "V-051",
+        "V-052",
+        "V-053"
+      ]
+    },
+    "V-050": {
+      "itemId": "V-050",
+      "timestamp": "2026-02-14T21:05:32.151Z",
+      "evidence": "User confirmed manual USER GATE playtesting and build diversity checks on 2026-02-14.",
+      "sharedWith": [
+        "V-013",
+        "V-051",
+        "V-052",
+        "V-053"
+      ]
+    },
+    "V-051": {
+      "itemId": "V-051",
+      "timestamp": "2026-02-14T21:05:32.151Z",
+      "evidence": "User confirmed manual USER GATE playtesting and build diversity checks on 2026-02-14.",
+      "sharedWith": [
+        "V-013",
+        "V-050",
+        "V-052",
+        "V-053"
+      ]
+    },
+    "V-052": {
+      "itemId": "V-052",
+      "timestamp": "2026-02-14T21:05:32.151Z",
+      "evidence": "User confirmed manual USER GATE playtesting and build diversity checks on 2026-02-14.",
+      "sharedWith": [
+        "V-013",
+        "V-050",
+        "V-051",
+        "V-053"
+      ]
+    },
+    "V-053": {
+      "itemId": "V-053",
+      "timestamp": "2026-02-14T21:05:32.151Z",
+      "evidence": "User confirmed manual USER GATE playtesting and build diversity checks on 2026-02-14.",
+      "sharedWith": [
+        "V-013",
+        "V-050",
+        "V-051",
+        "V-052"
+      ]
+    }
+  }
+}
