@@ -12,6 +12,8 @@ import type {
   GameStats,
   PlayerStats,
   PermanentUpgradeRegistry,
+  DungeonRunRecord,
+  DungeonRateLimitState,
 } from '@/types';
 
 // ============================================================================
@@ -135,6 +137,55 @@ export interface MetaStoreActions {
  * Complete meta store type.
  */
 export type MetaStore = MetaStoreState & MetaStoreActions;
+
+// ============================================================================
+// dungeonStore Types
+// ============================================================================
+
+/**
+ * State shape for the dungeon store.
+ * Contains AI-oriented telemetry and history data.
+ */
+export interface DungeonStoreState {
+  /** Completed run history records (capped list). */
+  runHistory: DungeonRunRecord[];
+  /** Recent player action strings (capped queue). */
+  recentActions: string[];
+  /** Counter of near-death events for the active run. */
+  nearDeathMoments: number;
+  /** Sliding-window request metadata for future provider throttling. */
+  rateLimit: DungeonRateLimitState;
+}
+
+/**
+ * Actions available on the dungeon store.
+ */
+export interface DungeonStoreActions {
+  /** Append one action to the recent-action queue. */
+  recordAction: (action: string) => void;
+  /** Increment the near-death counter for the active run. */
+  markNearDeathMoment: () => void;
+  /** Clear near-death counter (typically on new run). */
+  resetNearDeathMoments: () => void;
+  /** Append a completed run summary to history. */
+  recordRunResult: (record: Omit<DungeonRunRecord, 'endedAt' | 'nearDeathMoments'> & {
+    endedAt?: string;
+    nearDeathMoments?: number;
+  }) => void;
+  /** Reset request window when expired. */
+  resetRateWindowIfExpired: (now?: number) => void;
+  /** Check whether a context request can be made in the current window. */
+  canRequestContext: (now?: number) => boolean;
+  /** Register one context request and return whether it was accepted. */
+  registerContextRequest: (now?: number) => boolean;
+  /** Reset store to initial state (test/runtime utility). */
+  reset: () => void;
+}
+
+/**
+ * Complete dungeon store type.
+ */
+export type DungeonStore = DungeonStoreState & DungeonStoreActions;
 
 // ============================================================================
 // uiStore Types
