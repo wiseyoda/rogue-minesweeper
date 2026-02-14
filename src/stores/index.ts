@@ -6,6 +6,7 @@
 // Store hooks
 export { useGameStore } from './gameStore';
 export { useMetaStore } from './metaStore';
+export { useDungeonStore } from './dungeonStore';
 export { useUIStore } from './uiStore';
 
 // Types
@@ -16,6 +17,9 @@ export type {
   MetaStore,
   MetaStoreState,
   MetaStoreActions,
+  DungeonStore,
+  DungeonStoreState,
+  DungeonStoreActions,
   UIStore,
   UIStoreState,
   UIStoreActions,

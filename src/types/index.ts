@@ -79,3 +79,13 @@ export type {
   RuneModifiers,
 } from './rune';
 export { createDefaultRuneModifiers } from './rune';
+
+// AI types
+export type {
+  DungeonMasterRequestType,
+  DungeonRunResult,
+  DungeonRunRecord,
+  DungeonRateLimitState,
+  DungeonMasterContext,
+  DungeonMasterContextEnvelope,
+} from './ai';
