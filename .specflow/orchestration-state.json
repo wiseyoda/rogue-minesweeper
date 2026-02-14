@@ -5,7 +5,7 @@
     "name": "rogue-minesweeper",
     "path": "/Users/ppatterson/dev/rogue-minesweeper"
   },
-  "last_updated": "2026-02-14T19:40:19.564Z",
+  "last_updated": "2026-02-14T19:42:38.385Z",
   "orchestration": {
     "phase": {
       "number": null,
@@ -46,6 +46,16 @@
     "status": "ready",
     "last_check": "2026-01-17T19:27:18Z",
     "issues": []
+  },
+  "memory": {
+    "archive_reviews": {
+      "3050": {
+        "reviewed_at": "2026-02-14",
+        "promotions": [],
+        "skipped": [],
+        "notes": "no promotable content found"
+      }
+    }
   },
   "actions": {
     "available": [],
