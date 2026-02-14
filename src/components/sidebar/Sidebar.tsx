@@ -12,6 +12,7 @@ import { RunesPanel } from './RunesPanel';
 import { ActionButton } from './ActionButton';
 import { Panel, HighScores } from '../ui';
 import { PeekScrollIcon, RobotIcon, FortuneIcon } from '../icons';
+import { SynergyNotification } from '@/components/hud';
 
 export function Sidebar() {
   const [showHighScores, setShowHighScores] = useState(false);
@@ -22,6 +23,9 @@ export function Sidebar() {
   const peekScrolls = useGameStore((state) => state.player.peekScrolls);
   const level = useGameStore((state) => state.run.level);
   const equippedRunes = useGameStore((state) => state.player.equippedRunes);
+  const activeSynergyIds = useGameStore((state) => state.run.activeSynergyIds);
+  const synergyNotification = useGameStore((state) => state.run.synergyNotification);
+  const dismissSynergyNotification = useGameStore((state) => state.dismissSynergyNotification);
   const startNewRun = useGameStore((state) => state.startNewRun);
   const startLevel = useGameStore((state) => state.startLevel);
   const usePeekScroll = useGameStore((state) => state.usePeekScroll);
@@ -50,6 +54,10 @@ export function Sidebar() {
       style={{ width: '280px', gap: '12px' }}
     >
       <DMPanel />
+      <SynergyNotification
+        notification={synergyNotification}
+        onDismiss={dismissSynergyNotification}
+      />
       <VitalsPanel
         health={lives}
         maxHealth={maxLives}
@@ -57,7 +65,7 @@ export function Sidebar() {
         shields={shields}
         floor={level}
       />
-      <RunesPanel equippedRunes={equippedRunes} />
+      <RunesPanel equippedRunes={equippedRunes} activeSynergyIds={activeSynergyIds} />
       {peekScrolls > 0 && (
         <Panel>
           <div className="flex items-center justify-between">

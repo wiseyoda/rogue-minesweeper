@@ -85,6 +85,8 @@ export interface GameStoreActions {
   cancelRuneReplacement: () => void;
   /** Calculate the removal fee for a rune (half of new rune's cost) */
   getRuneRemovalFee: (runeId: string) => number;
+  /** Dismiss the currently visible synergy discovery notification */
+  dismissSynergyNotification: () => void;
 }
 
 /**

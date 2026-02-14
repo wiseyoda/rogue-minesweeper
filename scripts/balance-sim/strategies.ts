@@ -196,6 +196,7 @@ export function decideMetaUpgrade(
   strategy: StrategyConfig,
   _random: Random
 ): string | null {
+  void _random;
   // Go through priority list and buy first affordable upgrade
   for (const upgradeId of strategy.upgradePriority) {
     const upgradeConfig = GAME_CONSTANTS.upgrades[upgradeId];

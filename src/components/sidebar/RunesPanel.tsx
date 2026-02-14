@@ -7,13 +7,18 @@
 
 import { Panel } from '../ui/Panel';
 import { getRune } from '@/data/runes';
+import { getSynergy } from '@/data/synergies';
 
 interface RunesPanelProps {
   equippedRunes: string[];
+  activeSynergyIds: string[];
 }
 
-export function RunesPanel({ equippedRunes }: RunesPanelProps) {
+export function RunesPanel({ equippedRunes, activeSynergyIds }: RunesPanelProps) {
   const emptySlots = Math.max(0, 3 - equippedRunes.length);
+  const activeSynergies = activeSynergyIds
+    .map((synergyId) => getSynergy(synergyId))
+    .filter((synergy): synergy is NonNullable<ReturnType<typeof getSynergy>> => synergy !== undefined);
 
   return (
     <Panel>
@@ -123,6 +128,47 @@ export function RunesPanel({ equippedRunes }: RunesPanelProps) {
             }}
           />
         ))}
+      </div>
+
+      {/* Active synergies */}
+      <div style={{ marginTop: '12px' }}>
+        <div
+          style={{
+            fontSize: '7px',
+            color: 'var(--stone-400)',
+            letterSpacing: '1px',
+            textTransform: 'uppercase',
+            marginBottom: '6px',
+          }}
+        >
+          Active Synergies
+        </div>
+
+        {activeSynergies.length === 0 ? (
+          <div style={{ fontSize: '8px', color: 'var(--stone-600)' }}>
+            None discovered yet
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {activeSynergies.map((synergy) => (
+              <div
+                key={synergy.id}
+                style={{
+                  border: '1px solid var(--mystic-dark)',
+                  background: 'linear-gradient(180deg, var(--mystic-void) 0%, var(--stone-900) 100%)',
+                  padding: '5px 6px',
+                }}
+              >
+                <div style={{ fontSize: '8px', color: 'var(--mystic-glow)', marginBottom: '2px' }}>
+                  {synergy.name}
+                </div>
+                <div style={{ fontSize: '7px', color: 'var(--stone-400)', lineHeight: 1.35 }}>
+                  {synergy.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </Panel>
   );

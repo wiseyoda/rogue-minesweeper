@@ -26,3 +26,6 @@ export type { BuffBarProps } from './BuffBar';
 
 export { MessageArea } from './MessageArea';
 export type { MessageAreaProps, GameMessage, MessageType } from './MessageArea';
+
+export { SynergyNotification } from './SynergyNotification';
+export type { SynergyNotificationProps } from './SynergyNotification';

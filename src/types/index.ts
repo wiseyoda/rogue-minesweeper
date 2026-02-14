@@ -62,7 +62,7 @@ export {
 } from './shop';
 
 // Game session types
-export type { GamePhase, GameStats, RunState, GameState } from './game';
+export type { GamePhase, GameStats, RunState, GameState, SynergyNotification } from './game';
 export {
   createInitialRunState,
   createDefaultGameStats,

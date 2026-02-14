@@ -136,6 +136,18 @@ describe('gameStore shop', () => {
 
       expect(useGameStore.getState().player.peekScrolls).toBe(1);
     });
+
+    it('should apply fortified-deal synergy discount on purchases', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['bargain-hunter'];
+        state.run.activeSynergyIds = ['fortified-deal'];
+      });
+
+      const goldBefore = useGameStore.getState().player.gold;
+      useGameStore.getState().purchaseItem('heal-potion'); // 30g -> floor(30 * 0.85) = 25
+
+      expect(useGameStore.getState().player.gold).toBe(goldBefore - 25);
+    });
   });
 
   describe('rerollShop', () => {
@@ -198,6 +210,18 @@ describe('gameStore shop', () => {
       useGameStore.getState().rerollShop();
 
       expect(useGameStore.getState().run.purchasedIds).toContain('heal-potion');
+    });
+
+    it('should apply fortified-deal synergy discount on reroll cost', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['bargain-hunter'];
+        state.run.activeSynergyIds = ['fortified-deal'];
+      });
+
+      const goldBefore = useGameStore.getState().player.gold;
+      useGameStore.getState().rerollShop(); // 50g -> floor(50 * 0.85) = 42
+
+      expect(useGameStore.getState().player.gold).toBe(goldBefore - 42);
     });
   });
 
@@ -308,6 +332,18 @@ describe('gameStore shop', () => {
       useGameStore.getState().startLevel(2);
 
       expect(useGameStore.getState().run.showShop).toBe(false);
+    });
+  });
+
+  describe('getRuneRemovalFee', () => {
+    it('should apply rune and synergy discounts to removal fee', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['bargain-hunter'];
+        state.run.activeSynergyIds = ['fortified-deal'];
+      });
+
+      const fee = useGameStore.getState().getRuneRemovalFee('midas-touch'); // 60/2=30 -> floor(30 * 0.85)=25
+      expect(fee).toBe(25);
     });
   });
 });

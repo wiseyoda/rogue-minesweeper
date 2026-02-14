@@ -49,3 +49,13 @@ export {
   getPassiveRuneModifiers,
   type OnDamageResult,
 } from './runes';
+
+// Synergy effects
+export {
+  findActiveSynergyIds,
+  findActiveSynergies,
+  getSynergyModifiers,
+  getNewlyDiscoveredSynergyIds,
+  createDefaultSynergyModifiers,
+  type SynergyModifiers,
+} from './synergies';

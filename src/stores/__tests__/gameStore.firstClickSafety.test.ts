@@ -24,6 +24,16 @@ function enableFirstClickSafetyUpgrade(): void {
   useMetaStore.getState().applyAllUpgrades();
 }
 
+/**
+ * Reveal the pre-initialized safe center tile.
+ */
+function revealSafeCenterTile(): void {
+  const { gridConfig } = useGameStore.getState();
+  const centerRow = Math.floor(gridConfig.rows / 2);
+  const centerCol = Math.floor(gridConfig.cols / 2);
+  useGameStore.getState().revealCell(centerRow, centerCol);
+}
+
 describe('gameStore first click safety', () => {
   beforeEach(() => {
     // Reset both stores before each test
@@ -76,7 +86,7 @@ describe('gameStore first click safety', () => {
       useGameStore.getState().startLevel(1);
 
       // Initialize grid with first click
-      useGameStore.getState().revealCell(0, 0);
+      revealSafeCenterTile();
 
       const livesBefore = useGameStore.getState().player.lives;
 
@@ -103,7 +113,7 @@ describe('gameStore first click safety', () => {
       useGameStore.getState().startLevel(1);
 
       // Initialize grid
-      useGameStore.getState().revealCell(0, 0);
+      revealSafeCenterTile();
 
       const grid = useGameStore.getState().grid;
       if (!grid) throw new Error('Grid should be initialized');
@@ -152,7 +162,7 @@ describe('gameStore first click safety', () => {
       useGameStore.getState().startLevel(1);
 
       // Initialize grid
-      useGameStore.getState().revealCell(0, 0);
+      revealSafeCenterTile();
 
       const grid = useGameStore.getState().grid;
       if (!grid) throw new Error('Grid should be initialized');

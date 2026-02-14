@@ -1,150 +1,81 @@
----
-version: '1.0'
-description: 'SpecKit CLI and slash command usage reference'
----
+# SpecFlow Usage Reference
 
-# SpecKit Usage Reference
-
-This document provides the complete CLI and slash command reference for SpecKit.
+This document provides the CLI and slash command reference for SpecFlow v3.0.
 
 ## Quick Start
 
 ```bash
 # In terminal
-speckit --help           # CLI help
+specflow status              # Show project status
+specflow next                # Get next actionable task
 
 # In Claude Code
-/speckit.start           # Smart entry point - routes to right command
+/flow.orchestrate            # Full automated workflow
 ```
 
 ## CLI Commands
 
+### Smart Commands
+
+```bash
+specflow status              # Complete project status
+specflow next                # Next actionable task with context
+specflow mark T007           # Mark task complete
+specflow mark T007..T010     # Mark range of tasks
+specflow mark V-001          # Mark verification item
+specflow check               # Deep validation
+specflow check --fix         # Auto-fix issues
+specflow check --gate design # Check specific gate
+```
+
 ### State Management
 
 ```bash
-speckit state get [key]           # Show state (or specific key)
-speckit state set key=value       # Update state value (NOTE: use = not space)
-speckit state init                # Initialize new state file
-speckit state reset               # Reset state to defaults
-speckit state validate            # Check state file health
-```
-
-### Project Setup
-
-```bash
-speckit scaffold [--force]        # Create .specify/ structure
-speckit doctor [--fix]            # Diagnostics and auto-repair (shows suggested fixes)
-speckit detect                    # Detect existing content
-speckit templates sync            # Update outdated + copy new templates
-```
-
-### Git Operations
-
-```bash
-speckit git branch create <name>  # Create and checkout branch
-speckit git commit "<message>"    # Stage and commit
-speckit git push                  # Push current branch
-speckit git sync                  # Fetch all, show status
-```
-
-### ROADMAP Management
-
-```bash
-speckit roadmap status            # Show phase statuses
-speckit roadmap update <N> <status>  # Update phase (complete, in_progress, etc.)
-speckit roadmap next              # Get next pending phase
-speckit roadmap insert --after <N> "<name>"  # Insert new phase
-speckit roadmap defer <N>         # Defer phase to backlog
-```
-
-### Task Tracking
-
-```bash
-speckit tasks status              # Show completion percentage
-speckit tasks list [--incomplete] # List tasks
-speckit tasks mark T###           # Mark task complete
-```
-
-### Issue Tracking
-
-```bash
-speckit issue list [--open]       # List issues
-speckit issue create "<title>"    # Create new issue
-speckit issue close <id>          # Close an issue
-speckit issue show <id>           # Show issue details
+specflow state get <key>                    # Get state value
+specflow state set key=value                # Set state value
+specflow state get orchestration.phase      # Dot notation supported
 ```
 
 ### Phase Management
 
 ```bash
-speckit phase show <N>            # Show phase details
-speckit phase list                # List all phases
-speckit phase archive <N>         # Archive to HISTORY.md
-```
-
-### Memory Documents
-
-```bash
-speckit memory list               # List memory documents
-speckit memory check              # Verify document health
+specflow phase                              # Show current phase
+specflow phase open 0010                    # Start a specific phase
+specflow phase open --hotfix                # Create hotfix phase
+specflow phase close                        # Close current phase
+specflow phase close --dry-run              # Preview close
+specflow phase archive 0042                 # Archive completed phase
+specflow phase add 0010 "name"              # Add phase to ROADMAP
+specflow phase defer "item"                 # Add to BACKLOG.md
+specflow phase scan                         # Scan for incomplete tasks
 ```
 
 ## Slash Commands
 
-### Primary Entry Point
+### Primary Workflows
 
 ```
-/speckit.start                    # Auto-detect state, route to right command
+/flow.orchestrate            # Full automated workflow (design → implement → verify)
+/flow.design                 # Create spec, plan, tasks, checklists
+/flow.implement              # Execute tasks with TDD
+/flow.verify                 # Verify completion, update ROADMAP
+/flow.merge                  # Close phase, push, merge to main
 ```
 
-### Workflow Commands
+### Setup & Maintenance
 
 ```
-/speckit.init                     # Requirements interview
-/speckit.orchestrate              # Full automated workflow (9 steps)
-/speckit.orchestrate --no-discovery  # Skip codebase examination
-/speckit.specify                  # Create feature spec
-/speckit.clarify                  # Resolve ambiguities
-/speckit.plan                     # Create implementation plan
-/speckit.tasks                    # Generate task breakdown
-/speckit.analyze                  # Cross-artifact check
-/speckit.checklist                # Create verification checklist
-/speckit.implement                # Execute tasks
-/speckit.verify                   # Verify completion
-/speckit.merge                    # Complete phase, merge PR
+/flow.init                   # Project initialization interview
+/flow.memory                 # Verify and optimize memory documents
+/flow.roadmap                # Create/update ROADMAP.md
+/flow.doctor                 # Diagnose and migrate projects
 ```
 
-**Orchestrate steps**: discover → specify → clarify → plan → tasks → analyze → checklist → implement → verify
-
-### Memory Commands
+### Quality & Review
 
 ```
-/speckit.memory                   # Verify and reconcile memory docs
-/speckit.memory generate          # Generate docs from codebase analysis
-/speckit.constitution             # Create/update constitution
-```
-
-### Project Management
-
-```
-/speckit.roadmap                  # Create/update ROADMAP.md
-/speckit.backlog                  # Triage backlog items
-/speckit.phase                    # Create phases from PDRs
-/speckit.review                   # Systematic code review
-```
-
-## CLI Syntax Notes
-
-Important syntax patterns that differ from common conventions:
-
-```bash
-# State set uses key=value (NOT key value)
-speckit state set orchestration.phase.status=complete    # Correct
-speckit state set orchestration.phase.status complete    # Wrong
-
-# State get uses dot notation
-speckit state get orchestration.phase.status
-speckit state get orchestration --json
+/flow.analyze                # Cross-artifact consistency analysis
+/flow.review                 # Systematic code review
 ```
 
 ## Common Patterns
@@ -152,65 +83,49 @@ speckit state get orchestration --json
 ### Starting a New Phase
 
 ```bash
-# Option 1: Smart entry (recommended)
-/speckit.start
+# Option 1: Full automation (recommended)
+/flow.orchestrate
 
-# Option 2: Full automation
-/speckit.orchestrate
-
-# Option 3: Manual workflow
-/speckit.specify "Add user authentication"
-/speckit.clarify
-/speckit.plan
-/speckit.tasks
-# ... etc
+# Option 2: Just design
+/flow.design "Add user authentication"
 ```
 
 ### Completing a Phase
 
 ```bash
-# Verify all tasks complete
-speckit tasks status
+# Check status
+specflow status
 
-# Complete phase
-/speckit.merge
+# Verify completion
+/flow.verify
 
-# Or complete and start next phase
-/speckit.merge --next-phase
+# Complete and merge
+/flow.merge
 ```
 
 ### Resuming Work
 
 ```bash
 # Check current state
-speckit status
+specflow status
 
-# Resume via smart entry
-/speckit.start
+# Get next task
+specflow next
+
+# Resume workflow
+/flow.orchestrate
 ```
 
 ## Troubleshooting
 
-### Common Issues
-
 | Issue | Solution |
 |-------|----------|
-| "Command not found" | Check PATH includes `~/.claude/speckit-system/bin` |
-| State file corrupt | Run `speckit doctor --fix` |
-| Branch mismatch | Run `speckit reconcile` |
-| Missing artifacts | Re-run the producing step |
-| Missing templates | Run `speckit templates sync` |
-
-### Diagnostics
-
-```bash
-speckit doctor                    # Full diagnostic check
-speckit doctor --fix              # Auto-repair issues
-speckit status --json             # Current state as JSON
-```
+| Missing templates | `specflow check --fix` |
+| State file corrupt | `specflow check --fix` |
+| Missing artifacts | Re-run `/flow.design` |
 
 ## More Information
 
-- Full documentation: See `README.md` and `docs/` folder
-- CLI help: `speckit --help` or `speckit <command> --help`
-- Slash command help: Reference `commands/speckit.*.md` files
+- Project instructions: See `CLAUDE.md`
+- Memory documents: `.specify/memory/`
+- Templates: `.specify/templates/`

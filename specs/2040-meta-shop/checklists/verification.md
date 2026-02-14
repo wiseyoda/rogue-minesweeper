@@ -1,7 +1,7 @@
 # Verification Checklist: Shop Polish & First Click Safety
 
 **Phase**: 2040
-**Purpose**: Post-completion verification for /speckit.verify
+**Purpose**: Post-completion verification for /flow.verify
 **Created**: 2026-01-15
 **Verified**: 2026-01-15
 
