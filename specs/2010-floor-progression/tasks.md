@@ -2,7 +2,7 @@
 
 ## Progress Dashboard
 
-> Last updated: 2026-01-15T18:39:55Z | Run `speckit tasks sync` to refresh
+> Last updated: 2026-01-15T18:39:55Z | Run `specflow status` to refresh
 
 | Phase | Status | Progress |
 |-------|--------|----------|

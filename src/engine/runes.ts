@@ -395,14 +395,15 @@ export function checkUndyingHeal(
  * Called after a tile is revealed.
  * @param grid The current grid
  * @param equippedRunes Array of equipped rune IDs
- * @param _revealedPosition Position that was just revealed (unused for now)
+ * @param revealedPosition Position that was just revealed
  * @returns Object with potentially updated grid and count of bonus tiles revealed
  */
 export function applyOnRevealRunes(
   grid: Grid,
   equippedRunes: string[],
-  _revealedPosition: { row: number; col: number }
+  revealedPosition: { row: number; col: number }
 ): { grid: Grid; bonusTilesRevealed: number } {
+  void revealedPosition;
   let currentGrid = grid;
   let bonusTilesRevealed = 0;
 

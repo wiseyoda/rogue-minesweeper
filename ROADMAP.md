@@ -46,7 +46,7 @@ Phases use **ABBC** format:
 | 3020                                 | information-runes        | ✅ Complete | Runes that reveal/predict danger                 |
 | 3030                                 | defense-runes            | ✅ Complete | Runes for HP, shields, armor                     |
 | 3040                                 | economy-runes            | ✅ Complete | Runes for gold and loot                          |
-| 3050                                 | rune-synergies           | ⬜ Not Started | Combo detection and effects                      |
+| 3050 | rune-synergies | ✅ Complete | Combo detection and effects |
 | 3060                                 | **rune-system-poc**      | ⬜ Not Started | **USER GATE**: 10+ runes playable with synergies |
 | **Milestone 4: AI Dungeon Master**   |                          |                |                                                  |
 | 4010                                 | ai-context-builder       | ⬜ Not Started | Build player history for AI                      |
@@ -95,13 +95,13 @@ Phase details are stored in modular files:
 To view a specific phase:
 
 ```bash
-speckit phase show 0010
+specflow phase 0010
 ```
 
 To create a phase:
 
 ```bash
-speckit phase create 0010 "project-setup"
+specflow phase open 0010 "project-setup"
 ```
 
 ---
@@ -175,26 +175,26 @@ See `.specify/memory/tech-stack.md` for full details.
 ### Starting a Phase
 
 ```
-/speckit.orchestrate
+/flow.orchestrate
 ```
 
 Or manually:
 
 ```
-/speckit.specify "Phase NNNN - [Phase Name]"
+/flow.design "Phase NNNN - [Phase Name]"
 ```
 
 ### After Completing a Phase
 
 1. Update status in table above: ⬜ → ✅
-2. Archive phase: `speckit phase archive NNNN`
+2. Archive phase: `specflow phase close NNNN`
 3. If USER GATE: get explicit user verification before proceeding
 
 ### Adding New Phases
 
 ```bash
-speckit roadmap insert --after 0020 "New Phase Name"
-speckit phase create 0025 "new-phase"
+specflow phase insert --after 0020 "New Phase Name"
+specflow phase open 0025 "new-phase"
 ```
 
 ---
@@ -261,7 +261,7 @@ See also: `.specify/memory/design-system.md` for quick reference tables.
 
 ## Backlog
 
-Items captured for future triage. Run `/speckit.backlog` to assign to phases.
+Items captured for future triage. Run `/flow.roadmap` to assign to phases.
 
 | Item | Description | Priority | Notes |
 |------|-------------|----------|-------|

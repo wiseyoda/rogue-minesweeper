@@ -7,7 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FloorShop } from '../FloorShop';
 import type { ShopItem } from '@/types/item';
-import { getRerollCost, REROLL_BASE_COST, REROLL_INCREMENT } from '@/data/shopItems';
+import { REROLL_BASE_COST, REROLL_INCREMENT } from '@/data/shopItems';
 
 describe('FloorShop', () => {
   const mockItems: ShopItem[] = [

@@ -1,7 +1,7 @@
 # Verification Checklist: Meta Progression
 
 **Phase**: 2030
-**Purpose**: Post-completion verification for /speckit.verify
+**Purpose**: Post-completion verification for /flow.verify
 **Created**: 2026-01-15
 
 ---

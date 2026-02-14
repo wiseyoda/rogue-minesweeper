@@ -8,7 +8,7 @@ description: 'Implementation plan template'
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+**Note**: This template is filled in by the `/flow.design` command.
 
 ## Summary
 
@@ -44,12 +44,10 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ```text
 specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+├── spec.md              # Feature specification (/flow.design)
+├── plan.md              # This file (/flow.design)
+├── tasks.md             # Task breakdown (/flow.design)
+└── checklists/          # Implementation & verification checklists (/flow.design)
 ```
 
 ### Source Code (repository root)
@@ -108,3 +106,21 @@ directories captured above]
 | -------------------------- | ------------------ | ------------------------------------ |
 | [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
 | [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
+
+---
+
+## Memory Promotion Markers
+
+Use these markers to flag content for promotion to memory documents during archive review:
+
+| Marker | Purpose | Example |
+|--------|---------|---------|
+| `[PROMOTE]` | Flag content for memory promotion | `[PROMOTE] This architecture pattern avoids circular deps` |
+| `[MEMORY]` | Same as PROMOTE | `[MEMORY] Always use X over Y for this use case` |
+
+**When to use**:
+- Architectural decisions that should apply to future phases
+- Technology choices that become project standards
+- Patterns or anti-patterns discovered during planning
+
+**What happens**: During `/flow.memory --archive`, marked content is presented for review and can be promoted to constitution.md, tech-stack.md, or coding-standards.md.

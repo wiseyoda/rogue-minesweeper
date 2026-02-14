@@ -3,7 +3,7 @@
  * @module scripts/balance-sim/reporters/markdown
  */
 
-import type { SimulationReport, AggregatedStats, SessionAggregatedStats } from '../types.ts';
+import type { SimulationReport, SessionAggregatedStats } from '../types.ts';
 
 /**
  * Generate markdown report string.

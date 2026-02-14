@@ -18,6 +18,18 @@ export type GamePhase =
   | 'upgradeShop'; // End-of-run permanent upgrade shop
 
 /**
+ * Discovery notification shown when a synergy is first activated in a run.
+ */
+export interface SynergyNotification {
+  /** Synergy ID that was discovered. */
+  id: string;
+  /** Display name of the synergy. */
+  name: string;
+  /** Short effect summary. */
+  description: string;
+}
+
+/**
  * Statistics tracked across all runs.
  * Persisted to localStorage.
  */
@@ -73,6 +85,12 @@ export interface RunState {
   runeSelected: boolean;
   /** Rune ID pending replacement (when at max capacity and player wants to buy a new rune) */
   pendingRuneReplacement?: string;
+  /** Currently active synergy IDs for this run state. */
+  activeSynergyIds: string[];
+  /** Synergies discovered at least once during this run. */
+  discoveredSynergyIds: string[];
+  /** Optional synergy discovery notification payload. */
+  synergyNotification?: SynergyNotification;
 }
 
 /**
@@ -111,6 +129,9 @@ export function createInitialRunState(level: number = 1): RunState {
     firstMonsterHit: false,
     availableRuneRewards: [],
     runeSelected: false,
+    activeSynergyIds: [],
+    discoveredSynergyIds: [],
+    synergyNotification: undefined,
   };
 }
 

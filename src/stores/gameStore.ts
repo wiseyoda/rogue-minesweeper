@@ -7,7 +7,7 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { GameStore } from './types';
-import type { GamePhase, NextLevelBuffs } from '@/types';
+import type { GamePhase, Grid, NextLevelBuffs, SynergyNotification } from '@/types';
 import {
   createInitialPlayerState,
   createInitialRunState,
@@ -24,7 +24,8 @@ import {
   getShopItem,
   getRerollCost,
 } from '@/data/shopItems';
-import { getRandomRunes, getRune } from '@/data/runes';
+import { countRune, getRandomRunes, getRune } from '@/data/runes';
+import { getSynergy } from '@/data/synergies';
 import { useMetaStore } from './metaStore';
 import { findCertainMoves } from '@/engine/solver';
 import {
@@ -37,8 +38,14 @@ import {
   checkUndyingHeal,
   calculateShopPrice,
   checkTreasureCache,
+  clearHighlights,
+  findSafestTile,
 } from '@/engine/runes';
-import { countRune } from '@/data/runes';
+import {
+  findActiveSynergyIds,
+  getNewlyDiscoveredSynergyIds,
+  getSynergyModifiers,
+} from '@/engine/synergies';
 
 /** Maximum number of rune slots a player can have equipped. */
 const MAX_RUNE_SLOTS = 3;
@@ -85,6 +92,108 @@ function applyPreparationBuffs(count: number, player: { nextLevelBuffs: NextLeve
 function applyGoldFind(baseGold: number, bonus: number, equippedRunes: string[] = []): number {
   const runeModifiers = getPassiveRuneModifiers(equippedRunes);
   return Math.floor(baseGold * (1 + bonus) * runeModifiers.goldMultiplier);
+}
+
+/**
+ * Reveal random safe tiles and return updated grid + count.
+ */
+function revealRandomSafeTiles(
+  grid: Grid,
+  tilesToReveal: number
+): { grid: Grid; revealedCount: number } {
+  if (tilesToReveal <= 0) return { grid, revealedCount: 0 };
+
+  let currentGrid = grid;
+  let revealedCount = 0;
+  const safeTiles: Array<{ row: number; col: number }> = [];
+
+  for (let r = 0; r < currentGrid.length; r++) {
+    const gridRow = currentGrid[r];
+    if (!gridRow) continue;
+    for (let c = 0; c < gridRow.length; c++) {
+      const cell = gridRow[c];
+      if (cell && !cell.isRevealed && !cell.isMonster && !cell.isFlagged) {
+        safeTiles.push({ row: r, col: c });
+      }
+    }
+  }
+
+  const shuffled = [...safeTiles].sort(() => Math.random() - 0.5);
+  const toReveal = shuffled.slice(0, Math.min(tilesToReveal, shuffled.length));
+
+  for (const tilePos of toReveal) {
+    const revealResult = engineRevealCell(currentGrid, tilePos);
+    currentGrid = revealResult.grid;
+    revealedCount += revealResult.revealedPositions.length;
+  }
+
+  return { grid: currentGrid, revealedCount };
+}
+
+/**
+ * Force prophecy highlight on the safest tile.
+ */
+function applyGuaranteedProphecyHighlight(grid: Grid): Grid {
+  const clearedGrid = clearHighlights(grid, 'prophecy');
+  const safestPos = findSafestTile(clearedGrid);
+
+  if (!safestPos) return clearedGrid;
+
+  return clearedGrid.map((row, r) =>
+    row.map((cell, c) => {
+      if (r === safestPos.row && c === safestPos.col) {
+        return { ...cell, highlightType: 'prophecy' };
+      }
+      return cell;
+    })
+  );
+}
+
+/**
+ * Build a synergy discovery notification payload.
+ */
+function buildSynergyNotification(synergyId: string): SynergyNotification | undefined {
+  const synergy = getSynergy(synergyId);
+  if (!synergy) return undefined;
+
+  return {
+    id: synergy.id,
+    name: synergy.name,
+    description: synergy.description,
+  };
+}
+
+/**
+ * Compute active/discovered synergy state for a rune loadout.
+ */
+function computeSynergyState(equippedRunes: string[], discoveredSynergyIds: string[]): {
+  activeSynergyIds: string[];
+  discoveredSynergyIds: string[];
+  synergyNotification?: SynergyNotification;
+} {
+  const activeSynergyIds = findActiveSynergyIds(equippedRunes);
+  const newlyDiscoveredIds = getNewlyDiscoveredSynergyIds(activeSynergyIds, discoveredSynergyIds);
+  const mergedDiscovered = newlyDiscoveredIds.length
+    ? [...new Set([...discoveredSynergyIds, ...newlyDiscoveredIds])]
+    : [...discoveredSynergyIds];
+
+  return {
+    activeSynergyIds,
+    discoveredSynergyIds: mergedDiscovered,
+    synergyNotification: newlyDiscoveredIds[0]
+      ? buildSynergyNotification(newlyDiscoveredIds[0])
+      : undefined,
+  };
+}
+
+/**
+ * Get combined rune + synergy modifiers for shop price calculations.
+ */
+function getEffectiveShopModifiers(equippedRunes: string[], activeSynergyIds: string[]) {
+  const modifiers = getPassiveRuneModifiers(equippedRunes);
+  const synergyModifiers = getSynergyModifiers(activeSynergyIds);
+  modifiers.shopDiscount += synergyModifiers.extraShopDiscount;
+  return modifiers;
 }
 
 /**
@@ -137,8 +246,10 @@ export const useGameStore = create<GameStore>()(
       startLevel: (level: number) => {
         const floorConfig = getFloorConfig(level);
         const isNewRun = level === 1;
-        const { player } = get();
+        const { player, run } = get();
         const nextBuffs = player.nextLevelBuffs;
+        const synergyState = computeSynergyState(player.equippedRunes, run.discoveredSynergyIds);
+        const synergyModifiers = getSynergyModifiers(synergyState.activeSynergyIds);
 
         // Pre-initialize grid with safe center position
         const centerRow = Math.floor(floorConfig.rows / 2);
@@ -153,6 +264,13 @@ export const useGameStore = create<GameStore>()(
           currentGrid = floorStartResult.grid;
           totalRevealed += floorStartResult.tilesRevealed;
           shieldsFromRunes = floorStartResult.shieldsGranted;
+        }
+
+        // Apply synergy floor-start reveal bonuses.
+        if (synergyModifiers.extraFloorStartReveals > 0) {
+          const revealResult = revealRandomSafeTiles(currentGrid, synergyModifiers.extraFloorStartReveals);
+          currentGrid = revealResult.grid;
+          totalRevealed += revealResult.revealedCount;
         }
 
         // Apply pending reveal tiles buff (from shop items)
@@ -195,6 +313,11 @@ export const useGameStore = create<GameStore>()(
           currentGrid = applyHighlightRunes(currentGrid, player.equippedRunes);
         }
 
+        // Seer synergy: force prophecy highlight when active.
+        if (synergyModifiers.guaranteedProphecy) {
+          currentGrid = applyGuaranteedProphecyHighlight(currentGrid);
+        }
+
         set((state) => {
           state.grid = currentGrid;
           state.gridConfig = floorConfig;
@@ -209,6 +332,9 @@ export const useGameStore = create<GameStore>()(
           state.run.purchasedIds = [];
           state.run.rerollCount = 0;
           state.run.showShop = false;
+          state.run.activeSynergyIds = synergyState.activeSynergyIds;
+          state.run.discoveredSynergyIds = synergyState.discoveredSynergyIds;
+          state.run.synergyNotification = synergyState.synergyNotification;
           // Only reset total damage on new run, not new level
           if (isNewRun) {
             state.run.totalDamageTaken = 0;
@@ -221,6 +347,10 @@ export const useGameStore = create<GameStore>()(
           // Apply Shield Bearer rune shields
           if (shieldsFromRunes > 0) {
             state.player.shields += shieldsFromRunes;
+          }
+          // Apply synergy shield bonuses.
+          if (synergyModifiers.extraFloorStartShields > 0) {
+            state.player.shields += synergyModifiers.extraFloorStartShields;
           }
           // Apply nextLevelBuffs to activeBuffs (T030)
           if (nextBuffs.goldMagnet) {
@@ -368,6 +498,7 @@ export const useGameStore = create<GameStore>()(
 
       takeDamage: (amount: number) => {
         const { player, run } = get();
+        const synergyModifiers = getSynergyModifiers(run.activeSynergyIds);
 
         // Apply onDamage rune effects
         const isFirstDamageThisFloor = run.damageTakenThisLevel === 0;
@@ -393,6 +524,12 @@ export const useGameStore = create<GameStore>()(
 
           // If damage was fully negated by runes, skip further processing
           if (remaining <= 0) {
+            if (damageResult.secondChanceUsed && synergyModifiers.extraSecondChanceHp > 0) {
+              state.player.lives = Math.min(
+                state.player.maxLives,
+                state.player.lives + synergyModifiers.extraSecondChanceHp
+              );
+            }
             state.run.damageTakenThisLevel += amount;
             return;
           }
@@ -407,6 +544,14 @@ export const useGameStore = create<GameStore>()(
           // Apply remaining damage to lives
           if (remaining > 0) {
             state.player.lives = Math.max(0, state.player.lives - remaining);
+          }
+
+          // Immortal synergy: grant additional HP when Second Chance triggers.
+          if (damageResult.secondChanceUsed && synergyModifiers.extraSecondChanceHp > 0) {
+            state.player.lives = Math.min(
+              state.player.maxLives,
+              state.player.lives + synergyModifiers.extraSecondChanceHp
+            );
           }
 
           // Track damage this level (includes shielded damage for monster count)
@@ -436,10 +581,12 @@ export const useGameStore = create<GameStore>()(
         // Award floor completion bonus when transitioning to shopping
         if (phase === 'shopping') {
           const { run, player } = get();
-          const floorBonus = getFloorConfig(run.level).goldBonus;
+          const baseFloorBonus = getFloorConfig(run.level).goldBonus;
+          const synergyModifiers = getSynergyModifiers(run.activeSynergyIds);
+          const floorBonus = Math.floor(baseFloorBonus * synergyModifiers.floorBonusMultiplier);
 
           // Treasure Hunter: 20% chance per rune for bonus gold cache
-          const treasureResult = checkTreasureCache(player.equippedRunes, floorBonus);
+          const treasureResult = checkTreasureCache(player.equippedRunes, baseFloorBonus);
 
           set((state) => {
             state.player.gold += floorBonus;
@@ -483,8 +630,8 @@ export const useGameStore = create<GameStore>()(
         if (!item) return false;
         if (run.purchasedIds.includes(itemId)) return false;
 
-        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
-        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        // Calculate price with rune + synergy modifiers.
+        const modifiers = getEffectiveShopModifiers(player.equippedRunes, run.activeSynergyIds);
         const finalPrice = calculateShopPrice(item.cost, modifiers);
 
         if (player.gold < finalPrice) return false;
@@ -504,8 +651,8 @@ export const useGameStore = create<GameStore>()(
         const { player, run } = get();
         const baseRerollCost = getRerollCost(run.rerollCount);
 
-        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
-        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        // Calculate price with rune + synergy modifiers.
+        const modifiers = getEffectiveShopModifiers(player.equippedRunes, run.activeSynergyIds);
         const finalRerollCost = calculateShopPrice(baseRerollCost, modifiers);
 
         // Check if can afford reroll
@@ -655,6 +802,14 @@ export const useGameStore = create<GameStore>()(
             state.player.maxLives += 1;
             state.player.lives += 1;
           }
+
+          const synergyState = computeSynergyState(
+            state.player.equippedRunes,
+            state.run.discoveredSynergyIds
+          );
+          state.run.activeSynergyIds = synergyState.activeSynergyIds;
+          state.run.discoveredSynergyIds = synergyState.discoveredSynergyIds;
+          state.run.synergyNotification = synergyState.synergyNotification;
         });
 
         return true;
@@ -690,6 +845,14 @@ export const useGameStore = create<GameStore>()(
             state.player.maxLives += 1;
             state.player.lives += 1;
           }
+
+          const synergyState = computeSynergyState(
+            state.player.equippedRunes,
+            state.run.discoveredSynergyIds
+          );
+          state.run.activeSynergyIds = synergyState.activeSynergyIds;
+          state.run.discoveredSynergyIds = synergyState.discoveredSynergyIds;
+          state.run.synergyNotification = synergyState.synergyNotification;
         });
 
         return true;
@@ -720,8 +883,8 @@ export const useGameStore = create<GameStore>()(
         const rune = getRune(runeId);
         if (!rune) return false;
 
-        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
-        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        // Calculate price with rune + synergy modifiers.
+        const modifiers = getEffectiveShopModifiers(player.equippedRunes, run.activeSynergyIds);
         const finalRuneCost = calculateShopPrice(rune.cost, modifiers);
         const finalRemovalFee = calculateShopPrice(Math.floor(rune.cost / 2), modifiers);
 
@@ -778,8 +941,8 @@ export const useGameStore = create<GameStore>()(
         const rune = getRune(pendingRuneId);
         if (!rune) return false;
 
-        // Calculate price with rune modifiers (Bargain Hunter, Golden Goose)
-        const modifiers = getPassiveRuneModifiers(player.equippedRunes);
+        // Calculate price with rune + synergy modifiers.
+        const modifiers = getEffectiveShopModifiers(player.equippedRunes, run.activeSynergyIds);
         const finalRuneCost = calculateShopPrice(rune.cost, modifiers);
         const finalRemovalFee = calculateShopPrice(Math.floor(rune.cost / 2), modifiers);
         const totalCost = finalRuneCost + finalRemovalFee;
@@ -788,10 +951,33 @@ export const useGameStore = create<GameStore>()(
 
         // Perform the replacement
         set((state) => {
+          const oldRuneId = state.player.equippedRunes[slotIndex];
           state.player.gold -= totalCost;
+
+          // Handle Hardy unequip when replacing.
+          if (oldRuneId === 'hardy') {
+            state.player.maxLives = Math.max(1, state.player.maxLives - 1);
+            state.player.lives = Math.min(state.player.lives, state.player.maxLives);
+          }
+
           state.player.equippedRunes[slotIndex] = pendingRuneId;
+
+          // Handle Hardy equip via replacement.
+          if (pendingRuneId === 'hardy') {
+            state.player.maxLives += 1;
+            state.player.lives += 1;
+          }
+
           state.run.runeSelected = true;
           state.run.pendingRuneReplacement = undefined;
+
+          const synergyState = computeSynergyState(
+            state.player.equippedRunes,
+            state.run.discoveredSynergyIds
+          );
+          state.run.activeSynergyIds = synergyState.activeSynergyIds;
+          state.run.discoveredSynergyIds = synergyState.discoveredSynergyIds;
+          state.run.synergyNotification = synergyState.synergyNotification;
         });
 
         return true;
@@ -804,9 +990,17 @@ export const useGameStore = create<GameStore>()(
       },
 
       getRuneRemovalFee: (runeId: string) => {
+        const { player, run } = get();
         const rune = getRune(runeId);
         if (!rune) return 0;
-        return Math.floor(rune.cost / 2);
+        const modifiers = getEffectiveShopModifiers(player.equippedRunes, run.activeSynergyIds);
+        return calculateShopPrice(Math.floor(rune.cost / 2), modifiers);
+      },
+
+      dismissSynergyNotification: () => {
+        set((state) => {
+          state.run.synergyNotification = undefined;
+        });
       },
     })),
     { name: 'GameStore' }

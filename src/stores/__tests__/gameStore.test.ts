@@ -69,6 +69,34 @@ describe('gameStore', () => {
       expect(state.gridConfig.rows).toBeGreaterThan(8);
       expect(state.gridConfig.cols).toBeGreaterThan(8);
     });
+
+    it('should activate fortified-deal synergy and apply extra floor-start shield', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['shield-bearer', 'bargain-hunter'];
+      });
+
+      useGameStore.getState().startLevel(1);
+
+      const state = useGameStore.getState();
+      expect(state.run.activeSynergyIds).toContain('fortified-deal');
+      expect(state.player.shields).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should only notify on first synergy discovery per run', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['lucky-coin', 'treasure-hunter'];
+      });
+
+      useGameStore.getState().startLevel(1);
+      expect(useGameStore.getState().run.synergyNotification?.id).toBe('greedy');
+      expect(useGameStore.getState().run.discoveredSynergyIds).toContain('greedy');
+
+      useGameStore.getState().dismissSynergyNotification();
+      useGameStore.getState().startLevel(2);
+
+      expect(useGameStore.getState().run.discoveredSynergyIds).toContain('greedy');
+      expect(useGameStore.getState().run.synergyNotification).toBeUndefined();
+    });
   });
 
   describe('revealCell', () => {
@@ -177,6 +205,20 @@ describe('gameStore', () => {
       useGameStore.getState().takeDamage(2);
       expect(useGameStore.getState().run.damageTakenThisLevel).toBe(3);
     });
+
+    it('should grant Immortal bonus HP when Second Chance triggers', () => {
+      useGameStore.setState((state) => {
+        state.player.equippedRunes = ['second-chance'];
+        state.player.lives = 2;
+        state.run.activeSynergyIds = ['immortal'];
+      });
+
+      useGameStore.getState().takeDamage(3);
+
+      const state = useGameStore.getState();
+      expect(state.player.secondChanceUsed).toBe(true);
+      expect(state.player.lives).toBe(2);
+    });
   });
 
   describe('addGold', () => {
@@ -219,6 +261,18 @@ describe('gameStore', () => {
 
       // Should have floor bonus added (level * 10 = 30)
       expect(useGameStore.getState().player.gold).toBe(goldBefore + 30);
+    });
+
+    it('should apply Greedy synergy floor bonus multiplier', () => {
+      useGameStore.getState().startLevel(3); // base floor bonus: 30
+      useGameStore.setState((state) => {
+        state.run.activeSynergyIds = ['greedy'];
+      });
+
+      const goldBefore = useGameStore.getState().player.gold;
+      useGameStore.getState().setPhase('shopping');
+
+      expect(useGameStore.getState().player.gold).toBe(goldBefore + 45);
     });
   });
 
@@ -269,6 +323,21 @@ describe('gameStore', () => {
       expect(state.player.shields).toBe(0);
       expect(state.gameOver).toBe(false);
       expect(state.grid).toBeNull();
+    });
+  });
+
+  describe('dismissSynergyNotification', () => {
+    it('should clear the active synergy notification', () => {
+      useGameStore.setState((state) => {
+        state.run.synergyNotification = {
+          id: 'greedy',
+          name: 'Greedy',
+          description: '+50% floor completion bonus',
+        };
+      });
+
+      useGameStore.getState().dismissSynergyNotification();
+      expect(useGameStore.getState().run.synergyNotification).toBeUndefined();
     });
   });
 });

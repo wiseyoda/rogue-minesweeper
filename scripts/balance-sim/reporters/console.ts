@@ -3,7 +3,7 @@
  * @module scripts/balance-sim/reporters/console
  */
 
-import type { SimulationReport, AggregatedStats, BalanceWarning } from '../types.ts';
+import type { SimulationReport, BalanceWarning } from '../types.ts';
 
 /**
  * ANSI color codes for terminal output.
