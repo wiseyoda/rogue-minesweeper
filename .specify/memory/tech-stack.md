@@ -2,8 +2,8 @@
 
 > Approved technologies and versions for the Dungeon Delver project.
 
-**Last Updated**: 2026-01-14
-**Version**: 2.0.0
+**Last Updated**: 2026-02-15
+**Version**: 2.0.1
 **Project Type**: Game (Web App)
 
 ---
@@ -56,6 +56,11 @@
 ```
 Player Action → Game State Update → AI Context Builder → AI Provider → Parse Response → Update UI
 ```
+
+### AI Integration Conventions (Phase 4020)
+
+- Keep provider orchestration in a pure, testable wrapper (`src/ai/generate.ts`) so UI/trigger layers do not depend on network behavior.
+- Always parse model output through a shared schema and fail closed to deterministic local fallback lines when parsing/provider calls fail.
 
 **AI Request Format** (sent to provider):
 ```typescript
