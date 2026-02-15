@@ -82,3 +82,38 @@ export interface DungeonMasterContextEnvelope {
   truncated: boolean;
 }
 
+/**
+ * Supported Dungeon Master mood states.
+ */
+export type DungeonMasterMood = 'amused' | 'bored' | 'impressed' | 'vengeful' | 'curious';
+
+/**
+ * Optional hint categories the Dungeon Master can return.
+ */
+export type DungeonMasterHintType = 'rune_synergy' | 'monster_warning' | 'safe_path';
+
+/**
+ * Structured Dungeon Master response contract consumed by the UI/trigger layers.
+ */
+export interface DungeonMasterResponse {
+  dialogue: string;
+  mood: DungeonMasterMood;
+  difficultyAdjustment?: number;
+  hintType?: DungeonMasterHintType;
+  hintContent?: string;
+}
+
+/**
+ * Source of a generated Dungeon Master response.
+ */
+export type DungeonMasterResponseSource = 'gemini' | 'claude' | 'fallback';
+
+/**
+ * Orchestrated generation result including source diagnostics.
+ */
+export interface DungeonMasterGenerationResult {
+  response: DungeonMasterResponse;
+  source: DungeonMasterResponseSource;
+  providerErrors: Partial<Record<'gemini' | 'claude', string>>;
+  cooldownActive: boolean;
+}
