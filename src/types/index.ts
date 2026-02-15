@@ -88,4 +88,9 @@ export type {
   DungeonRateLimitState,
   DungeonMasterContext,
   DungeonMasterContextEnvelope,
+  DungeonMasterMood,
+  DungeonMasterHintType,
+  DungeonMasterResponse,
+  DungeonMasterResponseSource,
+  DungeonMasterGenerationResult,
 } from './ai';

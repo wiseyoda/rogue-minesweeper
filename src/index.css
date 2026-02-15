@@ -3,6 +3,12 @@
 
 @import 'tailwindcss';
 
+/* Limit Tailwind source detection to app code; exclude docs/spec markdown. */
+@source not "../.specify";
+@source not "../specs";
+@source not "../README.md";
+@source not "../ROADMAP.md";
+
 /* Design System Imports */
 @import './styles/tokens.css';
 @import './styles/animations.css';
